@@ -1,0 +1,383 @@
+05:11, 12 April 2016;Shmuser;19,624 bytes;+4
+04:56, 3 April 2016;Paleorthid;19,620 bytes;-6
+08:03, 2 April 2016;115.178.213.170;19,626 bytes;-10
+08:01, 2 April 2016;115.178.213.170;19,636 bytes;+10
+07:59, 2 April 2016;115.178.213.170;19,626 bytes;+2
+07:58, 2 April 2016;115.178.213.170;19,624 bytes;+4
+10:36, 10 March 2016;BG19bot;19,620 bytes;-18
+02:51, 10 March 2016;Just a guy from the KP;19,638 bytes;-1
+20:48, 8 November 2015;Igor Topilsky;19,639 bytes;-4
+21:24, 2 November 2015;Deanread2005;19,643 bytes;+4
+02:10, 15 May 2015;Chris the speller;19,639 bytes;+22
+00:52, 11 April 2015;Melnicki;19,617 bytes;0
+00:39, 11 April 2015;Melnicki;19,617 bytes;
+01:07, 29 January 2015;Leyo;19,002 bytes;+18
+01:29, 31 December 2014;NewEnglandYankee;18,984 bytes;-21
+01:28, 31 December 2014;72.211.181.131;19,005 bytes;+21
+01:27, 31 December 2014;NewEnglandYankee;18,984 bytes;-16
+01:27, 31 December 2014;72.211.181.131;19,000 bytes;+16
+01:26, 31 December 2014;NewEnglandYankee;18,984 bytes;-16
+01:26, 31 December 2014;72.211.181.131;19,000 bytes;+16
+01:50, 14 December 2014;Ckck07;18,984 bytes;+3
+18:19, 3 November 2014;Zarcoen;18,981 bytes;-15
+18:31, 1 November 2014;Kuttapyra;18,996 bytes;+15
+03:24, 28 October 2014;72.188.28.79;18,981 bytes;-1
+21:24, 28 September 2014;Yikrazuul;18,982 bytes;+4
+02:25, 17 September 2014;Eguygabe;18,978 bytes;-28
+18:29, 20 August 2014;186.22.147.109;19,006 bytes;+1
+12:50, 2 August 2014;Rjwilmsi;19,005 bytes;+36
+14:54, 31 July 2014;Brandmeister;18,969 bytes;+1
+22:59, 30 July 2014;Prokaryotes;18,968 bytes;+44
+15:31, 12 May 2014;ClueBot NG;18,924 bytes;-34
+15:31, 12 May 2014;Milkboy237;18,958 bytes;+34
+17:38, 18 March 2014;Neodop;18,924 bytes;+188
+16:37, 6 December 2013;David costanzo;18,736 bytes;0
+09:47, 6 December 2013;John of Reading;18,736 bytes;-4
+19:29, 11 October 2013;Miscellaneous131;18,740 bytes;+393
+19:13, 11 October 2013;Miscellaneous131;18,347 bytes;
+03:14, 13 September 2013;FutureTrillionaire;17,754 bytes;-2
+07:56, 6 September 2013;Amkilpatrick;17,756 bytes;+32
+17:01, 26 August 2013;Gilo1969;17,724 bytes;-12
+21:55, 26 April 2013;AlphaHelical;17,736 bytes;+69
+00:50, 22 April 2013;67.253.55.85;17,667 bytes;-16
+02:02, 17 April 2013;Zorahia;17,683 bytes;+16
+00:59, 18 March 2013;76.114.142.200;17,667 bytes;-41
+18:26, 17 March 2013;69.14.174.197;17,708 bytes;+41
+08:52, 13 March 2013;Addbot;17,667 bytes;-28
+20:42, 9 March 2013;Smokefoot;17,695 bytes;
+19:26, 9 March 2013;Smokefoot;21,030 bytes;+11
+16:11, 9 March 2013;Smokefoot;21,019 bytes;-353
+15:52, 9 March 2013;Smokefoot;21,372 bytes;
+14:41, 9 March 2013;Smokefoot;20,470 bytes;-236
+14:15, 9 March 2013;Smokefoot;20,706 bytes;-277
+19:48, 25 February 2013;Addbot;20,983 bytes;-393
+15:15, 12 February 2013;Cannolis;21,376 bytes;-16
+15:15, 12 February 2013;207.70.166.7;21,392 bytes;+16
+23:13, 11 February 2013;Ariaveeg;21,376 bytes;+27
+14:33, 2 February 2013;Ohconfucius;21,349 bytes;+58
+10:53, 27 December 2012;OrenBochman;21,291 bytes;+8
+01:59, 29 November 2012;Jorge 2701;21,283 bytes;
+01:49, 29 November 2012;71.129.173.24;empty;-212
+01:49, 29 November 2012;71.129.173.24;212 bytes;
+01:48, 29 November 2012;71.129.173.24;20,798 bytes;-485
+21:04, 15 November 2012;ClueBot NG;21,283 bytes;-12
+21:04, 15 November 2012;50.84.150.10;21,295 bytes;+12
+23:43, 3 November 2012;Narfiol;21,283 bytes;+4
+07:21, 16 October 2012;Mediran;21,279 bytes;-3
+06:02, 16 October 2012;124.106.21.16;21,282 bytes;+3
+07:36, 14 October 2012;Anomalocaris;21,279 bytes;+29
+17:13, 23 September 2012;Lamro;21,250 bytes;+3
+00:37, 16 August 2012;Sbharris;21,247 bytes;+19
+01:25, 3 August 2012;Bibcode Bot;21,228 bytes;+434
+17:11, 30 June 2012;J G Campbell;20,794 bytes;-6
+16:50, 30 June 2012;J G Campbell;20,800 bytes;+263
+11:10, 16 June 2012;Rjwilmsi;20,537 bytes;+57
+17:39, 20 May 2012;Santaluciae;20,480 bytes;-2
+00:54, 17 May 2012;Whoop whoop pull up;20,482 bytes;0
+00:54, 17 May 2012;Whoop whoop pull up;20,482 bytes;+4
+02:36, 12 May 2012;Helpful Pixie Bot;20,478 bytes;+3
+17:18, 6 May 2012;74.198.87.94;20,475 bytes;-176
+17:08, 6 May 2012;74.198.87.94;20,651 bytes;-20
+21:04, 16 April 2012;J G Campbell;20,671 bytes;0
+21:01, 16 April 2012;J G Campbell;20,671 bytes;-13
+19:56, 16 April 2012;Rjwilmsi;20,684 bytes;+13
+17:00, 13 April 2012;J G Campbell;20,671 bytes;-82
+09:09, 12 April 2012;202.171.163.7;20,753 bytes;+35
+20:47, 10 April 2012;J G Campbell;20,718 bytes;+18
+20:32, 10 April 2012;J G Campbell;20,700 bytes;+1
+20:19, 10 April 2012;J G Campbell;20,699 bytes;
+19:46, 10 April 2012;J G Campbell;18,727 bytes;+21
+19:13, 10 April 2012;J G Campbell;18,706 bytes;+38
+02:29, 5 April 2012;J G Campbell;18,668 bytes;+13
+23:50, 4 April 2012;J G Campbell;18,655 bytes;+2
+23:21, 4 April 2012;J G Campbell;18,653 bytes;-28
+23:17, 4 April 2012;J G Campbell;18,681 bytes;-74
+21:01, 4 April 2012;J G Campbell;18,755 bytes;+10
+20:28, 4 April 2012;J G Campbell;18,745 bytes;0
+20:01, 4 April 2012;J G Campbell;18,745 bytes;-66
+22:37, 29 February 2012;J G Campbell;18,811 bytes;+2
+22:33, 29 February 2012;J G Campbell;18,809 bytes;-35
+22:14, 29 February 2012;J G Campbell;18,844 bytes;+389
+22:02, 29 February 2012;J G Campbell;18,455 bytes;-5
+19:41, 29 February 2012;J G Campbell;18,460 bytes;+18
+05:52, 24 February 2012;BD2412;18,442 bytes;+21
+05:50, 24 February 2012;BD2412;18,421 bytes;+21
+13:54, 20 January 2012;Rror;18,400 bytes;+19
+12:21, 20 January 2012;76.90.111.29;18,381 bytes;0
+20:05, 13 January 2012;J G Campbell;18,381 bytes;-4
+19:56, 13 January 2012;J G Campbell;18,385 bytes;+63
+19:16, 13 January 2012;J G Campbell;18,322 bytes;+38
+17:42, 13 January 2012;J G Campbell;18,284 bytes;0
+17:23, 13 January 2012;J G Campbell;18,284 bytes;+165
+17:15, 13 January 2012;J G Campbell;18,119 bytes;+141
+18:00, 9 January 2012;Esotera~enwiki;17,978 bytes;0
+19:46, 5 January 2012;Jrbouldin;17,978 bytes;+2
+19:44, 5 January 2012;Jrbouldin;17,976 bytes;+409
+11:45, 4 January 2012;J G Campbell;17,567 bytes;-105
+11:17, 4 January 2012;J G Campbell;17,672 bytes;+101
+11:04, 4 January 2012;J G Campbell;17,571 bytes;+2
+11:00, 4 January 2012;J G Campbell;17,569 bytes;
+20:06, 1 January 2012;Rjwilmsi;18,107 bytes;+13
+00:55, 1 January 2012;J G Campbell;18,094 bytes;+3
+00:46, 1 January 2012;J G Campbell;18,091 bytes;+16
+00:18, 1 January 2012;J G Campbell;18,075 bytes;+16
+00:12, 1 January 2012;J G Campbell;18,059 bytes;-267
+21:15, 31 December 2011;J G Campbell;18,326 bytes;-42
+20:35, 31 December 2011;J G Campbell;18,368 bytes;-56
+11:30, 31 December 2011;Rjwilmsi;18,424 bytes;+36
+15:19, 26 December 2011;65.240.181.122;18,388 bytes;+3
+01:53, 12 December 2011;69.172.88.39;18,385 bytes;-3
+01:51, 12 December 2011;69.172.88.39;18,388 bytes;-14
+16:54, 11 December 2011;Closedmouth;18,402 bytes;-7
+19:47, 10 December 2011;188.52.82.25;18,409 bytes;+7
+11:00, 29 November 2011;Rjwilmsi;18,402 bytes;+13
+19:27, 23 November 2011;Rjwilmsi;18,389 bytes;+39
+09:04, 20 November 2011;RjwilmsiBot;18,350 bytes;+10
+15:14, 8 November 2011;J G Campbell;18,340 bytes;+18
+15:12, 8 November 2011;J G Campbell;18,322 bytes;-7
+19:51, 25 October 2011;Sonicsuns;18,329 bytes;+54
+19:48, 25 October 2011;Sonicsuns;18,275 bytes;-4
+17:00, 25 October 2011;J G Campbell;18,279 bytes;+39
+16:57, 25 October 2011;J G Campbell;18,240 bytes;+24
+16:17, 25 October 2011;J G Campbell;18,216 bytes;-4
+16:08, 25 October 2011;J G Campbell;18,220 bytes;+228
+02:43, 24 October 2011;J G Campbell;17,992 bytes;+181
+00:28, 24 October 2011;J G Campbell;17,811 bytes;+373
+23:47, 23 October 2011;J G Campbell;17,438 bytes;+19
+17:07, 23 October 2011;J G Campbell;17,419 bytes;+2
+15:23, 23 October 2011;J G Campbell;17,417 bytes;+16
+15:17, 23 October 2011;J G Campbell;17,401 bytes;+201
+19:59, 19 October 2011;J G Campbell;17,200 bytes;0
+19:46, 19 October 2011;J G Campbell;17,200 bytes;+230
+15:54, 18 October 2011;J G Campbell;16,970 bytes;+17
+15:18, 17 October 2011;J G Campbell;16,953 bytes;+36
+15:05, 17 October 2011;J G Campbell;16,917 bytes;+386
+17:18, 16 October 2011;J G Campbell;16,531 bytes;+343
+16:59, 16 October 2011;J G Campbell;16,188 bytes;+7
+23:41, 14 October 2011;J G Campbell;16,181 bytes;+32
+23:10, 14 October 2011;J G Campbell;16,149 bytes;-28
+18:20, 14 October 2011;J G Campbell;16,177 bytes;
+16:09, 14 October 2011;J G Campbell;15,255 bytes;+1
+14:52, 14 October 2011;J G Campbell;15,254 bytes;+31
+14:16, 14 October 2011;J G Campbell;15,223 bytes;+27
+14:05, 14 October 2011;J G Campbell;15,196 bytes;+23
+00:21, 14 October 2011;J G Campbell;15,173 bytes;+17
+20:37, 13 October 2011;J G Campbell;15,156 bytes;-2
+19:41, 13 October 2011;J G Campbell;15,158 bytes;0
+19:34, 13 October 2011;J G Campbell;15,158 bytes;+14
+19:29, 13 October 2011;J G Campbell;15,144 bytes;+191
+18:02, 13 October 2011;J G Campbell;14,953 bytes;+5
+17:56, 13 October 2011;J G Campbell;14,948 bytes;+196
+22:39, 12 October 2011;J G Campbell;14,752 bytes;+9
+22:01, 12 October 2011;J G Campbell;14,743 bytes;+445
+15:06, 12 October 2011;J G Campbell;14,298 bytes;-4
+17:17, 10 October 2011;J G Campbell;14,302 bytes;+73
+17:18, 9 October 2011;J G Campbell;14,229 bytes;+64
+14:48, 9 October 2011;J G Campbell;14,165 bytes;-3
+21:27, 8 October 2011;J G Campbell;14,168 bytes;+103
+19:30, 8 October 2011;J G Campbell;14,065 bytes;-12
+19:20, 8 October 2011;J G Campbell;14,077 bytes;+120
+18:06, 8 October 2011;J G Campbell;13,957 bytes;+1
+18:04, 8 October 2011;J G Campbell;13,956 bytes;+5
+17:57, 8 October 2011;J G Campbell;13,951 bytes;+455
+04:00, 5 October 2011;J G Campbell;13,496 bytes;-11
+00:23, 5 October 2011;J G Campbell;13,507 bytes;-2
+23:25, 4 October 2011;J G Campbell;13,509 bytes;-3
+22:49, 4 October 2011;J G Campbell;13,512 bytes;+94
+19:38, 4 October 2011;J G Campbell;13,418 bytes;+4
+19:26, 4 October 2011;J G Campbell;13,414 bytes;+286
+17:43, 4 October 2011;J G Campbell;13,128 bytes;-3
+17:22, 4 October 2011;J G Campbell;13,131 bytes;+106
+16:56, 4 October 2011;J G Campbell;13,025 bytes;+27
+16:42, 4 October 2011;J G Campbell;12,998 bytes;+357
+15:32, 4 October 2011;J G Campbell;12,641 bytes;-20
+04:30, 4 October 2011;J G Campbell;12,661 bytes;+77
+03:55, 4 October 2011;J G Campbell;12,584 bytes;+6
+18:28, 2 October 2011;Christian75;12,578 bytes;-10
+17:56, 2 October 2011;J G Campbell;12,588 bytes;+1
+17:53, 2 October 2011;J G Campbell;12,587 bytes;+4
+17:43, 2 October 2011;J G Campbell;12,583 bytes;+4
+17:39, 2 October 2011;J G Campbell;12,579 bytes;+125
+16:16, 2 October 2011;J G Campbell;12,454 bytes;+10
+15:02, 2 October 2011;J G Campbell;12,444 bytes;+1
+21:54, 30 September 2011;J G Campbell;12,443 bytes;+6
+21:29, 30 September 2011;J G Campbell;12,437 bytes;-1
+20:27, 30 September 2011;J G Campbell;12,438 bytes;-6
+20:15, 30 September 2011;J G Campbell;12,444 bytes;-3
+19:27, 30 September 2011;J G Campbell;12,447 bytes;+27
+19:18, 30 September 2011;J G Campbell;12,420 bytes;+22
+19:11, 30 September 2011;J G Campbell;12,398 bytes;+5
+18:59, 30 September 2011;J G Campbell;12,393 bytes;-20
+18:13, 30 September 2011;J G Campbell;12,413 bytes;+419
+14:23, 30 September 2011;J G Campbell;11,994 bytes;+30
+14:01, 30 September 2011;J G Campbell;11,964 bytes;+137
+11:19, 30 September 2011;J G Campbell;11,827 bytes;-4
+19:18, 29 September 2011;J G Campbell;11,831 bytes;+17
+19:07, 29 September 2011;J G Campbell;11,814 bytes;+4
+18:25, 29 September 2011;J G Campbell;11,810 bytes;+14
+17:18, 29 September 2011;J G Campbell;11,796 bytes;+31
+17:04, 29 September 2011;J G Campbell;11,765 bytes;+4
+16:35, 29 September 2011;J G Campbell;11,761 bytes;-3
+16:30, 29 September 2011;J G Campbell;11,764 bytes;+2
+16:27, 29 September 2011;J G Campbell;11,762 bytes;
+17:21, 28 September 2011;J G Campbell;10,675 bytes;+56
+16:56, 28 September 2011;J G Campbell;10,619 bytes;-19
+16:53, 28 September 2011;J G Campbell;10,638 bytes;+19
+16:45, 28 September 2011;J G Campbell;10,619 bytes;+45
+16:40, 28 September 2011;J G Campbell;10,574 bytes;+43
+01:57, 27 September 2011;J G Campbell;10,531 bytes;+92
+01:30, 27 September 2011;J G Campbell;10,439 bytes;+2
+01:16, 27 September 2011;J G Campbell;10,437 bytes;+14
+18:03, 26 September 2011;J G Campbell;10,423 bytes;+10
+16:27, 26 September 2011;J G Campbell;10,413 bytes;+313
+19:30, 24 September 2011;J G Campbell;10,100 bytes;+77
+19:13, 24 September 2011;J G Campbell;10,023 bytes;+101
+17:52, 24 September 2011;J G Campbell;9,922 bytes;+31
+17:21, 24 September 2011;J G Campbell;9,891 bytes;+31
+20:59, 23 September 2011;J G Campbell;9,860 bytes;-12
+16:56, 23 September 2011;J G Campbell;9,872 bytes;+83
+16:45, 23 September 2011;J G Campbell;9,789 bytes;+2
+16:22, 23 September 2011;J G Campbell;9,787 bytes;+4
+15:53, 23 September 2011;J G Campbell;9,783 bytes;
+23:27, 21 September 2011;J G Campbell;8,900 bytes;+34
+18:51, 20 September 2011;J G Campbell;8,866 bytes;+22
+18:26, 20 September 2011;J G Campbell;8,844 bytes;+4
+17:52, 20 September 2011;J G Campbell;8,840 bytes;+225
+12:55, 19 September 2011;J G Campbell;8,615 bytes;+36
+09:04, 19 September 2011;Asephei;8,579 bytes;+16
+18:05, 18 September 2011;J G Campbell;8,563 bytes;-76
+05:19, 18 September 2011;J G Campbell;8,639 bytes;+158
+14:09, 17 September 2011;J G Campbell;8,481 bytes;-3
+15:20, 16 September 2011;J G Campbell;8,484 bytes;+424
+14:39, 16 September 2011;J G Campbell;8,060 bytes;+261
+23:59, 15 September 2011;Headbomb;7,799 bytes;+12
+20:48, 15 September 2011;J G Campbell;7,787 bytes;-6
+20:46, 15 September 2011;J G Campbell;7,793 bytes;0
+20:12, 15 September 2011;J G Campbell;7,793 bytes;+27
+19:39, 15 September 2011;J G Campbell;7,766 bytes;+8
+19:27, 15 September 2011;J G Campbell;7,758 bytes;+15
+19:09, 15 September 2011;J G Campbell;7,743 bytes;+11
+19:01, 15 September 2011;J G Campbell;7,732 bytes;-25
+18:59, 15 September 2011;J G Campbell;7,757 bytes;+3
+18:48, 15 September 2011;J G Campbell;7,754 bytes;+11
+18:33, 15 September 2011;J G Campbell;7,743 bytes;0
+17:48, 15 September 2011;J G Campbell;7,743 bytes;+24
+17:45, 15 September 2011;J G Campbell;7,719 bytes;
+03:22, 13 September 2011;J G Campbell;6,572 bytes;+51
+00:59, 13 September 2011;J G Campbell;6,521 bytes;-98
+00:09, 13 September 2011;J G Campbell;6,619 bytes;+290
+23:42, 12 September 2011;J G Campbell;6,329 bytes;+288
+22:59, 12 September 2011;J G Campbell;6,041 bytes;+308
+22:37, 12 September 2011;J G Campbell;5,733 bytes;+269
+21:54, 12 September 2011;J G Campbell;5,464 bytes;-100
+21:36, 12 September 2011;J G Campbell;5,564 bytes;-2
+21:28, 12 September 2011;J G Campbell;5,566 bytes;+354
+20:12, 12 September 2011;J G Campbell;5,212 bytes;+47
+18:47, 12 September 2011;J G Campbell;5,165 bytes;+457
+20:26, 8 September 2011;J G Campbell;4,708 bytes;+56
+18:02, 8 September 2011;J G Campbell;4,652 bytes;0
+18:01, 8 September 2011;J G Campbell;4,652 bytes;+122
+17:30, 8 September 2011;J G Campbell;4,530 bytes;-21
+17:19, 8 September 2011;J G Campbell;4,551 bytes;-234
+15:15, 8 September 2011;J G Campbell;4,785 bytes;+49
+19:28, 17 August 2011;110.175.156.215;4,736 bytes;+142
+18:00, 5 August 2011;193.147.143.29;4,594 bytes;+5
+17:59, 5 August 2011;193.147.143.29;4,589 bytes;+194
+06:09, 27 July 2011;Smartse;4,395 bytes;-47
+20:05, 26 July 2011;86.162.101.139;4,442 bytes;+23
+20:03, 26 July 2011;86.162.101.139;4,419 bytes;+24
+06:51, 12 July 2011;Zeacute;roBot;4,395 bytes;+45
+02:53, 12 July 2011;EmausBot;4,350 bytes;0
+19:38, 11 July 2011;Zeacute;roBot;4,350 bytes;+39
+13:55, 8 June 2011;68.194.106.90;4,311 bytes;-5
+16:57, 5 May 2011;Nickanc;4,316 bytes;+39
+20:47, 21 March 2011;ArthurBot;4,277 bytes;+27
+18:09, 16 January 2011;PiFanatic;4,250 bytes;-1
+02:01, 10 January 2011;88.209.218.38;4,251 bytes;-6
+23:33, 5 January 2011;Fences and windows;4,257 bytes;+32
+23:32, 5 January 2011;Fences and windows;4,225 bytes;+20
+07:20, 29 December 2010;Wingedsubmariner;4,205 bytes;+2
+07:19, 29 December 2010;Wingedsubmariner;4,203 bytes;+234
+01:48, 28 December 2010;Drphilharmonic;3,969 bytes;-1
+04:13, 17 October 2010;69.239.87.131;3,970 bytes;-12
+16:11, 23 September 2010;Drphilharmonic;3,982 bytes;+3
+16:06, 13 September 2010;Superc4;3,979 bytes;-14
+14:05, 13 September 2010;Smartse;3,993 bytes;-38
+13:59, 13 September 2010;Smartse;4,031 bytes;+138
+13:35, 13 September 2010;Smartse;3,893 bytes;
+07:13, 30 June 2010;Ecorahul;3,346 bytes;+6
+05:50, 27 April 2010;Ecorahul;3,340 bytes;+12
+20:45, 7 March 2010;LegitimateAndEvenCompelling;3,328 bytes;0
+17:18, 2 January 2010;Julesd;3,328 bytes;0
+16:59, 2 January 2010;Julesd;3,328 bytes;-9
+16:57, 2 January 2010;Julesd;3,337 bytes;-8
+17:43, 19 October 2009;200.222.1.254;3,345 bytes;+28
+13:33, 22 September 2009;Wickey-nl;3,317 bytes;-2
+19:36, 26 April 2009;Smartse;3,319 bytes;+28
+19:35, 26 April 2009;Smartse;3,291 bytes;+392
+18:39, 26 April 2009;Smartse;2,899 bytes;+172
+23:02, 22 April 2009;Smartse;2,727 bytes;+16
+02:37, 15 March 2009;94.246.126.42;2,711 bytes;0
+22:22, 3 March 2009;208.110.239.98;2,711 bytes;0
+00:06, 21 January 2009;LaaknorBot;2,711 bytes;+25
+19:57, 22 December 2008;GrouchoBot;2,686 bytes;+28
+00:40, 21 October 2008;98.164.197.169;2,658 bytes;+17
+21:40, 4 July 2008;BotKung;2,641 bytes;+77
+21:47, 2 June 2008;70.89.226.253;2,564 bytes;-29
+21:47, 2 June 2008;70.89.226.253;2,593 bytes;-28
+12:45, 2 June 2008;Epbr123;2,621 bytes;-59
+12:36, 2 June 2008;168.216.34.102;2,680 bytes;+59
+12:09, 2 June 2008;168.216.67.32;2,621 bytes;+29
+11:59, 2 June 2008;168.216.51.147;2,592 bytes;+28
+20:31, 14 December 2007;PixelBot;2,564 bytes;+86
+03:58, 7 December 2007;Tameeria;2,478 bytes;+1
+01:57, 7 December 2007;24.143.57.235;2,477 bytes;-13
+01:56, 7 December 2007;24.143.57.235;2,490 bytes;+52
+21:30, 5 December 2007;96.234.180.230;2,438 bytes;0
+18:24, 23 November 2007;130.83.98.57;2,438 bytes;
+07:30, 19 November 2007;ClueBot;1,884 bytes;
+07:30, 19 November 2007;69.108.155.56;6 bytes;
+07:29, 19 November 2007;69.108.155.56;1,378 bytes;
+23:30, 12 November 2007;71.124.225.137;1,884 bytes;+2
+23:30, 12 November 2007;71.124.225.137;1,882 bytes;+68
+19:17, 21 October 2007;70.64.70.52;1,814 bytes;-2
+08:55, 24 August 2007;Julianonions;1,816 bytes;+25
+02:15, 23 August 2007;66.177.161.78;1,791 bytes;-9
+02:13, 23 August 2007;66.177.161.78;1,800 bytes;-8
+10:39, 28 May 2007;Julianonions;1,808 bytes;+97
+02:34, 14 April 2007;Daniel5127;1,711 bytes;-3
+18:29, 13 April 2007;Tameeria;1,714 bytes;+16
+04:21, 11 April 2007;Alaibot;1,698 bytes;+29
+16:15, 9 April 2007;195.137.117.89;1,669 bytes;+39
+16:14, 9 April 2007;195.137.117.89;1,630 bytes;-360
+11:34, 30 March 2007;Onco p53;1,990 bytes;-6
+18:47, 16 March 2007;TimVickers;1,996 bytes;+44
+08:08, 14 March 2007;Julianonions;1,952 bytes;
+01:39, 14 March 2007;TimVickers;3,398 bytes;-133
+01:38, 14 March 2007;TimVickers;3,531 bytes;-1
+01:38, 14 March 2007;TimVickers;3,532 bytes;
+20:42, 5 March 2007;Thijs!bot;1,722 bytes;+3
+13:42, 19 February 2007;Arcadian;1,719 bytes;+27
+03:22, 21 December 2006;Linnell;1,692 bytes;0
+03:20, 21 December 2006;71.103.184.82;1,692 bytes;0
+23:31, 29 November 2006;Jenks1987;1,692 bytes;-28
+20:04, 28 November 2006;Jaredthewizard28;1,720 bytes;+28
+16:45, 7 November 2006;AntiVandalBot;1,692 bytes;-20
+16:44, 7 November 2006;142.179.183.250;1,712 bytes;+20
+21:48, 5 November 2006;Misza13;1,692 bytes;
+21:48, 5 November 2006;70.251.229.153;empty;
+21:46, 5 November 2006;AntiVandalBot;1,692 bytes;
+21:46, 5 November 2006;70.251.229.153;9 bytes;-420
+21:45, 5 November 2006;70.251.229.153;429 bytes;
+18:37, 9 June 2006;Zeamays;1,692 bytes;
+02:49, 21 December 2005;69.228.90.135;1,077 bytes;0
+16:55, 20 November 2005;Pixeltoo;1,077 bytes;+27
+01:32, 8 November 2005;LeonardoRob0t;1,050 bytes;+6
+04:58, 11 August 2005;Josh Grosse;1,044 bytes;+395
+07:30, 23 July 2005;133.9.4.12;649 bytes;+20
+18:59, 10 April 2005;Cacycle;629 bytes;+25
+00:23, 23 March 2005;Nina Gerlach;604 bytes;+30
+03:35, 10 December 2004;Jman;574 bytes;0
+23:43, 4 November 2004;Whosyourjudas;574 bytes;+29
+18:28, 12 June 2004;Thue;545 bytes;+6
+17:03, 12 June 2004;151.196.234.220;539 bytes;

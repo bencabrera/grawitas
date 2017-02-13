@@ -1,0 +1,2 @@
+/usr/bin/ar cr libMainLibrary.a  CMakeFiles/MainLibrary.dir/src/Comment.cpp.o CMakeFiles/MainLibrary.dir/src/Graph.cpp.o CMakeFiles/MainLibrary.dir/src/RegexCombinatoricalParser.cpp.o
+/usr/bin/ranlib libMainLibrary.a

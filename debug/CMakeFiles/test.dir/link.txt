@@ -1,0 +1,1 @@
+/usr/bin/g++-4.9    -std=c++11    CMakeFiles/test.dir/src/main_test.cpp.o  -o test -rdynamic libMainLibrary.a -Wl,-Bstatic -lboost_program_options -lboost_regex -Wl,-Bdynamic 
