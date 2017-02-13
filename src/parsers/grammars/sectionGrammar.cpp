@@ -1,3 +1,0 @@
-#include "sectionGrammar_def.hpp"
-
-template WikiTalkNet::SectionGrammar<std::string::iterator, boost::spirit::qi::blank_type>::SectionGrammar();
