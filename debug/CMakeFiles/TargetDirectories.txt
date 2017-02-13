@@ -1,5 +1,0 @@
-/home/cabrera/Schreibtisch/UCSM/wikiUserAnalysis/parser/debug/CMakeFiles/MainLibrary.dir
-/home/cabrera/Schreibtisch/UCSM/wikiUserAnalysis/parser/debug/CMakeFiles/TinyXPath.dir
-/home/cabrera/Schreibtisch/UCSM/wikiUserAnalysis/parser/debug/CMakeFiles/WikiRevisionHistoryParser.dir
-/home/cabrera/Schreibtisch/UCSM/wikiUserAnalysis/parser/debug/CMakeFiles/WikiTalkPageParser.dir
-/home/cabrera/Schreibtisch/UCSM/wikiUserAnalysis/parser/debug/CMakeFiles/test.dir

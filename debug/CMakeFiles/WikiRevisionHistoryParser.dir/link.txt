@@ -1,1 +1,0 @@
-/usr/bin/g++-4.9    -std=c++11    CMakeFiles/WikiRevisionHistoryParser.dir/src/main_revisionHistoryParser.cpp.o  -o WikiRevisionHistoryParser -rdynamic libMainLibrary.a libTinyXPath.a -Wl,-Bstatic -lboost_program_options -lboost_regex -Wl,-Bdynamic 
