@@ -20,16 +20,21 @@ namespace Grawitas {
 		// we read the file into a string first. 
 		// because boost.spirit needs backtracking it will not be able to completely read from stream without keeping copies. Since our files should be relatively small (< 10MB) this should not be a limitation
 		std::string content((std::istreambuf_iterator<char>(ostr)), std::istreambuf_iterator<char>()); 
-		
+
+		return parseTalkPage(content);
+	}
+
+	ParsedTalkPage parseTalkPage(const std::string& content)
+	{
 		// first split wikisyntax into sections
-		auto content_it = content.begin();
+		auto content_it = content.cbegin();
 		std::vector<std::tuple<std::string, std::string, int>> sections;
-		Grawitas::SectionGrammar<std::string::iterator, boost::spirit::qi::blank_type> sectionGrammar;
-		boost::spirit::qi::phrase_parse(content_it, content.end(), sectionGrammar, boost::spirit::qi::blank, sections);
+		Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> sectionGrammar;
+		boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::blank, sections);
 		
 		// for each section apply now the comment parsing
 		ParsedTalkPage parsedTalkPage;
-		Grawitas::TalkPageGrammar<std::string::iterator, boost::spirit::qi::blank_type> talkPageGrammar;
+		Grawitas::TalkPageGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> talkPageGrammar;
 
 		std::size_t currentSectionOutdent = 0;
 		std::size_t lastCommentIndent = 0;
@@ -38,8 +43,8 @@ namespace Grawitas {
 			std::list<Comment> parsedSection;
 			std::string tmpStr = std::get<1>(sec);
 
-			auto section_it = tmpStr.begin();
-			boost::spirit::qi::phrase_parse(section_it, tmpStr.end(), talkPageGrammar, boost::spirit::qi::blank, parsedSection);
+			auto section_it = tmpStr.cbegin();
+			boost::spirit::qi::phrase_parse(section_it, tmpStr.cend(), talkPageGrammar, boost::spirit::qi::blank, parsedSection);
 
 			int outdent = std::get<2>(sec);
 			if(outdent == -1) {

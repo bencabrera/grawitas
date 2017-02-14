@@ -67,13 +67,23 @@ set(TEST_SOURCE_FILES
 	tests/helpers.cpp
 )
 
+set(XML_DUMP_PARSING_FILES
+	parsing/xmlDumpParsingHandler.cpp
+)
 
-add_library(MainLibrary STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} )
 
-add_executable(GrawitasCoreParser main_coreParser.cpp ${GRAMMAR_SOURCE_FILES})
+add_library(CoreLib STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} ${GRAMMAR_SOURCE_FILES})
+
+add_executable(GrawitasCoreParser main_coreParser.cpp)
 target_link_libraries(GrawitasCoreParser ${Boost_LIBRARIES})
-target_link_libraries(GrawitasCoreParser MainLibrary)
+target_link_libraries(GrawitasCoreParser CoreLib)
 
-add_executable(talkNetTests main_tests.cpp ${GRAMMAR_SOURCE_FILES} ${TEST_SOURCE_FILES})
-target_link_libraries(talkNetTests ${Boost_LIBRARIES})
-target_link_libraries(talkNetTests MainLibrary)
+add_executable(GrawitasXmlDumpParser main_xmlDumpParser.cpp ${XML_DUMP_PARSING_FILES})
+target_link_libraries(GrawitasXmlDumpParser ${Boost_LIBRARIES})
+target_link_libraries(GrawitasXmlDumpParser xerces-c)
+target_link_libraries(GrawitasXmlDumpParser CoreLib)
+target_link_libraries(GrawitasXmlDumpParser pthread)
+
+add_executable(tests tests/main_tests.cpp ${GRAMMAR_SOURCE_FILES} ${TEST_SOURCE_FILES})
+target_link_libraries(tests ${Boost_LIBRARIES})
+target_link_libraries(tests MainLibrary)

@@ -1,0 +1,3 @@
+[submodule "libs/wiki_xml_dump_xerces"]
+	path = libs/wiki_xml_dump_xerces
+	url = git@github.com:Ace7k3/wiki_xml_dump_xerces.git
