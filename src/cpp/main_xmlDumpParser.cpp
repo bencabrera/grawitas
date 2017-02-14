@@ -24,8 +24,8 @@ int main(int argc, char** argv)
 	po::options_description desc("Allowed options");
 	desc.add_options()
 		("help", "Produce help message.")
-		("input-xml-folder", po::bool_switch()->default_value(false), "The folder that should be scanned for .xml files that are part of a dump of Wikipedia.")
-		("output-folder", po::bool_switch()->default_value(false), "The folder in which the results (articlesWithDates.txt, categories.txt, redirects.txt) should be stored.")
+		("input-xml-folder", po::value<string>(), "The folder that should be scanned for .xml files that are part of a dump of Wikipedia.")
+		("output-folder", po::value<string>(), "The folder in which the results (articlesWithDates.txt, categories.txt, redirects.txt) should be stored.")
 
 		// network output
 		("user-network-gml", po::bool_switch()->default_value(false), "Flag indicating the output of the user network of the talk page in an .gml-format.")

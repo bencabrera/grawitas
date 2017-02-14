@@ -29,6 +29,12 @@ namespace Grawitas {
 		std::string title_filename = safeEncodeTitleToFilename(data.MetaData.at("title"));
 
 		auto parsedTalkPage = parseTalkPage(data.Content);		
+
+		std::size_t curId = 1;
+		for (auto& sec : parsedTalkPage) {
+			calculateIds(sec.second, curId);	
+		}
+
 		auto cache = GraphComputationCache(parsedTalkPage);
 
 		if(_programm_options.count("user-network-gml"))
@@ -112,7 +118,8 @@ namespace Grawitas {
 
 	std::string XmlDumpParsingHandler::safeEncodeTitleToFilename(const std::string& title) const
 	{
-		std::string str = boost::trim_copy(title);
+		std::string str = title.substr(5, title.length()-5);
+		boost::trim(str);
 		boost::replace_all(str, " ", "_");
 
 		std::ostringstream escaped;
