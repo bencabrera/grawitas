@@ -1,11 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <stdexcept>
-#include <sstream>
-#include <vector>
-#include <regex>
-#include <map>
-#include <streambuf>
 
 #include <boost/program_options.hpp>
 
@@ -21,86 +15,82 @@ namespace po = boost::program_options;
 using namespace Grawitas;
 using namespace std;
 
-int main(int argc, char** argv) {
-	// TODO go through all parameters again
-	
+int main(int argc, char** argv) 
+{
     po::options_description desc("Allowed options");
     desc.add_options()
-            ("help", "Produce help message.")
+       ("help", "Produces this help message.")
 
-			// input
-            ("input-talk-page", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("stdin-input-talk-page", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
+   	// input
+       ("input-talk-page-file", po::value<string>(), "Path to an input file containing a talk page in the Wikipedia syntax.")
 
-			// network output
-            ("user-network-gml", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("user-network-graphml", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("user-network-graphviz", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
+   	// network output
+       ("user-network-gml", po::value<string>(), "Path for the potential output file containing the user network of the talk page in an .gml-format.")
+       ("user-network-graphml", po::value<string>(), "Path for the potential output file containing the user network of the talk page in an .graphml-format.")
+       ("user-network-graphviz", po::value<string>(), "Path for the potential output file containing the user network of the talk page in an .graphviz-format.")
 
-            ("comment-network-gml", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("comment-network-graphml", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("comment-network-graphviz", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
+       ("comment-network-gml", po::value<string>(), "Path for the potential output file containing the comment network of the talk page in an .gml-format.")
+       ("comment-network-graphml", po::value<string>(), "Path for the potential output file containing the comment network of the talk page in an .graphml-format.")
+       ("comment-network-graphviz", po::value<string>(), "Path for the potential output file containing the comment network of the talk page in an .graphviz-format.")
 
-            ("two-mode-network-gml", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("two-mode-network-graphml", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("two-mode-network-graphviz", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
+       ("two-mode-network-gml", po::value<string>(), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .gml-format.")
+       ("two-mode-network-graphml", po::value<string>(), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphml-format.")
+       ("two-mode-network-graphviz", po::value<string>(), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphviz-format.")
 
-			// list output
-            ("comment-list-csv", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("comment-list-human-readable", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ("comment-list-json", po::value<string>(), "Path to an input file containing a talk page in the wikipedia syntax.")
+   	// list output
+       ("comment-list-csv", po::value<string>(), "Path for the potential output file containing the list of comments with user, date, and parent comment in .csv-format.")
+       ("comment-list-human-readable", po::value<string>(), "Path for the potential output file containing the list of comments with user, date, and parent comment in an human readable format.")
+       ("comment-list-json", po::value<string>(), "Path for the potential output file containing the list of comments with user, date, and parent comment in a .json-format.")
 
-			// misc
-            ("show-timings", po::bool_switch()->default_value(false), "Path to an input file containing a talk page in the wikipedia syntax.")
-            ;
+   	// misc
+       ("show-timings", po::bool_switch()->default_value(false), "Show the timings for the different parsing steps.")
+       ;
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
-	StepTimer timings;
-	timings.startTiming("global", "Total");
-
+	// show help and exit program if --help is set
     if (vm.count("help")) {
         cout << desc << endl;
         return 0;
     }
 
-	timings.startTiming("reading_data", "Reading in file to string");
-    // first get the input content in place, either directly from a wikiSyntax file or by extracting it from a html file
+	// start taking timings from here on; StepTimer is a helper class for that
+	StepTimer timings;
+	timings.startTiming("global", "Total");
 
-    if(!vm.count("input-talk-page") && !vm.count("stdin-input-talk-page")) {
-        cout << "The parameter --input-talk-page was NOT specified. Please specify some form of input. For displaying a parameter description please use --help." << std::endl;
+	if(!vm.count("input-talk-page-file")) {
+		cout << "The parameter --input-talk-page-file was NOT specified. Please specify the input file. To display a parameter description please use --help." << std::endl;
 		return 1;
-    } 
-	
-	timings.stopTiming("reading_data");
+	} 
 
-
-	timings.startTiming("parsing", "Parsing comments");
+	// the actual parsing part of the program; starts by reading from a file
+	timings.startTiming("parsing", "Splitting talk page into comments");
 	ParsedTalkPage parsedTalkPage;
-	if(vm.count("input-talk-page"))
+	if(vm.count("input-talk-page-file"))
 	{
-		std::ifstream wiki_input_file(vm["input-talk-page"].as<string>());
+		std::ifstream wiki_input_file(vm["input-talk-page-file"].as<string>());
 		parsedTalkPage = parseTalkPage(wiki_input_file);	
 	}
-	else
-	{
-		parsedTalkPage = parseTalkPage(std::cin);	
-	}
+	timings.stopTiming("parsing");
 
+	// after splitting the talk page into comments compute their relationships based on the extracted indentations
+	timings.startTiming("calculate_ids", "Extracting the comment relationships");
 	std::size_t curId = 1;
 	for (auto& sec : parsedTalkPage) {
 		calculateIds(sec.second, curId);	
 	}
-	timings.stopTiming("parsing");
+	timings.stopTiming("calculate_ids");
 
-	timings.startTiming("output", "Output generation (include computation of graphs)");
+	// generate the output in the different specified formats
+	timings.startTiming("output", "Generation of output");
 	outputWrapper(vm, parsedTalkPage);
 	timings.stopTiming("output");
 
 	timings.stopTiming("global");
 
+	// if --show-timings was set, show the timings of the different steps
 	if(vm.count("show-timings") && vm["show-timings"].as<bool>())
 	{
 		std::cout << std::endl << "--- Timings ---" << std::endl;

@@ -17,11 +17,11 @@ namespace Grawitas {
 
 	ParsedTalkPage parseTalkPage(std::istream& ostr)
 	{
-		std::string content((std::istreambuf_iterator<char>(ostr)), std::istreambuf_iterator<char>()); // todo parse directly from stream
-		// std::cout << content << std::endl;
-
-		// first split it into sections
+		// we read the file into a string first. 
+		// because boost.spirit needs backtracking it will not be able to completely read from stream without keeping copies. Since our files should be relatively small (< 10MB) this should not be a limitation
+		std::string content((std::istreambuf_iterator<char>(ostr)), std::istreambuf_iterator<char>()); 
 		
+		// first split wikisyntax into sections
 		auto content_it = content.begin();
 		std::vector<std::tuple<std::string, std::string, int>> sections;
 		Grawitas::SectionGrammar<std::string::iterator, boost::spirit::qi::blank_type> sectionGrammar;
@@ -37,7 +37,6 @@ namespace Grawitas {
 		for (auto sec : sections) {
 			std::list<Comment> parsedSection;
 			std::string tmpStr = std::get<1>(sec);
-			// std::cout << std::endl << "--------------------------------" << std::endl << tmpStr << std::endl << std::endl << std::endl;
 
 			auto section_it = tmpStr.begin();
 			boost::spirit::qi::phrase_parse(section_it, tmpStr.end(), talkPageGrammar, boost::spirit::qi::blank, parsedSection);
@@ -47,9 +46,11 @@ namespace Grawitas {
 				currentSectionOutdent = 0; // reset outdent
 			}	
 			else if(outdent == 0) {
-				currentSectionOutdent = lastCommentIndent+1; // outdent without parameters = every comment from now on until a section without outdent is indented a far as previous last comment was
+				// outdent without parameters = every comment from now on until a section without outdent is indented a far as previous last comment was
+				currentSectionOutdent = lastCommentIndent+1; 			
 			} else {
-				currentSectionOutdent = currentSectionOutdent + outdent; // indent further by the amount that was specified in {{outdent|amount}}
+				// indent further by the amount that was specified in {{outdent|amount}}
+				currentSectionOutdent = currentSectionOutdent + outdent; 
 			}
 
 			for (auto& c : parsedSection) 
