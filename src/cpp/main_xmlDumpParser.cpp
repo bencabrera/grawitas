@@ -3,6 +3,7 @@
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include "helpers/stepTimer.h"
 
@@ -27,6 +28,7 @@ int main(int argc, char** argv)
 		("help", "Produce help message.")
 		("input-xml-folder", po::value<string>(), "The folder that should be scanned for .xml files that are part of a dump of Wikipedia.")
 		("output-folder", po::value<string>(), "The folder in which the results (articlesWithDates.txt, categories.txt, redirects.txt) should be stored.")
+		("article-list-file", po::value<string>(), "Path to a file containing the list of articles for which talk pages should be parsed.")
 
 		// network output
 		("user-network-gml", po::bool_switch()->default_value(false), "Flag indicating the output of the user network of the talk page in an .gml-format.")
@@ -101,9 +103,32 @@ int main(int argc, char** argv)
 	xercesc::XMLPlatformUtils::Initialize();
 
 	WikiXmlDumpXerces::WikiDumpHandlerProperties parser_properties;
-	parser_properties.TitleFilter = [](const std::string& title) {
-		return title.substr(0,5) == "Talk:";
-	};
+	if(vm.count("article-list-file")) 
+	{
+		std::ifstream article_list_file(vm["article-list-file"].as<std::string>());
+		std::set<std::string> article_list;
+		std::string line;
+		while(std::getline(article_list_file, line))
+		{
+			boost::trim(line);
+			article_list.insert(line);
+		}
+
+		parser_properties.TitleFilter = [article_list](const std::string& title) {
+			if(title.substr(0,5) != "Talk:")
+				return false;
+			if(article_list.find(title.substr(5,title.length()-5)) == article_list.end())
+				return false;
+
+			return true;
+		};
+	}
+	else
+	{
+		parser_properties.TitleFilter = [](const std::string& title) {
+			return title.substr(0,5) == "Talk:";
+		};
+	}
 	// parser_properties.ProgressCallback = std::bind(printProgress, pageCounts, "bla", std::placeholders::_1);
 
 	// WikiXmlDumpXerces::ParallelParser<XmlDumpParsingHandler> parser([&vm](){ return XmlDumpParsingHandler(vm); }, parser_properties);
