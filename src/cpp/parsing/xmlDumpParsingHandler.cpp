@@ -27,8 +27,6 @@ namespace Grawitas {
 	void XmlDumpParsingHandler::HandleArticle(const WikiXmlDumpXerces::WikiPageData& data)
 	{
 		std::string title_filename = safeEncodeTitleToFilename(data.MetaData.at("title"));
-		std::cout << title_filename << std::endl;
-		// std::cout << data.Content.substr(0, 1000) << std::endl;
 
 		auto parsedTalkPage = parseTalkPage(data.Content);		
 
@@ -39,78 +37,78 @@ namespace Grawitas {
 
 		auto cache = GraphComputationCache(parsedTalkPage);
 
-		if(_programm_options.count("user-network-gml"))
+		if(_programm_options["user-network-gml"].as<bool>())
 		{
 			std::string filename = title_filename + ".user_network.gml";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGml(file, cache.GetUserGraph());
 		}
-		if(_programm_options.count("user-network-graphml"))
+		if(_programm_options["user-network-graphml"].as<bool>())
 		{
 			std::string filename = title_filename + ".user_network.graphml";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGraphml(file, cache.GetUserGraph());
 		}
-		if(_programm_options.count("user-network-graphviz"))
+		if(_programm_options["user-network-graphviz"].as<bool>())
 		{
 			std::string filename = title_filename + ".user_network.dot";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGraphviz(file, cache.GetUserGraph());
 		}
 
-		if(_programm_options.count("comment-network-gml"))
+		if(_programm_options["comment-network-gml"].as<bool>())
 		{
 			std::string filename = title_filename + ".comment_network.gml";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGml(file, cache.GetCommentGraph());
 		}
-		if(_programm_options.count("comment-network-graphml"))
+		if(_programm_options["comment-network-graphml"].as<bool>())
 		{
 			std::string filename = title_filename + ".comment_network.graphml";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGraphml(file, cache.GetCommentGraph());
 		}
-		if(_programm_options.count("comment-network-graphviz"))
+		if(_programm_options["comment-network-graphviz"].as<bool>())
 		{
 			std::string filename = title_filename + ".comment_network.dot";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGraphviz(file, cache.GetCommentGraph());
 		}
 
-		if(_programm_options.count("comment-list-csv"))
+		if(_programm_options["comment-list-csv"].as<bool>())
 		{
 			std::string filename = title_filename + ".comment_list.csv";
 			std::ofstream file((_output_folder / filename).string());
 			listToCsv(file, parsedTalkPage);
 		}
 
-		if(_programm_options.count("comment-list-human-readable"))
+		if(_programm_options["comment-list-human-readable"].as<bool>())
 		{
 			std::string filename = title_filename + ".comment_list.txt";
 			std::ofstream file((_output_folder / filename).string());
 			listToHumanReadable(file, parsedTalkPage);
 		}
 
-		if(_programm_options.count("comment-list-json"))
+		if(_programm_options["comment-list-json"].as<bool>())
 		{
 			std::string filename = title_filename + ".comment_list.json";
 			std::ofstream file((_output_folder / filename).string());
 			listToJson(file, parsedTalkPage);
 		}
 
-		if(_programm_options.count("two-mode-network-gml"))
+		if(_programm_options["two-mode-network-gml"].as<bool>())
 		{
 			std::string filename = title_filename + ".two_mode_network.gml";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGml(file, cache.GetTwoModeGraph());
 		}
-		if(_programm_options.count("two-mode-network-graphml"))
+		if(_programm_options["two-mode-network-graphml"].as<bool>())
 		{
 			std::string filename = title_filename + ".two_mode_network.graphml";
 			std::ofstream file((_output_folder / filename).string());
 			graphToGraphml(file, cache.GetTwoModeGraph());
 		}
-		if(_programm_options.count("two-mode-network-graphviz"))
+		if(_programm_options["two-mode-network-graphviz"].as<bool>())
 		{
 			std::string filename = title_filename + ".two_mode_network.dot";
 			std::ofstream file((_output_folder / filename).string());
