@@ -17,7 +17,7 @@ namespace Grawitas {
 			heading_end = char_('=') >> char_('=') >> -char_('=') >> eol;
 
 			html_element = lit('<') >> -char_('/') >> html_element_name >> *(char_ - '>' - '\n') >> '>';
-			html_comment_text = *(char_ - '-' ) >> -(!lit("-->") >> html_comment_text);
+			html_comment_text = *(char_ - '-' ) >> -(!lit("-->") >> lit('-') >> html_comment_text);
 			html_comment = lit("<!--") >> html_comment_text >> lit("-->");
 			html_element_name = "span", "small", "large", "sup", "sub", "font", "ref";
 

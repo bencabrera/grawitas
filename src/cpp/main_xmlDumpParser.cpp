@@ -8,6 +8,7 @@
 
 #include "parsing/xmlDumpParsingHandler.h"
 #include "../../libs/wiki_xml_dump_xerces/src/parsers/parallelParser.hpp"
+#include "../../libs/wiki_xml_dump_xerces/src/parsers/singleCoreParser.hpp"
 #include "../../libs/wiki_xml_dump_xerces/src/handlers/wikiDumpHandlerProperties.hpp"
 
 namespace po = boost::program_options;
@@ -105,7 +106,9 @@ int main(int argc, char** argv)
 	};
 	// parser_properties.ProgressCallback = std::bind(printProgress, pageCounts, "bla", std::placeholders::_1);
 
-	WikiXmlDumpXerces::ParallelParser<XmlDumpParsingHandler> parser([&vm](){ return XmlDumpParsingHandler(vm); }, parser_properties);
+	// WikiXmlDumpXerces::ParallelParser<XmlDumpParsingHandler> parser([&vm](){ return XmlDumpParsingHandler(vm); }, parser_properties);
+	XmlDumpParsingHandler handler(vm);
+	WikiXmlDumpXerces::SingleCoreParser parser(handler, parser_properties);
 	parser.Run(paths.begin(), paths.end());
 
 	xercesc::XMLPlatformUtils::Terminate();
