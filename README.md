@@ -66,45 +66,43 @@ The following tutorial was testen on Ubuntu 16.04, but should also work similarl
 To compile the c++ do the following steps:
 
 1. *Install the boost dependencies*. To do so type the following command in a console and follow the instructions:
-
-```
-sudo apt-get install libboost-all-dev
-```
-
-*Explanation:* 
-- ```sudo``` runs the next command as a super-user (that's why you have to type in your password)
-- ```apt-get install``` runs the apt package manager (the standard package manager under ubuntu) to install a package 
-- ```libboost-all-dev``` is the name of the package that contains all boost sources and precompiled headers
+	
+	```
+	sudo apt-get install libboost-all-dev
+	```
+	
+	*Explanation:* 
+	- ```sudo``` runs the next command as a super-user (that's why you have to type in your password)
+	- ```apt-get install``` runs the apt package manager (the standard package manager under ubuntu) to install a package 
+	- ```libboost-all-dev``` is the name of the package that contains all boost sources and precompiled headers
 
 2. *Install the xerces dependencies.* Similar to step 1 run 
 
-```
-sudo apt-get install libxerces-c-dev
-```
-in a console to install the xerces development package.
+	```
+	sudo apt-get install libxerces-c-dev
+	```
+	in a console to install the xerces development package.
 
 3. *Install the cmake build tool and git revision control system* Finally we install the tool used for building the binaries.
 
-```
-sudo apt-get install cmake, git
-```
+	```
+	sudo apt-get install cmake, git
+	```
 
 4. *Obtain the source code via git* and switch to the directory
-
-
-```
-git clone git@github.com:Ace7k3/grawitas.git
-cd grawitas
-```
+	
+	```
+	git clone git@github.com:Ace7k3/grawitas.git
+	cd grawitas
+	```
 
 5. *Build the source*. Now we can run cmake to generate the Makefiles to then compile the **GrawitasCoreParser** and the **GrawitasXmlDumpParser**.
 
-
-```
-mkdir bin 				# build a separate folder for binaries
-cd bin 					# switch to the new folder
-cmake ../src/cpp/ 		# run cmake to initialize Makefiles
-make 					# run make to compile 
-```
+	```
+	mkdir bin 				# build a separate folder for binaries
+	cd bin 					# switch to the new folder
+	cmake ../src/cpp/ 		# run cmake to initialize Makefiles
+	make 					# run make to compile 
+	```
 
 # Usage
