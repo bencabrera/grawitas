@@ -25,6 +25,25 @@ If you just want to use the parser for your project or have little experience in
 
 ## Obtaining the binaries
 
+The binaries can be found here. Currently we provide binaries for Linux (Ubuntu) and Windows.
+
+To use them you just have to 
+
+1. download the correct binaries for your operating system
+2. install needed dependencies (see *Dependencies* down below)
+2. open a command line (e.g. terminal for ubuntu, powershell for windows)
+3. go to the directory where you saved the binaries,
+4. run the binaries as described in *Usage* down below.
+
+### Dependencies ###
+
+*Ubuntu:*
+* for binaries of the C++ components there should be no additional dependencies
+* if you want to run the crawler component you need to install a Java JDK
+
+*Windows:*
+* for the C++ the *Visual C++ Redistributable* is needed. It can be found here and has to be installed.
+* if you want to run the crawler component you need to install a Java JDK
 
 ## Compiling the source code yourself
 
@@ -49,13 +68,13 @@ To compile the c++ do the following steps:
 1. *Install the boost dependencies*. To do so type the following command in a console and follow the instructions:
 
 ```
-sudo apt-get install libboost-dev
+sudo apt-get install libboost-all-dev
 ```
 
 *Explanation:* 
 - ```sudo``` runs the next command as a super-user (that's why you have to type in your password)
 - ```apt-get install``` runs the apt package manager (the standard package manager under ubuntu) to install a package 
-- ```libboost-dev``` is the name of the package that contains the boost sources and precompiled headers
+- ```libboost-all-dev``` is the name of the package that contains all boost sources and precompiled headers
 
 2. *Install the xerces dependencies.* Similar to step 1 run 
 
@@ -74,18 +93,18 @@ sudo apt-get install cmake, git
 
 
 ```
-	git clone git@github.com:Ace7k3/grawitas.git
-	cd grawitas
+git clone git@github.com:Ace7k3/grawitas.git
+cd grawitas
 ```
 
 5. *Build the source*. Now we can run cmake to generate the Makefiles to then compile the **GrawitasCoreParser** and the **GrawitasXmlDumpParser**.
 
 
 ```
-	mkdir bin 				# build a separate folder for binaries
-	cd bin 					# switch to the new folder
-	cmake ../src/cpp/ 		# run cmake to initialize Makefiles
-	make 					# run make to compile 
+mkdir bin 				# build a separate folder for binaries
+cd bin 					# switch to the new folder
+cmake ../src/cpp/ 		# run cmake to initialize Makefiles
+make 					# run make to compile 
 ```
 
 # Usage
