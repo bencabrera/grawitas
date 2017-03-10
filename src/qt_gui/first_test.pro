@@ -3,7 +3,8 @@ TEMPLATE = app
 QT += qml quick
 CONFIG += c++11
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    grawitasWrapper.cpp
 
 RESOURCES += qml.qrc
 
@@ -12,3 +13,14 @@ QML_IMPORT_PATH =
 
 # Default rules for deployment.
 include(deployment.pri)
+
+unix|win32: LIBS += -L$$PWD/../../bin/release/ -lCoreLib
+
+INCLUDEPATH += $$PWD/../cpp
+DEPENDPATH += $$PWD/../cpp
+
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/CoreLib.lib
+else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/libCoreLib.a
+
+HEADERS += \
+    grawitasWrapper.h

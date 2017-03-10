@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4
+import GrawitasWrapper 1.0
 
 Item {   
     Item {
@@ -15,9 +16,22 @@ Item {
         ComboBox {
             x: 70
             y: 10
-            width: 200
+            width: 240
             height: 20
-            model: [ "Banana", "Apple", "Coconut" ]
+            model: [
+                "Comment List (JSON)",
+                "Comment List (Human readable)",
+                "Comment List (Csv)",
+                "User Network (GML)",
+                "User Network (GraphML)",
+                "User Network (GraphViz)",
+                "Comment Network (GML)",
+                "Comment Network (GraphML)",
+                "Comment Network (GraphViz)",
+                "Two Mode Network (GML)",
+                "Two Mode Network (GraphML)",
+                "Two Mode Network (GraphViz)"
+            ]
             id: format_selector
         }
 
@@ -28,8 +42,7 @@ Item {
             id: timing_label
         }
         Text {
-            text: "560ms"
-            anchors.left: timing_label.right + 20
+            anchors.left: timing_label.right
             x: 400
             y: 14
         }
@@ -41,11 +54,11 @@ Item {
         y: 40
         width: 0.5*parent.width
         height: parent.height - 50
-        text:
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, " +
-            "sed do eiusmod tempor incididunt ut labore et dolore magna " +
-            "aliqua. Ut enim ad minim veniam, quis nostrud exercitation " +
-            "ullamco laboris nisi ut aliquip ex ea commodo cosnsequat. ";
+        onTextChanged: function() {
+            var format = grawitas_wrapper.format_str_to_format(format_selector.currentText);
+            parsed_output.text = grawitas_wrapper.core(talk_page_syntax_input.text, format);
+        }
+        id: talk_page_syntax_input
     }
     TextArea {
         x: 0.5*parent.width
@@ -53,10 +66,6 @@ Item {
         width: 0.5*parent.width
         height: parent.height - 50
         readOnly: true
-        text:
-            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, " +
-            "sed do eiusmod tempor incididunt ut labore et dolore magna " +
-            "aliqua. Ut enim ad minim veniam, quis nostrud exercitation " +
-            "ullamco laboris nisi ut aliquip ex ea commodo cosnsequat. ";
+        id: parsed_output
     }
 }
