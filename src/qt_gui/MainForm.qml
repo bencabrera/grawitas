@@ -8,6 +8,7 @@ Item {
     TabView {
         id: tabView1
         anchors.fill: parent
+        anchors.margins: 10
         Tab {
             anchors.fill: parent
             title: "Core Parser Component"
@@ -20,8 +21,7 @@ Item {
             anchors.fill: parent
             title: "Crawler Component"
 
-            Text {
-                text: "Hello World2"
+            CrawlerComponent{
                 anchors.fill: parent
             }
         }
@@ -29,8 +29,7 @@ Item {
             anchors.fill: parent
             title: "XML-Dump Component"
 
-            Text {
-                text: "Hello World3"
+            XmlDumpComponent{
                 anchors.fill: parent
             }
         }

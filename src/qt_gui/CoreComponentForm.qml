@@ -53,7 +53,7 @@ Item {
         x: 0
         y: 40
         width: 0.5*parent.width
-        height: parent.height - 50
+        height: parent.height-40
         onTextChanged: function() {
             var format = grawitas_wrapper.format_str_to_format(format_selector.currentText);
             parsed_output.text = grawitas_wrapper.core(talk_page_syntax_input.text, format);
@@ -64,7 +64,7 @@ Item {
         x: 0.5*parent.width
         y: 40
         width: 0.5*parent.width
-        height: parent.height - 50
+        height: parent.height-40
         readOnly: true
         id: parsed_output
     }

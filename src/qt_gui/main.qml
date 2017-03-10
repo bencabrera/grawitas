@@ -6,29 +6,7 @@ ApplicationWindow {
     visible: true
     width: 1200
     height: 800
-    title: qsTr("GraWiTas - A grammar-based Wikpedia talk page parser")
-
-    menuBar:MenuBar {
-        Menu {
-            title: "File"
-            MenuItem {
-                text: "Quit"
-                onTriggered: Qt.quit()
-            }
-        }
-        Menu {
-            title: "View"
-            MenuItem { text: "Core Parser Component" }
-            MenuItem { text: "Crawler Component" }
-            MenuItem { text: "XML-Dump Component" }
-        }
-
-        Menu {
-            title: "Help"
-            MenuItem { text: "About" }
-        }
-    }
-
+    title: qsTr("GraWiTas - A Grammar-based Wikpedia talk page parser")
 
     MainForm {
         anchors.fill: parent

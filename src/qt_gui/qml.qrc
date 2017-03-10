@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>CoreComponentForm.qml</file>
         <file>MainForm.qml</file>
+        <file>XmlDumpComponent.qml</file>
+        <file>CrawlerComponent.qml</file>
     </qresource>
 </RCC>
