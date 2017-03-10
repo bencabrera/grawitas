@@ -2,6 +2,7 @@ import QtQuick 2.4
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 import GrawitasWrapper 1.0
+import QtQuick.Dialogs 1.2
 
 
 Item {
@@ -20,6 +21,7 @@ Item {
         TextField{
             Layout.fillWidth: true
             width: parent.width
+            id: xml_folder_field
         }
         Button{
             Label{
@@ -30,6 +32,20 @@ Item {
             }
             width: 20
             height: 20
+            onClicked: xml_folder_dialog.open()
+
+            FileDialog {
+                id: xml_folder_dialog
+                title: "Please choose a folder containing Wiki-Dump XML files"
+                folder: shortcuts.home
+                selectFolder: true
+                visible: false
+
+                onAccepted: {
+                     xml_folder_field.text = folder;
+                }
+            }
+
         }
 
         Label {
@@ -38,6 +54,7 @@ Item {
         TextField{
             Layout.fillWidth: true
             width: parent.width
+            id: output_folder_field
         }
         Button{
             Label{
@@ -48,6 +65,19 @@ Item {
             }
             width: 20
             height: 20
+            onClicked: output_folder_dialog.open()
+
+            FileDialog {
+                id: output_folder_dialog
+                title: "Please choose a folder to output the files to"
+                folder: shortcuts.home
+                selectFolder: true
+                visible: false
+
+                onAccepted: {
+                     output_folder_field.text = folder;
+                }
+            }
         }
 
         GroupBox {
