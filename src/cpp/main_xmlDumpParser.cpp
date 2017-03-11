@@ -135,7 +135,7 @@ int main(int argc, char** argv)
 	// WikiXmlDumpXerces::ParallelParser<XmlDumpParsingHandler> parser([&vm](){ return XmlDumpParsingHandler(vm); }, parser_properties);
 	std::set<Format> formats;
 	for (auto form_parameter : FormatParameterStrings) 
-		if(vm.count(form_parameter))
+		if(vm[form_parameter].as<bool>())
 			formats.insert(parameter_to_format(form_parameter));
 
 	XmlDumpParsingHandler handler(formats, outputFolder.string());
