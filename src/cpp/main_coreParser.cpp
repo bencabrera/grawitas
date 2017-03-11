@@ -82,7 +82,12 @@ int main(int argc, char** argv)
 
 	// generate the output in the different specified formats
 	timings.startTiming("output", "Generation of output");
-	outputWrapper(vm, parsedTalkPage);
+	std::map<Format, std::string> formats;
+	for (auto form_parameter : FormatParameterStrings) {
+		if(vm.count(form_parameter))
+			formats.insert({ parameter_to_format(form_parameter), vm.at(form_parameter).as<std::string>() });
+	}
+	output_in_formats_to_files(formats, parsedTalkPage);
 	timings.stopTiming("output");
 
 	timings.stopTiming("global");

@@ -16,74 +16,108 @@
 
 namespace Grawitas {
 
-	void outputWrapper(const boost::program_options::variables_map& vm, const ParsedTalkPage& parsedTalkPage)
+	void output_in_format_to_stream(std::ostream& ostr, Format format, const ParsedTalkPage& parsedTalkPage)
 	{
 		auto cache = GraphComputationCache(parsedTalkPage);
 
 
-		if(vm.count("user-network-gml"))
+		if(format == USER_NETWORK_GML)
+			graphToGml(ostr, cache.GetUserGraph());
+		if(format == USER_NETWORK_GRAPHML)
+			graphToGraphml(ostr, cache.GetUserGraph());
+		if(format == USER_NETWORK_GRAPHVIZ)
+			graphToGraphviz(ostr, cache.GetUserGraph());
+
+		if(format == COMMENT_NETWORK_GML)
+			graphToGml(ostr, cache.GetCommentGraph());
+		if(format == COMMENT_NETWORK_GRAPHML)
+			graphToGraphml(ostr, cache.GetCommentGraph());
+		if(format == COMMENT_NETWORK_GRAPHVIZ)
+			graphToGraphviz(ostr, cache.GetCommentGraph());
+
+		if(format == COMMENT_LIST_CSV)
+			listToCsv(ostr, parsedTalkPage);
+		if(format == COMMENT_LIST_HUMAN_READABLE)
+			listToHumanReadable(ostr, parsedTalkPage);
+		if(format == COMMENT_LIST_JSON)
+			listToJson(ostr, parsedTalkPage);
+
+		if(format == TWO_MODE_NETWORK_GML)
+			graphToGml(ostr, cache.GetTwoModeGraph());
+		if(format == TWO_MODE_NETWORK_GRAPHML)
+			graphToGraphml(ostr, cache.GetTwoModeGraph());
+		if(format == TWO_MODE_NETWORK_GRAPHVIZ)
+			graphToGraphviz(ostr, cache.GetTwoModeGraph());
+	}
+
+	void output_in_formats_to_files(const std::map<Format, std::string>& formats, const ParsedTalkPage& parsedTalkPage)
+	{
+		auto cache = GraphComputationCache(parsedTalkPage);
+
+
+		if(formats.count(USER_NETWORK_GML))
 		{
-			std::ofstream file(vm["user-network-gml"].as<std::string>());
+			std::ofstream file(formats.at(USER_NETWORK_GML));
 			graphToGml(file, cache.GetUserGraph());
 		}
-		if(vm.count("user-network-graphml"))
+		if(formats.count(USER_NETWORK_GRAPHML))
 		{
-			std::ofstream file(vm["user-network-graphml"].as<std::string>());
+			std::ofstream file(formats.at(USER_NETWORK_GRAPHML));
 			graphToGraphml(file, cache.GetUserGraph());
 		}
-		if(vm.count("user-network-graphviz"))
+		if(formats.count(USER_NETWORK_GRAPHVIZ))
 		{
-			std::ofstream file(vm["user-network-graphviz"].as<std::string>());
+			std::ofstream file(formats.at(USER_NETWORK_GRAPHVIZ));
 			graphToGraphviz(file, cache.GetUserGraph());
 		}
 
-		if(vm.count("comment-network-gml"))
+		if(formats.count(COMMENT_NETWORK_GML))
 		{
-			std::ofstream file(vm["comment-network-gml"].as<std::string>());
+			std::ofstream file(formats.at(COMMENT_NETWORK_GML));
 			graphToGml(file, cache.GetCommentGraph());
 		}
-		if(vm.count("comment-network-graphml"))
+		if(formats.count(COMMENT_NETWORK_GRAPHML))
 		{
-			std::ofstream file(vm["comment-network-graphml"].as<std::string>());
+			std::ofstream file(formats.at(COMMENT_NETWORK_GRAPHML));
 			graphToGraphml(file, cache.GetCommentGraph());
 		}
-		if(vm.count("comment-network-graphviz"))
+		if(formats.count(COMMENT_NETWORK_GRAPHVIZ))
 		{
-			std::ofstream file(vm["comment-network-graphviz"].as<std::string>());
+			std::ofstream file(formats.at(COMMENT_NETWORK_GRAPHVIZ));
 			graphToGraphviz(file, cache.GetCommentGraph());
 		}
 
-		if(vm.count("comment-list-csv"))
+		if(formats.count(COMMENT_LIST_CSV))
 		{
-			std::ofstream file(vm["comment-list-csv"].as<std::string>());
+			std::ofstream file(formats.at(COMMENT_LIST_CSV));
 			listToCsv(file, parsedTalkPage);
 		}
 
-		if(vm.count("comment-list-human-readable"))
+		if(formats.count(COMMENT_LIST_HUMAN_READABLE))
 		{
-			std::ofstream file(vm["comment-list-human-readable"].as<std::string>());
+			std::ofstream file(formats.at(COMMENT_LIST_HUMAN_READABLE));
 			listToHumanReadable(file, parsedTalkPage);
 		}
 
-		if(vm.count("comment-list-json"))
+		if(formats.count(COMMENT_LIST_JSON))
 		{
-			std::ofstream file(vm["comment-list-json"].as<std::string>());
+			std::ofstream file(formats.at(COMMENT_LIST_JSON));
 			listToJson(file, parsedTalkPage);
 		}
 
-		if(vm.count("two-mode-network-gml"))
+		if(formats.count(TWO_MODE_NETWORK_GML))
 		{
-			std::ofstream file(vm["two-mode-network-gml"].as<std::string>());
+			std::ofstream file(formats.at(TWO_MODE_NETWORK_GML));
 			graphToGml(file, cache.GetTwoModeGraph());
 		}
-		if(vm.count("two-mode-network-graphml"))
+		if(formats.count(TWO_MODE_NETWORK_GRAPHML))
 		{
-			std::ofstream file(vm["two-mode-network-graphml"].as<std::string>());
+			std::ofstream file(formats.at(TWO_MODE_NETWORK_GRAPHML));
 			graphToGraphml(file, cache.GetTwoModeGraph());
 		}
-		if(vm.count("two-mode-network-graphviz"))
+		if(formats.count(TWO_MODE_NETWORK_GRAPHVIZ))
 		{
-			std::ofstream file(vm["two-mode-network-graphviz"].as<std::string>());
+			std::ofstream file(formats.at(TWO_MODE_NETWORK_GRAPHVIZ));
 			graphToGraphviz(file, cache.GetTwoModeGraph());
 		}
 	}

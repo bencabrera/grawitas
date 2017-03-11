@@ -8,43 +8,30 @@ find_package(Boost REQUIRED COMPONENTS program_options graph system filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 
 set(OUTPUT_SOURCE_FILES
-	output/graphGmlOutput.h
 	output/graphGmlOutput.cpp
-	output/graphGraphmlOutput.h
 	output/graphGraphmlOutput.cpp
-	output/graphGraphvizOutput.h
 	output/graphGraphvizOutput.cpp
-	output/listCsvOutput.h
 	output/listCsvOutput.cpp
-	output/listHumanReadableOutput.h
 	output/listHumanReadableOutput.cpp
-	output/listJsonOutput.h
 	output/listJsonOutput.cpp
-	output/outputWrapper.h
 	output/outputWrapper.cpp
-	helpers/stepTimer.h
 	helpers/stepTimer.cpp
-	output/dateOutput.h
 	output/dateOutput.cpp
+	output/formats.cpp
 )
 
 
 set(MODELS_SOURCE_FILES
 	models/comment.cpp
-	models/comment.h
-	models/graph.h
-	models/parsedTalkPage.h
 	models/parsedTalkPage.cpp
 )
 
 set(PARSERS_SOURCE_FILES
 	parsing/coreTalkPageParsing.cpp
-	parsing/coreTalkPageParsing.h
 )
 
 set(GRAPH_COMPUTATION_SOURCE_FILES
 	graphComputation/graphComputationCache.cpp
-	graphComputation/graphComputationCache.h
 )
 
 set(GRAMMAR_SOURCE_FILES
@@ -60,10 +47,7 @@ set(GRAMMAR_SOURCE_FILES
 
 set(TEST_SOURCE_FILES
 	tests/optimalTextMapping.cpp
-	tests/optimalTextMapping.h
 	tests/jsonToCommentList.cpp
-	tests/jsonToCommentList.h
-	tests/helpers.h
 	tests/helpers.cpp
 )
 

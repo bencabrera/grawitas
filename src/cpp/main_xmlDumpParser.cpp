@@ -6,6 +6,7 @@
 #include <boost/algorithm/string/trim.hpp>
 
 #include "helpers/stepTimer.h"
+#include "output/formats.h"
 
 #include "parsing/xmlDumpParsingHandler.h"
 #include "../../libs/wiki_xml_dump_xerces/src/parsers/parallelParser.hpp"
@@ -132,7 +133,12 @@ int main(int argc, char** argv)
 	// parser_properties.ProgressCallback = std::bind(printProgress, pageCounts, "bla", std::placeholders::_1);
 
 	// WikiXmlDumpXerces::ParallelParser<XmlDumpParsingHandler> parser([&vm](){ return XmlDumpParsingHandler(vm); }, parser_properties);
-	XmlDumpParsingHandler handler(vm);
+	std::set<Format> formats;
+	for (auto form_parameter : FormatParameterStrings) 
+		if(vm.count(form_parameter))
+			formats.insert(parameter_to_format(form_parameter));
+
+	XmlDumpParsingHandler handler(formats, outputFolder.string());
 	WikiXmlDumpXerces::SingleCoreParser parser(handler, parser_properties);
 	parser.Run(paths.begin(), paths.end());
 

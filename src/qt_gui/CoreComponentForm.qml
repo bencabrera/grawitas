@@ -55,8 +55,9 @@ Item {
         width: 0.5*parent.width
         height: parent.height-40
         onTextChanged: function() {
-            var format = grawitas_wrapper.format_str_to_format(format_selector.currentText);
-            parsed_output.text = grawitas_wrapper.core(talk_page_syntax_input.text, format);
+            var format_str = format_selector.currentText;
+            if(format_str.length > 0)
+                parsed_output.text = grawitas_wrapper.core(talk_page_syntax_input.text, format_str);
         }
         id: talk_page_syntax_input
     }

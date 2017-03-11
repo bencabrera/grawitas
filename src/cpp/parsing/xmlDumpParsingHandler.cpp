@@ -7,113 +7,46 @@
 #include <boost/algorithm/string/replace.hpp>
 
 #include "coreTalkPageParsing.h"
-#include "../graphComputation/graphComputationCache.h"
-
-#include "../output/listCsvOutput.h"
-#include "../output/graphGmlOutput.h"
-#include "../output/graphGraphmlOutput.h"
-#include "../output/graphGraphvizOutput.h"
-#include "../output/listCsvOutput.h"
-#include "../output/listHumanReadableOutput.h"
-#include "../output/listJsonOutput.h"
+#include "../output/outputWrapper.h"
 
 namespace Grawitas {
 
-	XmlDumpParsingHandler::XmlDumpParsingHandler(const boost::program_options::variables_map& vm)
-		:_programm_options(vm),
-		_output_folder(vm["output-folder"].as<std::string>())
+	std::map<Format, std::string> XmlDumpParsingHandler::format_file_extensions = {
+		{ USER_NETWORK_GML, ".user_network.gml" },
+		{ USER_NETWORK_GRAPHML, ".user_network.graphml" },
+		{ USER_NETWORK_GRAPHVIZ, ".user_network.dot" },
+		{ COMMENT_NETWORK_GML, ".comment_network.gml" },
+		{ COMMENT_NETWORK_GRAPHML, ".comment_network.graphml" },
+		{ COMMENT_NETWORK_GRAPHVIZ, ".comment_network.dot" },
+		{ COMMENT_LIST_CSV, ".comment_list.csv" },
+		{ COMMENT_LIST_HUMAN_READABLE, ".comment_list.txt" },
+		{ COMMENT_LIST_JSON, ".comment_list.json" },
+		{ TWO_MODE_NETWORK_GML, ".two_mode_network.gml" },
+		{ TWO_MODE_NETWORK_GRAPHML, ".two_mode_network.graphml" },
+		{ TWO_MODE_NETWORK_GRAPHVIZ, ".two_mode_network.dot" },
+	};
+
+	XmlDumpParsingHandler::XmlDumpParsingHandler(const std::set<Format>& formats, std::string output_folder)
+		:_formats(formats),
+		_output_folder(output_folder)
 	{}
 
 	void XmlDumpParsingHandler::HandleArticle(const WikiXmlDumpXerces::WikiPageData& data)
 	{
 		std::string title_filename = safeEncodeTitleToFilename(data.MetaData.at("title"));
 
-		auto parsedTalkPage = parseTalkPage(data.Content);		
+		auto parsed_talk_page = parseTalkPage(data.Content);		
 
 		std::size_t curId = 1;
-		for (auto& sec : parsedTalkPage) {
+		for (auto& sec : parsed_talk_page) {
 			calculateIds(sec.second, curId);	
 		}
 
-		auto cache = GraphComputationCache(parsedTalkPage);
+		std::map<Format, std::string> formats_with_paths;
+		for (auto format : _formats) 
+			formats_with_paths.insert({ format, title_filename + format_file_extensions.at(format) });
 
-		if(_programm_options["user-network-gml"].as<bool>())
-		{
-			std::string filename = title_filename + ".user_network.gml";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGml(file, cache.GetUserGraph());
-		}
-		if(_programm_options["user-network-graphml"].as<bool>())
-		{
-			std::string filename = title_filename + ".user_network.graphml";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGraphml(file, cache.GetUserGraph());
-		}
-		if(_programm_options["user-network-graphviz"].as<bool>())
-		{
-			std::string filename = title_filename + ".user_network.dot";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGraphviz(file, cache.GetUserGraph());
-		}
-
-		if(_programm_options["comment-network-gml"].as<bool>())
-		{
-			std::string filename = title_filename + ".comment_network.gml";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGml(file, cache.GetCommentGraph());
-		}
-		if(_programm_options["comment-network-graphml"].as<bool>())
-		{
-			std::string filename = title_filename + ".comment_network.graphml";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGraphml(file, cache.GetCommentGraph());
-		}
-		if(_programm_options["comment-network-graphviz"].as<bool>())
-		{
-			std::string filename = title_filename + ".comment_network.dot";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGraphviz(file, cache.GetCommentGraph());
-		}
-
-		if(_programm_options["comment-list-csv"].as<bool>())
-		{
-			std::string filename = title_filename + ".comment_list.csv";
-			std::ofstream file((_output_folder / filename).string());
-			listToCsv(file, parsedTalkPage);
-		}
-
-		if(_programm_options["comment-list-human-readable"].as<bool>())
-		{
-			std::string filename = title_filename + ".comment_list.txt";
-			std::ofstream file((_output_folder / filename).string());
-			listToHumanReadable(file, parsedTalkPage);
-		}
-
-		if(_programm_options["comment-list-json"].as<bool>())
-		{
-			std::string filename = title_filename + ".comment_list.json";
-			std::ofstream file((_output_folder / filename).string());
-			listToJson(file, parsedTalkPage);
-		}
-
-		if(_programm_options["two-mode-network-gml"].as<bool>())
-		{
-			std::string filename = title_filename + ".two_mode_network.gml";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGml(file, cache.GetTwoModeGraph());
-		}
-		if(_programm_options["two-mode-network-graphml"].as<bool>())
-		{
-			std::string filename = title_filename + ".two_mode_network.graphml";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGraphml(file, cache.GetTwoModeGraph());
-		}
-		if(_programm_options["two-mode-network-graphviz"].as<bool>())
-		{
-			std::string filename = title_filename + ".two_mode_network.dot";
-			std::ofstream file((_output_folder / filename).string());
-			graphToGraphviz(file, cache.GetTwoModeGraph());
-		}
+		output_in_formats_to_files(formats_with_paths, parsed_talk_page);
 	}
 
 	std::string XmlDumpParsingHandler::safeEncodeTitleToFilename(const std::string& title) const
