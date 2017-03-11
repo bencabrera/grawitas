@@ -148,6 +148,9 @@ Item {
                 text: "Run"
                 anchors.centerIn: parent
             }
+            onClicked: {
+                grawitas_wrapper.request();
+            }
         }
 
     }
