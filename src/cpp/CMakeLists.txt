@@ -53,6 +53,7 @@ set(TEST_SOURCE_FILES
 
 set(XML_DUMP_PARSING_FILES
 	parsing/xmlDumpParsingHandler.cpp
+	parsing/xmlDumpParserWrapper.cpp
 )
 
 

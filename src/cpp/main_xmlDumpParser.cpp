@@ -8,10 +8,7 @@
 #include "helpers/stepTimer.h"
 #include "output/formats.h"
 
-#include "parsing/xmlDumpParsingHandler.h"
-#include "../../libs/wiki_xml_dump_xerces/src/parsers/parallelParser.hpp"
-#include "../../libs/wiki_xml_dump_xerces/src/parsers/singleCoreParser.hpp"
-#include "../../libs/wiki_xml_dump_xerces/src/handlers/wikiDumpHandlerProperties.hpp"
+#include "parsing/xmlDumpParserWrapper.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -84,65 +81,12 @@ int main(int argc, char** argv)
 	}
 
 
-	// scan for xml files in the input-folder
-	std::vector<fs::path> xmlFileList;
-	for(auto dir_it = fs::directory_iterator(inputFolder); dir_it != fs::directory_iterator(); dir_it++)
-	{
-		if(!fs::is_directory(dir_it->path()))
-			xmlFileList.push_back(dir_it->path());
-	}
-
-	std::cout << "-----------------------------------------------------------------------" << std::endl;
-	std::cout << "Found the following files: " << std::endl;
-	std::vector<std::string> paths;
-	for (auto el : xmlFileList) {
-		std::cout << el << std::endl;
-		paths.push_back(el.string());
-	}
-
-	// init xerces
-	xercesc::XMLPlatformUtils::Initialize();
-
-	WikiXmlDumpXerces::WikiDumpHandlerProperties parser_properties;
-	if(vm.count("article-list-file")) 
-	{
-		std::ifstream article_list_file(vm["article-list-file"].as<std::string>());
-		std::set<std::string> article_list;
-		std::string line;
-		while(std::getline(article_list_file, line))
-		{
-			boost::trim(line);
-			article_list.insert(line);
-		}
-
-		parser_properties.TitleFilter = [article_list](const std::string& title) {
-			if(title.substr(0,5) != "Talk:")
-				return false;
-			if(article_list.find(title.substr(5,title.length()-5)) == article_list.end())
-				return false;
-
-			return true;
-		};
-	}
-	else
-	{
-		parser_properties.TitleFilter = [](const std::string& title) {
-			return title.substr(0,5) == "Talk:";
-		};
-	}
-	// parser_properties.ProgressCallback = std::bind(printProgress, pageCounts, "bla", std::placeholders::_1);
-
-	// WikiXmlDumpXerces::ParallelParser<XmlDumpParsingHandler> parser([&vm](){ return XmlDumpParsingHandler(vm); }, parser_properties);
 	std::set<Format> formats;
 	for (auto form_parameter : FormatParameterStrings) 
 		if(vm[form_parameter].as<bool>())
 			formats.insert(parameter_to_format(form_parameter));
 
-	XmlDumpParsingHandler handler(formats, outputFolder.string());
-	WikiXmlDumpXerces::SingleCoreParser parser(handler, parser_properties);
-	parser.Run(paths.begin(), paths.end());
-
-	xercesc::XMLPlatformUtils::Terminate();
+	xml_dump_parsing(inputFolder.string(), outputFolder.string(), formats);
 
 	// std::cout << "-----------------------------------------------------------------------" << std::endl;
 	// std::cout << "Status: " << std::endl;
@@ -150,12 +94,12 @@ int main(int argc, char** argv)
 	// std::cout << std::left << std::setw(40) << "Articles with extractable dates: " << articlesWithDates.size() << std::endl;
 	// std::cout << std::left << std::setw(40) << "Categories extracted: " << categories.size() << std::endl;
 	// std::cout << std::left << std::setw(40) << "Redirects extracted: " << redirects.size() << std::endl;
-	
+
 	// // output timings
 	// std::cout << "-----------------------------------------------------------------------" << std::endl;
 	// std::cout << "Timings: " << std::endl << std::endl;
 	// for(auto timing : timings)
-		// std::cout << std::left << std::setw(50) << timing.first + ": " << timingToReadable(timing.second) << std::endl;
+	// std::cout << std::left << std::setw(50) << timing.first + ": " << timingToReadable(timing.second) << std::endl;
 
 	// std::cout << "-----------------------------------------------------------------------" << std::endl;
 
