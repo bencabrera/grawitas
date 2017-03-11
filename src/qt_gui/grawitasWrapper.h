@@ -2,6 +2,7 @@
 #define GRAWITASWRAPPER_H
 
 #include <QObject>
+#include <QVariantList>
 
 #include "output/formats.h"
 
@@ -14,7 +15,7 @@ public:
 
     Q_INVOKABLE QString core(QString q_talk_page_syntax, QString format_str);
 
-    //Q_INVOKABLE QString xml_dump_component(QString input_xml_path, QString std::vector<Format> formats);
+    Q_INVOKABLE void xml_dump_component(QString input_xml_path, QString output_folder, QVariantList formats);
 
 signals:
 

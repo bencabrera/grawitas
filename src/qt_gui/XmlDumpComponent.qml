@@ -95,14 +95,17 @@ Item {
                     CheckBox {
                         text: "Comment List (JSON)"
                         checked: false
+                        id: comment_list_json_checkbox
                     }
                     CheckBox {
                         text: "Comment List (Human readable)"
                         checked: false
+                        id: comment_list_human_checkbox
                     }
                     CheckBox {
                         text: "Comment List (Csv)"
                         checked: false
+                        id: comment_list_csv_checkbox
                     }
                 }
                 Column {
@@ -111,14 +114,17 @@ Item {
                     CheckBox {
                         text: "User Network (GML)"
                         checked: false
+                        id: user_network_gml_checkbox
                     }
                     CheckBox {
                         text: "User Network (GraphML)"
                         checked: false
+                        id: user_network_graphml_checkbox
                     }
                     CheckBox {
                         text: "User Network (GraphViz)"
                         checked: false
+                        id: user_network_graphviz_checkbox
                     }
                 }
                 Column {
@@ -127,14 +133,17 @@ Item {
                     CheckBox {
                         text: "Comment Network (GML)"
                         checked: false
+                        id: comment_network_gml_checkbox
                     }
                     CheckBox {
                         text: "Comment Network (GraphML)"
                         checked: false
+                        id: comment_network_graphml_checkbox
                     }
                     CheckBox {
                         text: "Comment Network (GraphViz)"
                         checked: false
+                        id: comment_network_graphviz_checkbox
                     }
                 }
                 Column {
@@ -143,14 +152,17 @@ Item {
                     CheckBox {
                         text: "Two Mode Network (GML)"
                         checked: false
+                        id: two_mode_network_gml_checkbox
                     }
                     CheckBox {
                         text: "Two Mode Network (GraphML)"
                         checked: false
+                        id: two_mode_network_graphml_checkbox
                     }
                     CheckBox {
                         text: "Two Mode Network (GraphViz)"
                         checked: false
+                        id: two_mode_network_graphviz_checkbox
                     }
                 }
             }
@@ -177,6 +189,32 @@ Item {
             Label {
                 text: "Run"
                 anchors.centerIn: parent
+            }
+            onClicked: {
+                var checkboxes = [
+                    comment_list_json_checkbox,
+                    comment_list_human_checkbox,
+                    comment_list_csv_checkbox,
+                    user_network_gml_checkbox,
+                    user_network_graphml_checkbox,
+                    user_network_graphviz_checkbox,
+                    comment_network_gml_checkbox,
+                    comment_network_graphml_checkbox,
+                    comment_network_graphviz_checkbox,
+                    two_mode_network_gml_checkbox,
+                    two_mode_network_graphml_checkbox,
+                    two_mode_network_graphviz_checkbox
+                ];
+
+                var formats = [];
+                for(var i = 0; i < checkboxes.length; i++)
+                {
+                    if(checkboxes[i].checked)
+                        formats.push(checkboxes[i].text);
+                }
+
+                grawitas_wrapper.xml_dump_component(xml_folder_field.text, output_folder_field, formats);
+
             }
         }
 

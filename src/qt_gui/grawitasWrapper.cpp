@@ -5,6 +5,7 @@
 #include "graphComputation/graphComputationCache.h"
 #include "models/parsedTalkPage.h"
 #include "output/outputWrapper.h"
+#include "parsing/xmlDumpParserWrapper.h"
 
 
 
@@ -36,4 +37,20 @@ QString GrawitasWrapper::core(QString q_talk_page_syntax, QString format_str)
     output_in_format_to_stream(ss,format,parsedTalkPage);
 
     return QString::fromStdString(ss.str());
+}
+
+void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_folder, QVariantList readable_format_strs)
+{
+    std::set<Grawitas::Format> formats;
+    for(auto el : readable_format_strs)
+    {
+        if(!el.canConvert<QString>())
+            return;
+        std::string readable_format_str = el.value<QString>().toStdString();
+        formats.insert(Grawitas::readable_to_format(readable_format_str));
+    }
+
+    std::string xml_path = input_xml_path.toStdString().substr(7);
+    std::string output_path = output_folder.toStdString().substr(7);
+    Grawitas::xml_dump_parsing(xml_path, output_path, formats);
 }

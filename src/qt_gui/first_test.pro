@@ -24,3 +24,9 @@ else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/libCoreLib.a
 
 HEADERS += \
     grawitasWrapper.h
+
+unix|win32: LIBS += -lxerces-c
+
+unix|win32: LIBS += -lboost_filesystem
+
+unix|win32: LIBS += -lboost_system
