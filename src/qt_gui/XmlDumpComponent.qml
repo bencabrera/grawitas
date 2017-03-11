@@ -42,7 +42,7 @@ Item {
                 visible: false
 
                 onAccepted: {
-                     xml_folder_field.text = folder;
+                     xml_folder_field.text = folder.toString().substring(7);
                 }
             }
 
@@ -75,7 +75,7 @@ Item {
                 visible: false
 
                 onAccepted: {
-                     output_folder_field.text = folder;
+                     output_folder_field.text = folder.toString().substring(7);
                 }
             }
         }
@@ -213,7 +213,10 @@ Item {
                         formats.push(checkboxes[i].text);
                 }
 
-                grawitas_wrapper.xml_dump_component(xml_folder_field.text, output_folder_field, formats);
+                var xml_folder = xml_folder_field.text;
+                var output_folder = output_folder_field.text;
+
+                grawitas_wrapper.xml_dump_component(xml_folder, output_folder, formats);
 
             }
         }

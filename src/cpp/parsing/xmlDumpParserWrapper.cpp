@@ -6,11 +6,11 @@
 #include "../../../libs/wiki_xml_dump_xerces/src/handlers/wikiDumpHandlerProperties.hpp"
 
 #include <boost/filesystem.hpp>
+#include <iostream>
 
 namespace Grawitas {
 	void xml_dump_parsing(std::string input_xml_folder, std::string output_folder, const std::set<Format>& formats)
 	{
-
 		// scan for xml files in the input-folder
 		std::vector<boost::filesystem::path> xmlFileList;
 		for(auto dir_it = boost::filesystem::directory_iterator(input_xml_folder); dir_it != boost::filesystem::directory_iterator(); dir_it++)

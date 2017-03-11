@@ -37,7 +37,7 @@ namespace Grawitas {
 		}
 
 		pt::ptree root;
-		root.add_child("annotated_comment", comments);
+		root.add_child("comments", comments);
 
 		pt::write_json(ostr, root);
 	}

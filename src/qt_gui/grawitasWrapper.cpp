@@ -50,7 +50,7 @@ void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_
         formats.insert(Grawitas::readable_to_format(readable_format_str));
     }
 
-    std::string xml_path = input_xml_path.toStdString().substr(7);
-    std::string output_path = output_folder.toStdString().substr(7);
+    std::string xml_path = input_xml_path.toStdString();
+    std::string output_path = output_folder.toStdString();
     Grawitas::xml_dump_parsing(xml_path, output_path, formats);
 }
