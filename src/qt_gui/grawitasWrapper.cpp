@@ -6,6 +6,8 @@
 #include "models/parsedTalkPage.h"
 #include "output/outputWrapper.h"
 #include "parsing/xmlDumpParserWrapper.h"
+#include "parsing/xmlDumpParsingHandler.h"
+#include "output/formats.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -18,7 +20,10 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include <boost/algorithm/string/trim.hpp>
+
 #include "talkpageFetcher.h"
+#include "parsedTalkPageArchiver.h"
 
 
 
@@ -52,82 +57,56 @@ QString GrawitasWrapper::core(QString q_talk_page_syntax, QString format_str)
     return QString::fromStdString(ss.str());
 }
 
-void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_folder, QVariantList readable_format_strs)
+std::set<Grawitas::Format> GrawitasWrapper::formats_from_variant_list(QVariantList readable_format_strs)
 {
     std::set<Grawitas::Format> formats;
     for(auto el : readable_format_strs)
     {
         if(!el.canConvert<QString>())
-            return;
+            return std::set<Grawitas::Format>();
         std::string readable_format_str = el.value<QString>().toStdString();
         formats.insert(Grawitas::readable_to_format(readable_format_str));
     }
 
+    return formats;
+}
+
+void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_folder, QVariantList readable_format_strs)
+{
+    auto formats = formats_from_variant_list(readable_format_strs);
     std::string xml_path = input_xml_path.toStdString();
     std::string output_path = output_folder.toStdString();
     Grawitas::xml_dump_parsing(xml_path, output_path, formats);
 }
 
 
-void GrawitasWrapper::request2()
+void GrawitasWrapper::crawler_component(QString input_file_path, QString output_folder, QVariantList readable_format_strs)
 {
-    std::vector<std::string> titles = {
-        "Donald Trump"
-    };
+    std::vector<std::string> titles;
+
+    std::ifstream input_file(input_file_path.toStdString());
+    std::string line;
+    while(std::getline(input_file,line))
+    {
+        boost::trim(line);
+        titles.push_back(line);
+    }
 
     TalkPageFetcher fetcher(titles);
-    std::ofstream file("/home/ace7k3/Desktop/blubbern.txt");
-    fetcher.new_page_callbacks.push_back([&file](std::string title, std::string content){
-        file << content;
+    ParsedTalkPageArchiver archiver;
 
-    });
+    auto formats = formats_from_variant_list(readable_format_strs);
+
+    archiver.write_finished_talk_page = [&formats, &output_folder](std::string title, const Grawitas::ParsedTalkPage& parsed_talk_page){
+        std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
+        std::map<Grawitas::Format, std::string> formats_with_paths;
+        for (auto format : formats)
+            formats_with_paths.insert({ format, output_folder.toStdString() + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
+
+        Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page);
+    };
+
+    fetcher.new_page_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::parse_talk_page, &archiver, std::placeholders::_1, std::placeholders::_2));
+    fetcher.finished_last_archive_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::finish_and_export_talk_page, &archiver, std::placeholders::_1));
     fetcher.run();
 }
-
-
-// PROCESS:
-// 1. Send request with original title and title + Archive 1 and title + Archive Month
-// 2. Check if any of the archive requests was fruitful, if not return talk page
-// 3. Otherwise create multiple requests at once with Archive [2-20] ...
-// 4. Check how many were succesful: if all then go on
-
-void GrawitasWrapper::request()
-{
-    // create custom temporary event loop on stack
-    QEventLoop eventLoop;
-
-    // "quit()" the event-loop, when the network request "finished()"
-    QNetworkAccessManager mgr;
-    QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
-
-    // the HTTP request
-    //QNetworkRequest req( QUrl( QString("https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&titles=Talk:Photosynthesis&rvprop=content") ) );
-    QNetworkRequest req( QUrl( QString("https://en.wikipedia.org/w/api.php?action=query&titles=Talk:Donald%20Trump|Talk:Donald%20Trump/Archive%201|Talk:Donald%20Trump/Archive%2060|Talk:Donald%20Trump/Archive%2061&prop=revisions&rvprop=content&format=json") ) );
-    QNetworkReply *reply = mgr.get(req);
-    eventLoop.exec(); // blocks stack until "finished()" has been called
-
-    if (reply->error() == QNetworkReply::NoError) {
-        //success
-        //qDebug() << reply->readAll();
-        auto doc = QJsonDocument::fromJson(reply->readAll());
-        auto obj = doc.object();
-
-        auto pages = obj.value("query").toObject().value("pages").toObject();
-        for(auto i : pages.keys())
-            qDebug() << i;
-
-        for(auto it = pages.begin(); it != pages.end(); it++)
-        {
-            qDebug() << it->toObject().value("title").toString();
-            qDebug() << it->toObject().value("revisions").toArray().at(0).toObject().value("*").toString();
-        }
-
-        delete reply;
-    }
-    else {
-        //failure
-        qDebug() << "Failure" <<reply->errorString();
-        delete reply;
-    }
-}
-

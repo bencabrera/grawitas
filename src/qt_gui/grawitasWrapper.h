@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QVariantList>
 
+#include <set>
+
 #include "output/formats.h"
 
 class GrawitasWrapper : public QObject
@@ -17,8 +19,9 @@ public:
 
     Q_INVOKABLE void xml_dump_component(QString input_xml_path, QString output_folder, QVariantList formats);
 
-    Q_INVOKABLE void request();
-    Q_INVOKABLE void request2();
+    Q_INVOKABLE void crawler_component(QString input_file_path, QString output_folder, QVariantList readable_format_strs);
+
+    std::set<Grawitas::Format> formats_from_variant_list(QVariantList readable_format_strs);
 
 signals:
 

@@ -1,6 +1,58 @@
 #include "formats.h"
 
+#include <iomanip>
+#include <sstream>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/replace.hpp>
+
 namespace Grawitas {
+
+	const std::map<Format, std::string> FormatFileExtensions = {
+		{ USER_NETWORK_GML, ".user_network.gml" },
+		{ USER_NETWORK_GRAPHML, ".user_network.graphml" },
+		{ USER_NETWORK_GRAPHVIZ, ".user_network.dot" },
+		{ COMMENT_NETWORK_GML, ".comment_network.gml" },
+		{ COMMENT_NETWORK_GRAPHML, ".comment_network.graphml" },
+		{ COMMENT_NETWORK_GRAPHVIZ, ".comment_network.dot" },
+		{ COMMENT_LIST_CSV, ".comment_list.csv" },
+		{ COMMENT_LIST_HUMAN_READABLE, ".comment_list.txt" },
+		{ COMMENT_LIST_JSON, ".comment_list.json" },
+		{ TWO_MODE_NETWORK_GML, ".two_mode_network.gml" },
+		{ TWO_MODE_NETWORK_GRAPHML, ".two_mode_network.graphml" },
+		{ TWO_MODE_NETWORK_GRAPHVIZ, ".two_mode_network.dot" },
+	};
+
+
+	const std::vector<std::string> FormatHumanReadableStrings = {
+		"Comment List (JSON)",
+		"Comment List (Human readable)",
+		"Comment List (Csv)",
+		"User Network (GML)",
+		"User Network (GraphML)",
+		"User Network (GraphViz)",
+		"Comment Network (GML)",
+		"Comment Network (GraphML)",
+		"Comment Network (GraphViz)",
+		"Two Mode Network (GML)",
+		"Two Mode Network (GraphML)",
+		"Two Mode Network (GraphViz)"
+	};
+
+	const std::vector<std::string> FormatParameterStrings = {
+		"comment-list-json",
+		"comment-list-human-readable",
+		"comment-list-csv",
+		"user-network-gml",
+		"user-network-graphml",
+		"user-network-graphviz",
+		"comment-network-gml",
+		"comment-network-graphml",
+		"comment-network-graphviz",
+		"two-mode-network-gml",
+		"two-mode-network-graphml",
+		"two-mode-network-graphviz"
+	};
+
 	std::string format_to_readable(Format format)
 	{
 		if(format == COMMENT_LIST_JSON)
@@ -83,5 +135,33 @@ namespace Grawitas {
 			return TWO_MODE_NETWORK_GRAPHML;
 
 		return TWO_MODE_NETWORK_GRAPHVIZ;
+	}
+
+	std::string safeEncodeTitleToFilename(const std::string title)
+	{
+		std::string str = title.substr(5, title.length()-5);
+		boost::trim(str);
+		boost::replace_all(str, " ", "_");
+
+		std::ostringstream escaped;
+		escaped.fill('0');
+		escaped << std::hex;
+
+		for (std::string::const_iterator i = str.begin(), n = str.end(); i != n; ++i) {
+			std::string::value_type c = (*i);
+
+			// Keep alphanumeric and other accepted characters intact
+			if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+				escaped << c;
+				continue;
+			}
+
+			// Any other characters are percent-encoded
+			escaped << std::uppercase;
+			escaped << '%' << std::setw(2) << int((unsigned char) c);
+			escaped << std::nouppercase;
+		}
+
+		return escaped.str();
 	}
 }

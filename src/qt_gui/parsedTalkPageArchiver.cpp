@@ -2,7 +2,7 @@
 
 #include "parsing/coreTalkPageParsing.h"
 
-ParsedTalkPageArchiver::ParsedTalkPageArchiver(const std::string output_folder)
+ParsedTalkPageArchiver::ParsedTalkPageArchiver()
 {
 
 }

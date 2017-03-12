@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace Grawitas {
 	enum Format {
@@ -19,37 +20,13 @@ namespace Grawitas {
 		COMMENT_LIST_CSV
 	};
 
-	const std::vector<std::string> FormatHumanReadableStrings = {
-		"Comment List (JSON)",
-		"Comment List (Human readable)",
-		"Comment List (Csv)",
-		"User Network (GML)",
-		"User Network (GraphML)",
-		"User Network (GraphViz)",
-		"Comment Network (GML)",
-		"Comment Network (GraphML)",
-		"Comment Network (GraphViz)",
-		"Two Mode Network (GML)",
-		"Two Mode Network (GraphML)",
-		"Two Mode Network (GraphViz)"
-	};
-
-	const std::vector<std::string> FormatParameterStrings = {
-		"comment-list-json",
-		"comment-list-human-readable",
-		"comment-list-csv",
-		"user-network-gml",
-		"user-network-graphml",
-		"user-network-graphviz",
-		"comment-network-gml",
-		"comment-network-graphml",
-		"comment-network-graphviz",
-		"two-mode-network-gml",
-		"two-mode-network-graphml",
-		"two-mode-network-graphviz"
-	};
+	extern const std::map<Format, std::string> FormatFileExtensions;
+	extern const std::vector<std::string> FormatHumanReadableStrings;
+	extern const std::vector<std::string> FormatParameterStrings;
 
 	std::string format_to_readable(Format format);
 	Format readable_to_format(std::string format_str);
 	Format parameter_to_format(std::string parameter_str);
+
+	std::string safeEncodeTitleToFilename(const std::string title);
 }

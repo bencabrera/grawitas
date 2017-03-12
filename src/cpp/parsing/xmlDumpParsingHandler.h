@@ -15,10 +15,8 @@ namespace Grawitas {
 			void HandleArticle(const WikiXmlDumpXerces::WikiPageData&);
 
 		private:
-			std::string safeEncodeTitleToFilename(const std::string& title) const;
 			const std::set<Format>& _formats;
 			const boost::filesystem::path _output_folder;
-			static std::map<Format, std::string> format_file_extensions;
 	};
 
 }
