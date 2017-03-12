@@ -4,7 +4,9 @@ QT += qml quick
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    grawitasWrapper.cpp
+    grawitasWrapper.cpp \
+    talkpageFetcher.cpp \
+    parsedTalkPageArchiver.cpp
 
 RESOURCES += qml.qrc
 
@@ -23,7 +25,9 @@ win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/CoreLib.lib
 else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/libCoreLib.a
 
 HEADERS += \
-    grawitasWrapper.h
+    grawitasWrapper.h \
+    talkpageFetcher.h \
+    parsedTalkPageArchiver.h
 
 unix|win32: LIBS += -lxerces-c
 

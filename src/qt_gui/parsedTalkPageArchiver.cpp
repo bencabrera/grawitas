@@ -1,0 +1,39 @@
+#include "parsedTalkPageArchiver.h"
+
+#include "parsing/coreTalkPageParsing.h"
+
+ParsedTalkPageArchiver::ParsedTalkPageArchiver()
+{
+
+}
+
+
+void ParsedTalkPageArchiver::parse_talk_page(std::string title, std::string content)
+{
+    auto parsed = Grawitas::parseTalkPage(content);
+
+    auto it = _parsed_talk_pages.find(title);
+    if(it != _parsed_talk_pages.end())
+    {
+        auto& list = it->second;
+        list.splice(list.end(), parsed);
+    }
+    else
+        _parsed_talk_pages.insert({ title, parsed });
+}
+
+void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string title)
+{
+    auto it = _parsed_talk_pages.find(title);
+    if(it == _parsed_talk_pages.end())
+        return;
+
+    auto& parsed = it->second;
+    std::size_t cur_id = 1;
+    for (auto& sec : parsed) {
+        calculateIds(sec.second, cur_id);
+    }
+
+    write_finished_talk_page(title, parsed);
+    _parsed_talk_pages.erase(it);
+}
