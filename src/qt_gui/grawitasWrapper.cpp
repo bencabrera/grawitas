@@ -16,6 +16,7 @@
 #include <QUrlQuery>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 
 
@@ -66,6 +67,14 @@ void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_
     Grawitas::xml_dump_parsing(xml_path, output_path, formats);
 }
 
+
+
+// PROCESS:
+// 1. Send request with original title and title + Archive 1 and title + Archive Month
+// 2. Check if any of the archive requests was fruitful, if not return talk page
+// 3. Otherwise create multiple requests at once with Archive [2-20] ...
+// 4. Check how many were succesful: if all then go on
+
 void GrawitasWrapper::request()
 {
     // create custom temporary event loop on stack
@@ -76,7 +85,8 @@ void GrawitasWrapper::request()
     QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
 
     // the HTTP request
-    QNetworkRequest req( QUrl( QString("https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&titles=Talk:Photosynthesis&rvprop=content") ) );
+    //QNetworkRequest req( QUrl( QString("https://en.wikipedia.org/w/api.php?action=query&format=json&prop=revisions&titles=Talk:Photosynthesis&rvprop=content") ) );
+    QNetworkRequest req( QUrl( QString("https://en.wikipedia.org/w/api.php?action=query&titles=Talk:Donald%20Trump|Talk:Donald%20Trump/Archive%201|Talk:Donald%20Trump/Archive%2060|Talk:Donald%20Trump/Archive%2061&prop=revisions&rvprop=content&format=json") ) );
     QNetworkReply *reply = mgr.get(req);
     eventLoop.exec(); // blocks stack until "finished()" has been called
 
@@ -84,14 +94,18 @@ void GrawitasWrapper::request()
         //success
         //qDebug() << reply->readAll();
         auto doc = QJsonDocument::fromJson(reply->readAll());
-        //auto obj = doc.object().value("query").toObject().value("pages").toObject().begin()->toObject().value("revisions").toObject().begin()->toObject().value("content").toString();
         auto obj = doc.object();
-        qDebug() << "Hallo";
-        for(auto i : (*obj.value("query").toObject().value("pages").toObject().begin()).toObject().value("revisions").toObject().keys())
+
+        auto pages = obj.value("query").toObject().value("pages").toObject();
+        for(auto i : pages.keys())
             qDebug() << i;
-        //qDebug() << obj;
-        //qDebug() << reply->readAll();
-        //qDebug() << "Success" << obj["query.pages.46257.revisions.0.content"].toString();
+
+        for(auto it = pages.begin(); it != pages.end(); it++)
+        {
+            qDebug() << it->toObject().value("title").toString();
+            qDebug() << it->toObject().value("revisions").toArray().at(0).toObject().value("*").toString();
+        }
+
         delete reply;
     }
     else {
