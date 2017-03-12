@@ -18,6 +18,7 @@ public:
     Q_INVOKABLE void xml_dump_component(QString input_xml_path, QString output_folder, QVariantList formats);
 
     Q_INVOKABLE void request();
+    Q_INVOKABLE void request2();
 
 signals:
 

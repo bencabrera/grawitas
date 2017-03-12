@@ -18,6 +18,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+#include "talkpageFetcher.h"
 
 
 
@@ -68,6 +69,21 @@ void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_
 }
 
 
+void GrawitasWrapper::request2()
+{
+    std::vector<std::string> titles = {
+        "Donald Trump"
+    };
+
+    TalkPageFetcher fetcher(titles);
+    std::ofstream file("/home/ace7k3/Desktop/blubbern.txt");
+    fetcher.new_page_callbacks.push_back([&file](std::string title, std::string content){
+        file << content;
+
+    });
+    fetcher.run();
+}
+
 
 // PROCESS:
 // 1. Send request with original title and title + Archive 1 and title + Archive Month
@@ -114,3 +130,4 @@ void GrawitasWrapper::request()
         delete reply;
     }
 }
+

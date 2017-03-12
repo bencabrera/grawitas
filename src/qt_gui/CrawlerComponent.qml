@@ -149,7 +149,8 @@ Item {
                 anchors.centerIn: parent
             }
             onClicked: {
-                grawitas_wrapper.request();
+                //grawitas_wrapper.request();
+                grawitas_wrapper.request2();
             }
         }
 
