@@ -19,6 +19,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDateTime>
 
 #include <boost/algorithm/string/trim.hpp>
 
@@ -85,9 +86,10 @@ void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_
 
 void GrawitasWrapper::write_crawler_status(std::string status_message)
 {
-    qDebug() << "writing";
     if(_crawler_text_area != nullptr)
     {
+        auto current_time = QDateTime::currentDateTime();
+        status_message = std::string("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")).toStdString() + std::string("] ") + status_message;
         QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::DirectConnection,Q_ARG(QVariant, QVariant(status_message.c_str())));
     }
 }
@@ -118,7 +120,7 @@ void GrawitasWrapper::crawler_component(QString input_file_path, QString output_
         Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page);
     };
 
-    fetcher.new_page_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::parse_talk_page, &archiver, std::placeholders::_1, std::placeholders::_2));
+    fetcher.new_page_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::parse_talk_page, &archiver, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     fetcher.finished_last_archive_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::finish_and_export_talk_page, &archiver, std::placeholders::_1));
     fetcher.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));
     archiver.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));

@@ -20,6 +20,7 @@ public:
     Q_INVOKABLE void crawler_component(QString input_file_path, QString output_folder, QVariantList readable_format_strs);
 
     void write_crawler_status(std::string status_message);
+    void write_xml_dump_status(std::string status_message);
 
     std::set<Grawitas::Format> formats_from_variant_list(QVariantList readable_format_strs);
 

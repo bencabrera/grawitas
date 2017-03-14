@@ -10,8 +10,8 @@ class ParsedTalkPageArchiver
 public:
     ParsedTalkPageArchiver();
 
-    void parse_talk_page(std::string title, std::string content);
-    void finish_and_export_talk_page(std::string title);
+    void parse_talk_page(std::string normalized_title, std::string long_title, std::string content);
+    void finish_and_export_talk_page(std::string normalized_title);
 
     std::function<void(std::string, const Grawitas::ParsedTalkPage&)> write_finished_talk_page;
 

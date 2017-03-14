@@ -8,26 +8,26 @@ ParsedTalkPageArchiver::ParsedTalkPageArchiver()
 }
 
 
-void ParsedTalkPageArchiver::parse_talk_page(std::string title, std::string content)
+void ParsedTalkPageArchiver::parse_talk_page(std::string normalized_title, std::string long_title, std::string content)
 {
     auto parsed = Grawitas::parseTalkPage(content);
 
-    auto it = _parsed_talk_pages.find(title);
+    auto it = _parsed_talk_pages.find(normalized_title);
     if(it != _parsed_talk_pages.end())
     {
         auto& list = it->second;
         list.splice(list.end(), parsed);
     }
     else
-        _parsed_talk_pages.insert({ title, parsed });
+        _parsed_talk_pages.insert({ normalized_title, parsed });
 
     for(auto& f : status_callbacks)
-        f(std::string("Parsing page '") + title + std::string("'"));
+        f(std::string("Parsing page '") + long_title + std::string("'"));
 }
 
-void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string title)
+void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string normalized_title)
 {
-    auto it = _parsed_talk_pages.find(title);
+    auto it = _parsed_talk_pages.find(normalized_title);
     if(it == _parsed_talk_pages.end())
         return;
 
@@ -37,9 +37,9 @@ void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string title)
         calculateIds(sec.second, cur_id);
     }
 
-    write_finished_talk_page(title, parsed);
+    write_finished_talk_page(normalized_title, parsed);
     _parsed_talk_pages.erase(it);
 
     for(auto& f : status_callbacks)
-        f(std::string("Finished parsing all parts of '") + title + "'");
+        f(std::string("Finished parsing all parts of '") + normalized_title + "'");
 }
