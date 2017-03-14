@@ -180,6 +180,7 @@ Item {
             width: parent.width
             height: parent.height
             readOnly: true
+            objectName: "xml_dump_status_text_area"
         }
 
         Button{

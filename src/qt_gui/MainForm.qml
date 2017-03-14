@@ -11,14 +11,6 @@ Item {
         anchors.margins: 10
         Tab {
             anchors.fill: parent
-            title: "Core Parser Component"
-
-            CoreComponentForm{
-                anchors.fill: parent
-            }
-        }
-        Tab {
-            anchors.fill: parent
             title: "Crawler Component"
 
             CrawlerComponent{
@@ -30,6 +22,14 @@ Item {
             title: "XML-Dump Component"
 
             XmlDumpComponent{
+                anchors.fill: parent
+            }
+        }
+        Tab {
+            anchors.fill: parent
+            title: "Demo - Core Parser Component"
+
+            CoreComponentForm{
                 anchors.fill: parent
             }
         }

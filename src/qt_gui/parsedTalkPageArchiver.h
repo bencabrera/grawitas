@@ -15,6 +15,8 @@ public:
 
     std::function<void(std::string, const Grawitas::ParsedTalkPage&)> write_finished_talk_page;
 
+    std::vector<std::function<void(std::string)>> status_callbacks;	 			// [status message]
+
 private:
     std::map<std::string, Grawitas::ParsedTalkPage> _parsed_talk_pages;
 };

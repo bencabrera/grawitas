@@ -20,6 +20,9 @@ void ParsedTalkPageArchiver::parse_talk_page(std::string title, std::string cont
     }
     else
         _parsed_talk_pages.insert({ title, parsed });
+
+    for(auto& f : status_callbacks)
+        f(std::string("Parsing page '") + title + std::string("'"));
 }
 
 void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string title)
@@ -36,4 +39,7 @@ void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string title)
 
     write_finished_talk_page(title, parsed);
     _parsed_talk_pages.erase(it);
+
+    for(auto& f : status_callbacks)
+        f(std::string("Finished parsing all parts of '") + title + "'");
 }

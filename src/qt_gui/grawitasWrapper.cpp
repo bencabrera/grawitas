@@ -27,7 +27,10 @@
 
 
 
-GrawitasWrapper::GrawitasWrapper(QObject *parent) : QObject(parent)
+GrawitasWrapper::GrawitasWrapper(QObject *parent)
+    : QObject(parent),
+      _crawler_text_area(nullptr),
+      _xml_dump_text_area(nullptr)
 {
 
 }
@@ -80,6 +83,15 @@ void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_
 }
 
 
+void GrawitasWrapper::write_crawler_status(std::string status_message)
+{
+    qDebug() << "writing";
+    if(_crawler_text_area != nullptr)
+    {
+        QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::DirectConnection,Q_ARG(QVariant, QVariant(status_message.c_str())));
+    }
+}
+
 void GrawitasWrapper::crawler_component(QString input_file_path, QString output_folder, QVariantList readable_format_strs)
 {
     std::vector<std::string> titles;
@@ -108,5 +120,8 @@ void GrawitasWrapper::crawler_component(QString input_file_path, QString output_
 
     fetcher.new_page_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::parse_talk_page, &archiver, std::placeholders::_1, std::placeholders::_2));
     fetcher.finished_last_archive_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::finish_and_export_talk_page, &archiver, std::placeholders::_1));
+    fetcher.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));
+    archiver.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));
+
     fetcher.run();
 }

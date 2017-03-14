@@ -28,7 +28,7 @@ public:
 
     std::vector<std::function<void(std::string, std::string)>> new_page_callbacks; 		// [title] [content]
     std::vector<std::function<void(std::string)>> finished_last_archive_callbacks;	 	// [title]
-    std::vector<std::function<void(std::string)>> status_callbacks;	 	// [title]
+    std::vector<std::function<void(std::string)>> status_callbacks;	 			// [status message]
 
     void run();
     std::vector<TalkPageResult> request(std::vector<std::string> cur_titles);

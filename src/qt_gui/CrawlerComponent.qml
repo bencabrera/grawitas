@@ -179,6 +179,7 @@ Item {
             width: parent.width
             height: parent.height
             readOnly: true
+            objectName: "crawler_status_text_area"
         }
 
         Button{
