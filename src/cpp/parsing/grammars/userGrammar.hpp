@@ -27,12 +27,9 @@ namespace Grawitas {
 
 			S_RULE start;
 			S_RULE user_related_link;
-			S_RULE username_link;
-			S_RULE ip_adress_username_link;
-			S_RULE ip_adress;
-			S_RULE talk_link;
 			
 			boost::spirit::qi::rule<Iterator> between_links_skippers;
+			boost::spirit::qi::symbols<char> possible_user_link_labels;
 		};
 
 }

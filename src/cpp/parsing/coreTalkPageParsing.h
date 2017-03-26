@@ -4,7 +4,6 @@
 #include "../models/comment.h"
 
 namespace Grawitas {
-	ParsedTalkPage parseTalkPage(std::istream& ostr);
-	ParsedTalkPage parseTalkPage(const std::string& content);
-	void calculateIds(std::list<Comment>& comments, std::size_t& startId);
+	ParsedTalkPage parse_talk_page(std::istream& ostr);
+	ParsedTalkPage parse_talk_page(const std::string& content);
 }

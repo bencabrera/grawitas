@@ -21,12 +21,7 @@ namespace Grawitas {
 	{
 		std::string title_filename = safeEncodeTitleToFilename(data.MetaData.at("title"));
 		
-		auto parsed_talk_page = parseTalkPage(data.Content);		
-
-		std::size_t curId = 1;
-		for (auto& sec : parsed_talk_page) {
-			calculateIds(sec.second, curId);	
-		}
+		auto parsed_talk_page = parse_talk_page(data.Content);		
 
 		std::map<Format, std::string> formats_with_paths;
 		for (auto format : _formats) 

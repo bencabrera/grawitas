@@ -15,75 +15,57 @@
 
 namespace Grawitas {
 
-	ParsedTalkPage parseTalkPage(std::istream& ostr)
+	std::vector<std::tuple<std::string, std::string, int>> split_into_sections(const std::string& content)
 	{
-		// we read the file into a string first. 
-		// because boost.spirit needs backtracking it will not be able to completely read from stream without keeping copies. Since our files should be relatively small (< 10MB) this should not be a limitation
-		std::string content((std::istreambuf_iterator<char>(ostr)), std::istreambuf_iterator<char>()); 
-
-		return parseTalkPage(content);
-	}
-
-	ParsedTalkPage parseTalkPage(const std::string& content)
-	{
-		ParsedTalkPage parsedTalkPage;
+		std::vector<std::tuple<std::string, std::string, int>> sections;
 
 		// first split wikisyntax into sections
 		auto content_it = content.cbegin();
-		std::vector<std::tuple<std::string, std::string, int>> sections;
 		Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> sectionGrammar;
 		try {
 			boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::blank, sections);
 		}
 		catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
 		{}
-		
-		// for each section apply now the comment parsing
-		Grawitas::TalkPageGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> talkPageGrammar;
 
-		std::size_t currentSectionOutdent = 0;
-		std::size_t lastCommentIndent = 0;
+		// remove empty sections
+		sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string, int>& t) {
+			return std::get<1>(t) == "";
+		}));
 
-		for (auto sec : sections) {
-			std::list<Comment> parsedSection;
-			std::string tmpStr = std::get<1>(sec);
-
-			auto section_it = tmpStr.cbegin();
-			try {
-				boost::spirit::qi::phrase_parse(section_it, tmpStr.cend(), talkPageGrammar, boost::spirit::qi::blank, parsedSection);
-			}
-			catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
-			{}
-
-			int outdent = std::get<2>(sec);
-			if(outdent == -1) {
-				currentSectionOutdent = 0; // reset outdent
-			}	
-			else if(outdent == 0) {
-				// outdent without parameters = every comment from now on until a section without outdent is indented a far as previous last comment was
-				currentSectionOutdent = lastCommentIndent+1; 			
-			} else {
-				// indent further by the amount that was specified in {{outdent|amount}}
-				currentSectionOutdent = currentSectionOutdent + outdent; 
-			}
-
-			for (auto& c : parsedSection) 
-				c.IndentLevel += currentSectionOutdent;	
-
-			lastCommentIndent = parsedSection.back().IndentLevel;
-			if(outdent == -1 || parsedTalkPage.size() == 0)
-				parsedTalkPage.push_back({ { std::get<0>(sec) }, parsedSection });
-			else
-			{
-				auto& last = parsedTalkPage.back();
-				last.second.insert(last.second.end(), parsedSection.begin(), parsedSection.end());
-			}
-		}
-
-		return parsedTalkPage;
+		return sections;
 	}
 
-	void calculateIds(std::list<Comment>& comments, std::size_t& startId)
+	std::list<Comment> parse_one_section(const std::string& section_content, const int outdent, std::size_t& current_section_outdent, const std::size_t last_comment_level)
+	{
+		// for each section apply now the comment parsing
+		static Grawitas::TalkPageGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> talkPageGrammar;
+
+		std::list<Comment> parsed_section;
+		try {
+			boost::spirit::qi::phrase_parse(section_content.cbegin(), section_content.cend(), talkPageGrammar, boost::spirit::qi::blank, parsed_section);
+		}
+		catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
+		{}
+
+		if(outdent == -1) {
+			current_section_outdent = 0; // reset outdent
+		}	
+		else if(outdent == 0) {
+			// outdent without parameters = every comment from now on until a section without outdent is indented a far as previous last comment was
+			current_section_outdent = last_comment_level+1; 			
+		} else {
+			// indent further by the amount that was specified in {{outdent|amount}}
+			current_section_outdent = current_section_outdent + outdent; 
+		}
+
+		for (auto& c : parsed_section) 
+			c.IndentLevel += current_section_outdent;	
+
+		return parsed_section;
+	}
+
+	void calculate_ids(std::list<Comment>& comments, std::size_t& startId)
 	{
 		std::list<std::size_t> refComments;
 		for(auto& comment : comments)
@@ -123,6 +105,58 @@ namespace Grawitas {
 			refComments.push_front(comment.Id);
 			startId++;
 		}
+	}
+
+
+	ParsedTalkPage parse_talk_page(const std::string& content)
+	{
+		ParsedTalkPage parsed_talk_page;
+
+		// split everything into sections
+		auto sections = split_into_sections(content);
+
+		// parse each section
+		std::size_t current_section_outdent = 0;
+		std::size_t last_comment_level = 0;
+		for (auto sec : sections) {
+			auto& section_content = std::get<1>(sec);
+			auto& section_outdent  = std::get<2>(sec);
+			auto parsed_section = parse_one_section(section_content, section_outdent, current_section_outdent, last_comment_level);
+
+			// if no comments could be parsed -> don't add to parsed talk page
+			if(parsed_section.size() == 0)
+				continue;
+				
+			if(section_outdent == -1 || parsed_talk_page.size() == 0)
+				parsed_talk_page.push_back({ std::get<0>(sec), std::move(parsed_section) });
+			else
+			{
+				auto& last = parsed_talk_page.back();
+				last.second.splice(last.second.end(), std::move(parsed_section));
+			}
+
+			if(parsed_section.size() > 0)
+				last_comment_level = parsed_section.back().IndentLevel;
+			else
+				last_comment_level = 0;
+		}
+
+		// calculate ids for each parsed section
+		std::size_t cur_id = 1;
+		for (auto& sec : parsed_talk_page) 
+			calculate_ids(sec.second, cur_id);	
+
+		return parsed_talk_page;
+	}
+
+
+	ParsedTalkPage parse_talk_page(std::istream& ostr)
+	{
+		// we read the file into a string first. 
+		// because boost.spirit needs backtracking it will not be able to completely read from stream without keeping copies. Since our files should be relatively small (< 10MB) this should not be a limitation
+		std::string content((std::istreambuf_iterator<char>(ostr)), std::istreambuf_iterator<char>()); 
+
+		return parse_talk_page(content);
 	}
 
 }

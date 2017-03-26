@@ -68,17 +68,9 @@ int main(int argc, char** argv)
 	if(vm.count("input-talk-page-file"))
 	{
 		std::ifstream wiki_input_file(vm["input-talk-page-file"].as<string>());
-		parsedTalkPage = parseTalkPage(wiki_input_file);	
+		parsedTalkPage = parse_talk_page(wiki_input_file);	
 	}
 	timings.stopTiming("parsing");
-
-	// after splitting the talk page into comments compute their relationships based on the extracted indentations
-	timings.startTiming("calculate_ids", "Extracting the comment relationships");
-	std::size_t curId = 1;
-	for (auto& sec : parsedTalkPage) {
-		calculateIds(sec.second, curId);	
-	}
-	timings.stopTiming("calculate_ids");
 
 	// generate the output in the different specified formats
 	timings.startTiming("output", "Generation of output");

@@ -7,7 +7,7 @@
 namespace Grawitas {
 
 	// todo: explanation
-	using ParsedTalkPage = std::list<std::pair<std::vector<std::string>, std::list<Comment>>>;
+	using ParsedTalkPage = std::list<std::pair<std::string, std::list<Comment>>>;
 
 	std::list<Comment> flattenParsedTalkPage(const ParsedTalkPage& parsedTalkPage);
 
