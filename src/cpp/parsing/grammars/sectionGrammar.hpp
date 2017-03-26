@@ -31,8 +31,8 @@ namespace Grawitas {
 
 			boost::spirit::qi::rule<Iterator, std::vector<std::tuple<std::string, std::string, int>>(), Skipper> start;
 			boost::spirit::qi::rule<Iterator, std::string(), Skipper> heading;
-			boost::spirit::qi::rule<Iterator, std::string(), Skipper> heading_text;
-			boost::spirit::qi::rule<Iterator, Skipper> heading_end;
+			boost::spirit::qi::rule<Iterator, std::string()> heading_text;
+			boost::spirit::qi::rule<Iterator> heading_end;
 
 			boost::spirit::qi::rule<Iterator, std::tuple<std::string, std::string, int>(), Skipper> section;
 			boost::spirit::qi::rule<Iterator, std::string(), Skipper> section_text;

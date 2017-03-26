@@ -14,7 +14,7 @@ namespace Grawitas {
 
 			heading = char_('=') >> char_('=') >> -char_('=') >> heading_text [_val = boost::spirit::qi::_1] > heading_end;
 			heading_text = *(char_ - '=') [_val += boost::spirit::qi::_1] >> -(!heading_end >> char_('=') [_val += boost::spirit::qi::_1] >> heading_text [_val += boost::spirit::qi::_1]);
-			heading_end = char_('=') >> char_('=') >> -char_('=') >> eol;
+			heading_end = char_('=') >> char_('=') >> -char_('=') >> *blank >> eol;
 
 			html_element = lit('<') >> -char_('/') >> html_element_name >> *(char_ - '>' - '\n') >> '>';
 			html_comment_text = *(char_ - '-' ) >> -(!lit("-->") >> lit('-') >> html_comment_text);

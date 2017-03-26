@@ -6,31 +6,31 @@
 
 namespace Grawitas {
 
-	const std::string HEADER_DEVIDER = "================================================================================================================================";
-	const std::string COMMENT_DEVIDER = "..............................................................................................................................................................................................................................................................................";
+	const std::string HEADER_DEVIDER = "====================================";
+	const std::string COMMENT_DEVIDER = "....................................";
 
-	void listToHumanReadable(std::ostream& ostr, const ParsedTalkPage& parsedTalkPage)
+	void listToHumanReadable(std::ostream& ostr, const ParsedTalkPage& parsed_talk_page)
 	{
-		for (auto paragraph : parsedTalkPage) {
+		for (auto section : parsed_talk_page) {
 			
 			// write header of the current paragraph
 			ostr << HEADER_DEVIDER << std::endl;
-			for(auto it = paragraph.first.begin(); it != paragraph.first.end(); ++it) 
-				ostr << *it << (it+1 != paragraph.first.end() ? " >> " : "");
-			ostr << std::endl << HEADER_DEVIDER << std::endl;
+			ostr << section.first << std::endl;
+			ostr << HEADER_DEVIDER << std::endl;
 
-			for(auto it = paragraph.second.begin(); it != paragraph.second.end(); ++it)
+			for(const auto& comment : section.second)
 			{
-				auto comment = *it;
+				auto text = comment.Text;
+				std::replace(text.begin(), text.end(), '\n', ' ');
 
 				ostr
 					<< std::setw(8) << comment.Id << " | "
 					<< std::setw(8) << comment.ParentId << " | "
 					<< std::setw(32) << comment.User << " | "
 					<< std::setw(40) << to_human_readable(comment.Date) << " | "
-					<< comment.Text;
+					<< text;
+				ostr << std::endl << COMMENT_DEVIDER << std::endl;
 			}
-			ostr << std::endl << COMMENT_DEVIDER << std::endl;
 		}
 
 	}
