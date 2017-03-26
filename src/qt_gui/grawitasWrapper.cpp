@@ -46,13 +46,7 @@ QString GrawitasWrapper::core(QString q_talk_page_syntax, QString format_str)
 
     ParsedTalkPage parsedTalkPage;
 
-    parsedTalkPage = parseTalkPage(talk_page_syntax);
-
-    // after splitting the talk page into comments compute their relationships based on the extracted indentations
-    std::size_t curId = 1;
-    for (auto& sec : parsedTalkPage) {
-        calculateIds(sec.second, curId);
-    }
+    parsedTalkPage = parse_talk_page(talk_page_syntax);
 
     std::stringstream ss;
 
@@ -75,6 +69,23 @@ std::set<Grawitas::Format> GrawitasWrapper::formats_from_variant_list(QVariantLi
     return formats;
 }
 
+std::set<GrawitasWrapper::CrawlerOptions> GrawitasWrapper::options_from_variant_list(QVariantList readable_option_strs)
+{
+    std::set<CrawlerOptions> options;
+    for(auto el : readable_option_strs)
+    {
+        if(!el.canConvert<QString>())
+            return std::set<CrawlerOptions>();
+        std::string readable_option_str = el.value<QString>().toStdString();
+        if(readable_option_str == "Keep crawled talk page files")
+            options.insert(KEEP_TALK_PAGE_FILES);
+    }
+
+    return options;
+}
+
+
+
 void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_folder, QVariantList readable_format_strs)
 {
     auto formats = formats_from_variant_list(readable_format_strs);
@@ -94,7 +105,7 @@ void GrawitasWrapper::write_crawler_status(std::string status_message)
     }
 }
 
-void GrawitasWrapper::crawler_component(QString input_file_path, QString output_folder, QVariantList readable_format_strs)
+void GrawitasWrapper::crawler_component(QString input_file_path, QString output_folder, QVariantList readable_format_strs, QVariantList readable_option_strs)
 {
     std::vector<std::string> titles;
 
@@ -110,6 +121,7 @@ void GrawitasWrapper::crawler_component(QString input_file_path, QString output_
     ParsedTalkPageArchiver archiver;
 
     auto formats = formats_from_variant_list(readable_format_strs);
+    auto options = options_from_variant_list(readable_option_strs);
 
     archiver.write_finished_talk_page = [&formats, &output_folder](std::string title, const Grawitas::ParsedTalkPage& parsed_talk_page){
         std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
@@ -124,6 +136,27 @@ void GrawitasWrapper::crawler_component(QString input_file_path, QString output_
     fetcher.finished_last_archive_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::finish_and_export_talk_page, &archiver, std::placeholders::_1));
     fetcher.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));
     archiver.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));
+
+    if(options.count(KEEP_TALK_PAGE_FILES) > 0)
+    {
+        std::map<std::string, std::ofstream*> raw_talk_page_files;
+
+        fetcher.new_page_callbacks.push_back([&raw_talk_page_files, &output_folder](std::string normalized_title, std::string, std::string content)
+        {
+            auto it = raw_talk_page_files.find(normalized_title);
+            if(it == raw_talk_page_files.end())
+            {
+                std::string title_filename = Grawitas::safeEncodeTitleToFilename(normalized_title);
+                raw_talk_page_files.insert({ normalized_title, new std::ofstream(output_folder.toStdString() + "/" + title_filename + "_raw.wikimd") });
+            }
+            *raw_talk_page_files[normalized_title] << content << std::endl;
+        });
+
+        fetcher.finished_last_archive_callbacks.push_back([&raw_talk_page_files](std::string normalized_title){
+            delete raw_talk_page_files[normalized_title];
+            raw_talk_page_files.erase(normalized_title);
+        });
+    }
 
     fetcher.run();
 }

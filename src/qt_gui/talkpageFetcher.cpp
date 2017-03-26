@@ -43,6 +43,7 @@ void TalkPageFetcher::run()
                 {
                     auto split = split_title(result.title);
                     c(split.title, result.title, result.content);
+
                 }
             }
         }

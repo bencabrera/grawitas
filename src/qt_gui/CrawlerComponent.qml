@@ -80,6 +80,27 @@ Item {
         }
 
         GroupBox {
+            title: "Options"
+            Layout.columnSpan: 3
+            width: parent.width
+            Layout.fillWidth: true
+
+            Row {
+                spacing: 40
+                width: parent.width
+                Column {
+                    spacing: 20
+
+                    CheckBox {
+                        text: "Keep crawled talk page files"
+                        checked: false
+                        id: keep_talk_page_checkbox
+                    }
+                }
+            }
+        }
+
+        GroupBox {
             title: "Output Formats"
             Layout.columnSpan: 3
             width: parent.width
@@ -193,7 +214,7 @@ Item {
             onClicked: {
                 //grawitas_wrapper.request();
 
-                var checkboxes = [
+                var format_checkboxes = [
                     comment_list_json_checkbox,
                     comment_list_human_checkbox,
                     comment_list_csv_checkbox,
@@ -210,13 +231,23 @@ Item {
 
 
                 var formats = [];
-                for(var i = 0; i < checkboxes.length; i++)
+                for(var i = 0; i < format_checkboxes.length; i++)
                 {
-                    if(checkboxes[i].checked)
-                        formats.push(checkboxes[i].text);
+                    if(format_checkboxes[i].checked)
+                        formats.push(format_checkboxes[i].text);
                 }
 
-                grawitas_wrapper.crawler_component(input_file_field.text, output_folder_field.text, formats);
+                var option_checkboxes = [
+                    keep_talk_page_checkbox
+                ];
+                var options = [];
+                for(var i = 0; i < option_checkboxes.length; i++)
+                {
+                    if(option_checkboxes[i].checked)
+                        options.push(option_checkboxes[i].text);
+                }
+
+                grawitas_wrapper.crawler_component(input_file_field.text, output_folder_field.text, formats, options);
             }
         }
 

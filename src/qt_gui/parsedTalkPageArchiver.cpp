@@ -10,7 +10,7 @@ ParsedTalkPageArchiver::ParsedTalkPageArchiver()
 
 void ParsedTalkPageArchiver::parse_talk_page(std::string normalized_title, std::string long_title, std::string content)
 {
-    auto parsed = Grawitas::parseTalkPage(content);
+    auto parsed = Grawitas::parse_talk_page(content);
 
     auto it = _parsed_talk_pages.find(normalized_title);
     if(it != _parsed_talk_pages.end())
@@ -34,7 +34,7 @@ void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string normalized_
     auto& parsed = it->second;
     std::size_t cur_id = 1;
     for (auto& sec : parsed) {
-        calculateIds(sec.second, cur_id);
+        calculate_ids(sec.second, cur_id);
     }
 
     write_finished_talk_page(normalized_title, parsed);

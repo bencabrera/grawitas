@@ -8,6 +8,7 @@
 class ParsedTalkPageArchiver
 {
 public:
+
     ParsedTalkPageArchiver();
 
     void parse_talk_page(std::string normalized_title, std::string long_title, std::string content);
