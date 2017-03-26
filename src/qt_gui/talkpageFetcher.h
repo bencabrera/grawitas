@@ -24,7 +24,7 @@ public:
     static constexpr std::size_t N_NEXT_ARCHIVES = 5;
     static const std::string WIKIPEDIA_API_URL;
 
-    TalkPageFetcher(const std::vector<std::string> titles);
+    TalkPageFetcher(std::vector<std::string> titles);
 
     std::vector<std::function<void(std::string, std::string, std::string) >> new_page_callbacks; 		// [normalized_title] [long_title] [content]
     std::vector<std::function<void(std::string) >> finished_last_archive_callbacks;	 	// [normalized_title] [title]

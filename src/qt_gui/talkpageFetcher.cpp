@@ -11,13 +11,18 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <sstream>
+#include <boost/algorithm/string/trim.hpp>
 
 const std::string TalkPageFetcher::WIKIPEDIA_API_URL = "https://en.wikipedia.org/w/api.php";
 
-TalkPageFetcher::TalkPageFetcher(const std::vector<std::string> titles)
+TalkPageFetcher::TalkPageFetcher(std::vector<std::string> titles)
 {
     for(auto& title : titles)
-        _next_titles.push(title);
+    {
+        boost::trim(title);
+        if(title.length() > 0)
+            _next_titles.push(title);
+    }
 }
 
 void TalkPageFetcher::run()
