@@ -20,7 +20,6 @@ namespace Grawitas {
 	{
 		auto cache = GraphComputationCache(parsedTalkPage);
 
-
 		if(format == USER_NETWORK_GML)
 			graphToGml(ostr, cache.GetUserGraph());
 		if(format == USER_NETWORK_GRAPHML)
@@ -53,7 +52,6 @@ namespace Grawitas {
 	void output_in_formats_to_files(const std::map<Format, std::string>& formats, const ParsedTalkPage& parsedTalkPage)
 	{
 		auto cache = GraphComputationCache(parsedTalkPage);
-
 
 		if(formats.count(USER_NETWORK_GML))
 		{

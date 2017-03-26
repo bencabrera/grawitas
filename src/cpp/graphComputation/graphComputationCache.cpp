@@ -5,6 +5,7 @@ namespace Grawitas {
 		:_parsedTalkPage(parsedTalkPage),
 		_hasUserGraph(false),
 		_hasCommentGraph(false),
+		_hasTwoModeGraph(false),
 		_userGraph(NULL),
 		_commentGraph(NULL),
 		_twoModeGraph(NULL)
