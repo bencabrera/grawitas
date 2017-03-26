@@ -68,7 +68,6 @@ add_executable(GrawitasXmlDumpParser main_xmlDumpParser.cpp ${XML_DUMP_PARSING_F
 target_link_libraries(GrawitasXmlDumpParser ${Boost_LIBRARIES})
 target_link_libraries(GrawitasXmlDumpParser xerces-c)
 target_link_libraries(GrawitasXmlDumpParser CoreLib)
-target_link_libraries(GrawitasXmlDumpParser pthread)
 
 add_executable(tests tests/main_tests.cpp ${GRAMMAR_SOURCE_FILES} ${TEST_SOURCE_FILES})
 target_link_libraries(tests ${Boost_LIBRARIES})

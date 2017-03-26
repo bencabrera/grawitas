@@ -1,7 +1,6 @@
 #include "xmlDumpParserWrapper.h"
 
 #include "xmlDumpParsingHandler.h"
-#include "../../../libs/wiki_xml_dump_xerces/src/parsers/parallelParser.hpp"
 #include "../../../libs/wiki_xml_dump_xerces/src/parsers/singleCoreParser.hpp"
 #include "../../../libs/wiki_xml_dump_xerces/src/handlers/wikiDumpHandlerProperties.hpp"
 
