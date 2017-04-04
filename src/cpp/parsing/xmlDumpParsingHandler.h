@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 
@@ -13,6 +14,8 @@ namespace Grawitas {
 
 			XmlDumpParsingHandler(const std::set<Format>& formats, std::string output_folder);
 			void HandleArticle(const WikiXmlDumpXerces::WikiPageData&);
+
+			std::vector<std::function<void(std::string)>> report_status_callbacks;
 
 		private:
 			const std::set<Format>& _formats;

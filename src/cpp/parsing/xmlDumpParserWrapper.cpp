@@ -8,7 +8,7 @@
 #include <iostream>
 
 namespace Grawitas {
-	void xml_dump_parsing(std::string input_xml_folder, std::string output_folder, const std::set<Format>& formats)
+	void xml_dump_parsing(std::string input_xml_folder, std::string output_folder, const std::set<Format>& formats, std::vector<std::function<void(std::string)>> report_status_callbacks)
 	{
 		// scan for xml files in the input-folder
 		std::vector<boost::filesystem::path> xmlFileList;
@@ -61,6 +61,7 @@ namespace Grawitas {
 		// WikiXmlDumpXerces::ParallelParser<XmlDumpParsingHandler> parser([&vm](){ return XmlDumpParsingHandler(vm); }, parser_properties);
 
 		XmlDumpParsingHandler handler(formats, output_folder);
+		handler.report_status_callbacks = report_status_callbacks;
 		WikiXmlDumpXerces::SingleCoreParser parser(handler, parser_properties);
 		parser.Run(paths.begin(), paths.end());
 

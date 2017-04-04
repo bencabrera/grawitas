@@ -14,10 +14,8 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("grawitas_wrapper",&grawitas_wrapper);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    QObject* crawler_text_area = engine.rootObjects().front()->findChild<QObject*>("crawler_status_text_area");
-    QObject* xml_dump_text_area = engine.rootObjects().front()->findChild<QObject*>("xml_dump_status_text_area");
-    grawitas_wrapper._crawler_text_area = crawler_text_area;
-    grawitas_wrapper._xml_dump_text_area = xml_dump_text_area;
+
+    grawitas_wrapper.root_objects = engine.rootObjects();
 
     return app.exec();
 }

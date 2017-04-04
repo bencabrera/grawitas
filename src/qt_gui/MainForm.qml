@@ -9,6 +9,10 @@ Item {
         id: tabView1
         anchors.fill: parent
         anchors.margins: 10
+        objectName: "tab_view"
+        onCurrentIndexChanged: {
+            grawitas_wrapper.tab_view_changed();
+        }
         Tab {
             anchors.fill: parent
             title: "Crawler Component"
@@ -20,9 +24,11 @@ Item {
         Tab {
             anchors.fill: parent
             title: "XML-Dump Component"
+            objectName: "dump_tab"
 
             XmlDumpComponent{
                 anchors.fill: parent
+                objectName: "dump_comp"
             }
         }
         Tab {

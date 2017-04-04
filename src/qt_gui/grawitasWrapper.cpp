@@ -89,11 +89,20 @@ std::set<CrawlerOptions> GrawitasWrapper::options_from_variant_list(QVariantList
 void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_folder, QVariantList readable_format_strs)
 {
     auto formats = formats_from_variant_list(readable_format_strs);
-    std::string xml_path = input_xml_path.toStdString();
-    std::string output_path = output_folder.toStdString();
-    Grawitas::xml_dump_parsing(xml_path, output_path, formats);
+
+    DumpParserThread* thread = new DumpParserThread(input_xml_path, output_folder, formats);
+    connect(thread,SIGNAL(write_status(QString)),this,SLOT(write_xml_dump_status(QString)));
+    connect(thread,SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
 }
 
+void GrawitasWrapper::tab_view_changed()
+{
+    if(_crawler_text_area == nullptr)
+        _crawler_text_area = root_objects.front()->findChild<QObject*>("crawler_status_text_area");
+    if(_xml_dump_text_area == nullptr)
+        _xml_dump_text_area = root_objects.front()->findChild<QObject*>("xml_status_text_area");
+}
 
 void GrawitasWrapper::write_crawler_status(QString status_message)
 {
@@ -102,6 +111,18 @@ void GrawitasWrapper::write_crawler_status(QString status_message)
         auto current_time = QDateTime::currentDateTime();
         status_message = QString("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")) + QString("] ") + status_message;
         QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::DirectConnection,Q_ARG(QVariant, QVariant(status_message)));
+    }
+}
+
+void GrawitasWrapper::write_xml_dump_status(QString status_message)
+{
+    qDebug() << status_message;
+    if(_xml_dump_text_area != nullptr)
+    {
+        qDebug() << status_message;
+        auto current_time = QDateTime::currentDateTime();
+        status_message = QString("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")) + QString("] ") + status_message;
+        QMetaObject::invokeMethod(_xml_dump_text_area,"append",Qt::DirectConnection,Q_ARG(QVariant, QVariant(status_message)));
     }
 }
 

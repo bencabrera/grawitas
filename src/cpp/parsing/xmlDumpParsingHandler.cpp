@@ -19,8 +19,13 @@ namespace Grawitas {
 
 	void XmlDumpParsingHandler::HandleArticle(const WikiXmlDumpXerces::WikiPageData& data)
 	{
-		std::string title_filename = safeEncodeTitleToFilename(data.MetaData.at("title"));
+		std::string title = data.MetaData.at("title");
+		std::string title_filename = safeEncodeTitleToFilename(title);
 		
+		// report status
+		for (auto callback : report_status_callbacks) 
+			callback("Parsing '" + title + "'");
+
 		auto parsed_talk_page = parse_talk_page(data.Content);		
 
 		std::map<Format, std::string> formats_with_paths;

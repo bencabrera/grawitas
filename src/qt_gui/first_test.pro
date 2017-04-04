@@ -7,7 +7,8 @@ SOURCES += main.cpp \
     grawitasWrapper.cpp \
     talkpageFetcher.cpp \
     parsedTalkPageArchiver.cpp \
-    crawlerThread.cpp
+    crawlerThread.cpp \
+    dumpParserThread.cpp
 
 RESOURCES += qml.qrc
 
@@ -29,7 +30,8 @@ HEADERS += \
     grawitasWrapper.h \
     talkpageFetcher.h \
     parsedTalkPageArchiver.h \
-    crawlerThread.h
+    crawlerThread.h \
+    dumpParserThread.h
 
 unix|win32: LIBS += -lxerces-c
 
