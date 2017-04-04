@@ -22,7 +22,6 @@ Item {
             Layout.fillWidth: true
             width: parent.width
             id: input_file_field
-            text: "/home/cabrera/Schreibtisch/talk.txt"
         }
         Button{
             Label{
@@ -55,7 +54,6 @@ Item {
             Layout.fillWidth: true
             width: parent.width
             id: output_folder_field
-            text: "/home/cabrera/Schreibtisch/parsed_talk_pages"
         }
         Button{
             Label{
@@ -95,7 +93,7 @@ Item {
 
                     CheckBox {
                         text: "Keep crawled talk page files"
-                        checked: true
+                        checked: false
                         id: keep_talk_page_checkbox
                     }
                 }
@@ -116,7 +114,7 @@ Item {
 
                     CheckBox {
                         text: "Comment List (JSON)"
-                        checked: true
+                        checked: false
                         id: comment_list_json_checkbox
                     }
                     CheckBox {

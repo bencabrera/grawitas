@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     grawitas_wrapper.root_objects = engine.rootObjects();
+    grawitas_wrapper.tab_view_changed();
 
     return app.exec();
 }

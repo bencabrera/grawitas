@@ -22,7 +22,6 @@ Item {
             Layout.fillWidth: true
             width: parent.width
             id: xml_folder_field
-            text: "/home/cabrera/Schreibtisch/dumps"
         }
         Button{
             Label{
@@ -56,7 +55,6 @@ Item {
             Layout.fillWidth: true
             width: parent.width
             id: output_folder_field
-            text: "/home/cabrera/Schreibtisch/parsed_talk_pages"
         }
         Button{
             Label{
@@ -96,7 +94,7 @@ Item {
 
                     CheckBox {
                         text: "Comment List (JSON)"
-                        checked: true
+                        checked: false
                         id: comment_list_json_checkbox
                     }
                     CheckBox {
