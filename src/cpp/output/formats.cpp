@@ -139,7 +139,12 @@ namespace Grawitas {
 
 	std::string safeEncodeTitleToFilename(const std::string title)
 	{
-		std::string str = title.substr(5, title.length()-5);
+		std::string str;
+		if(title.substr(0, 5) == "Talk:")
+			str = title.substr(5, title.length()-5);
+		else
+			str = title;
+
 		boost::trim(str);
 		boost::replace_all(str, " ", "_");
 

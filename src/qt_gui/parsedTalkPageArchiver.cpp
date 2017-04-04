@@ -3,10 +3,7 @@
 #include "parsing/coreTalkPageParsing.h"
 
 ParsedTalkPageArchiver::ParsedTalkPageArchiver()
-{
-
-}
-
+{}
 
 void ParsedTalkPageArchiver::parse_talk_page(std::string normalized_title, std::string long_title, std::string content)
 {

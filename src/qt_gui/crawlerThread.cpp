@@ -40,6 +40,7 @@ void CrawlerThread::run()
 
     archiver.write_finished_talk_page = [this](std::string title, const Grawitas::ParsedTalkPage& parsed_talk_page){
         std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
+        qDebug() << QString::fromStdString(title_filename);
         std::map<Grawitas::Format, std::string> formats_with_paths;
         for (auto format : formats)
             formats_with_paths.insert({ format, output_folder.toStdString() + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
