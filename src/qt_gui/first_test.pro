@@ -6,7 +6,8 @@ CONFIG += c++11
 SOURCES += main.cpp \
     grawitasWrapper.cpp \
     talkpageFetcher.cpp \
-    parsedTalkPageArchiver.cpp
+    parsedTalkPageArchiver.cpp \
+    crawlerThread.cpp
 
 RESOURCES += qml.qrc
 
@@ -27,7 +28,8 @@ else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/libCoreLib.a
 HEADERS += \
     grawitasWrapper.h \
     talkpageFetcher.h \
-    parsedTalkPageArchiver.h
+    parsedTalkPageArchiver.h \
+    crawlerThread.h
 
 unix|win32: LIBS += -lxerces-c
 

@@ -69,7 +69,7 @@ std::set<Grawitas::Format> GrawitasWrapper::formats_from_variant_list(QVariantLi
     return formats;
 }
 
-std::set<GrawitasWrapper::CrawlerOptions> GrawitasWrapper::options_from_variant_list(QVariantList readable_option_strs)
+std::set<CrawlerOptions> GrawitasWrapper::options_from_variant_list(QVariantList readable_option_strs)
 {
     std::set<CrawlerOptions> options;
     for(auto el : readable_option_strs)
@@ -95,68 +95,23 @@ void GrawitasWrapper::xml_dump_component(QString input_xml_path, QString output_
 }
 
 
-void GrawitasWrapper::write_crawler_status(std::string status_message)
+void GrawitasWrapper::write_crawler_status(QString status_message)
 {
     if(_crawler_text_area != nullptr)
     {
         auto current_time = QDateTime::currentDateTime();
-        status_message = std::string("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")).toStdString() + std::string("] ") + status_message;
-        QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::DirectConnection,Q_ARG(QVariant, QVariant(status_message.c_str())));
+        status_message = QString("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")) + QString("] ") + status_message;
+        QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::DirectConnection,Q_ARG(QVariant, QVariant(status_message)));
     }
 }
 
 void GrawitasWrapper::crawler_component(QString input_file_path, QString output_folder, QVariantList readable_format_strs, QVariantList readable_option_strs)
 {
-    std::vector<std::string> titles;
-
-    std::ifstream input_file(input_file_path.toStdString());
-    std::string line;
-    while(std::getline(input_file,line))
-    {
-        boost::trim(line);
-        titles.push_back(line);
-    }
-
-    TalkPageFetcher fetcher(titles);
-    ParsedTalkPageArchiver archiver;
-
     auto formats = formats_from_variant_list(readable_format_strs);
     auto options = options_from_variant_list(readable_option_strs);
 
-    archiver.write_finished_talk_page = [&formats, &output_folder](std::string title, const Grawitas::ParsedTalkPage& parsed_talk_page){
-        std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
-        std::map<Grawitas::Format, std::string> formats_with_paths;
-        for (auto format : formats)
-            formats_with_paths.insert({ format, output_folder.toStdString() + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
-
-        Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page);
-    };
-
-    fetcher.new_page_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::parse_talk_page, &archiver, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    fetcher.finished_last_archive_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::finish_and_export_talk_page, &archiver, std::placeholders::_1));
-    fetcher.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));
-    archiver.status_callbacks.push_back(std::bind(&GrawitasWrapper::write_crawler_status, this, std::placeholders::_1));
-
-    if(options.count(KEEP_TALK_PAGE_FILES) > 0)
-    {
-        std::map<std::string, std::ofstream*> raw_talk_page_files;
-
-        fetcher.new_page_callbacks.push_back([&raw_talk_page_files, &output_folder](std::string normalized_title, std::string, std::string content)
-        {
-            auto it = raw_talk_page_files.find(normalized_title);
-            if(it == raw_talk_page_files.end())
-            {
-                std::string title_filename = Grawitas::safeEncodeTitleToFilename(normalized_title);
-                raw_talk_page_files.insert({ normalized_title, new std::ofstream(output_folder.toStdString() + "/" + title_filename + "_raw.wikimd") });
-            }
-            *raw_talk_page_files[normalized_title] << content << std::endl;
-        });
-
-        fetcher.finished_last_archive_callbacks.push_back([&raw_talk_page_files](std::string normalized_title){
-            delete raw_talk_page_files[normalized_title];
-            raw_talk_page_files.erase(normalized_title);
-        });
-    }
-
-    fetcher.run();
+    CrawlerThread* thread = new CrawlerThread(input_file_path, output_folder, formats, options);
+    connect(thread,SIGNAL(write_status(QString)),this,SLOT(write_crawler_status(QString)));
+    connect(thread,SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
 }
