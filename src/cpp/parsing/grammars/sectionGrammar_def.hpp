@@ -12,7 +12,7 @@ namespace Grawitas {
 			using namespace boost::phoenix;
 			using boost::phoenix::push_back;
 
-			heading = char_('=') >> char_('=') >> -char_('=') >> heading_text [_val = boost::spirit::qi::_1] > heading_end;
+			heading = char_('=') >> char_('=') >> -char_('=') >> heading_text [_val = boost::spirit::qi::_1] >> -html_comment_text >> heading_end;
 			heading_text = *(char_ - '=') [_val += boost::spirit::qi::_1] >> -(!heading_end >> char_('=') [_val += boost::spirit::qi::_1] >> heading_text [_val += boost::spirit::qi::_1]);
 			heading_end = char_('=') >> char_('=') >> -char_('=') >> *blank >> eol;
 
