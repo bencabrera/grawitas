@@ -6,7 +6,7 @@ ApplicationWindow {
     visible: true
     width: 1200
     height: 800
-    title: qsTr("GraWiTas - A Grammar-based Wikpedia talk page parser")
+    title: qsTr("GraWiTas - A Grammar-based Wikpedia Talk Page Parser")
 
     MainForm {
         anchors.fill: parent
