@@ -1,5 +1,3 @@
-#pragma once
-
 #define BOOST_SPIRIT_DEBUG
 
 #include <boost/test/included/unit_test.hpp>
@@ -20,8 +18,9 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
-#include "../../parsers/grammars/signatureGrammar.hpp"
+#include "../../parsing/grammars/signatureGrammar.hpp"
 #include "../../output/dateOutput.h"
+#include "../helpers.h"
 
 BOOST_AUTO_TEST_SUITE(SignatureGrammarTests)
 
@@ -59,17 +58,17 @@ BOOST_AUTO_TEST_SUITE(SignatureGrammarTests)
 	BOOST_DATA_TEST_CASE(should_run,boost::unit_test::data::make(signature_examples),signature_str)
 	{
 		std::string str = signature_str;
-		auto it = str.begin();
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::SignatureGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
-		BOOST_CHECK(it == str.end());
+		auto it = str.cbegin();
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::SignatureGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
+		BOOST_CHECK(it == str.cend());
 	}
 
 	BOOST_DATA_TEST_CASE(extracted,boost::unit_test::data::make(signature_examples) ^ boost::unit_test::data::make(expected_usernames) ^ boost::unit_test::data::make(expected_dates),signature_str,expected_user, expected_date)
 	{
 		std::string str = signature_str;
-		auto it = str.begin();
+		auto it = str.cbegin();
 		std::pair<std::string, std::tm> parsed_signature;
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::SignatureGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsed_signature);
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::SignatureGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsed_signature);
 		BOOST_CHECK_EQUAL(expected_user, parsed_signature.first);
 		BOOST_CHECK_EQUAL(expected_date, parsed_signature.second);
 	}

@@ -1,5 +1,4 @@
-#pragma once
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
 
@@ -17,7 +16,7 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
-#include "../../parsers/grammars/userGrammar.hpp"
+#include "../../parsing/grammars/userGrammar.hpp"
 
 BOOST_AUTO_TEST_SUITE(UserGrammarTests)
 
@@ -46,29 +45,29 @@ BOOST_AUTO_TEST_SUITE(UserGrammarTests)
 	BOOST_DATA_TEST_CASE(ShouldBeAbleToParse,boost::unit_test::data::make(user_examples),user_str)
 	{
 		std::string str = user_str;
-		auto it = str.begin();
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::UserGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
-		BOOST_CHECK(it == str.end());
+		auto it = str.cbegin();
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::UserGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
+		BOOST_CHECK(it == str.cend());
 	}
 
 
 	BOOST_DATA_TEST_CASE(ExtractedUsernameShouldBeCorrect,boost::unit_test::data::make(user_examples) ^ boost::unit_test::data::make(expected_values),user_str,expected)
 	{
 		std::string str = user_str;
-		auto it = str.begin();
+		auto it = str.cbegin();
 		std::string parsedUsername;
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::UserGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsedUsername);
-		BOOST_CHECK(it == str.end());
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::UserGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsedUsername);
+		BOOST_CHECK(it == str.cend());
 		BOOST_CHECK_EQUAL(expected, parsedUsername);
 	}
 
 	// BOOST_DATA_TEST_CASE(ExtractedUsernameShouldBeCorrect2,boost::unit_test::data::make(user_examples) ^ boost::unit_test::data::make(expected_values),user_str,expected)
 	// {
 		// std::string str = user_str;
-		// auto it = str.begin();
+		// auto it = str.cbegin();
 		// std::string parsedUsername;
-		// boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::UserGrammar<std::string::iterator, boost::spirit::qi::blank_type>().username_link, boost::spirit::qi::blank, parsedUsername);
-		// BOOST_CHECK(it == str.end());
+		// boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::UserGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>().username_link, boost::spirit::qi::blank, parsedUsername);
+		// BOOST_CHECK(it == str.cend());
 		// BOOST_CHECK_EQUAL(expected, parsedUsername);
 	// }
 

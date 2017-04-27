@@ -1,14 +1,12 @@
-#define BOOST_TEST_MODULE "WikiTalkNet Tests"
-#include <boost/test/included/unit_test.hpp>
+#define BOOST_TEST_MODULE "Grawitas Tests"
+#include <boost/test/unit_test.hpp>
 
 // #include "tests/commentListTests.cpp"
 // #include "tests/optimalTextMappingTests.cpp"
 // #include "tests/testIoTests.cpp"
-//
-#include "tests/grammars/dateGrammarTests.cpp"
-#include "tests/grammars/userGrammarTests.cpp"
-#include "tests/grammars/commentGrammarTests.cpp"
-#include "tests/grammars/signatureGrammarTests.cpp"
-#include "tests/grammars/talkPageGrammarTests.cpp"
-// #include "tests/grammars/talkPageGrammarTests2.cpp"
-#include "tests/grammars/sectionGrammarTests.cpp"
+// #include "grammars/dateGrammarTests.cpp"
+// #include "grammars/userGrammarTests.cpp"
+// #include "grammars/commentGrammarTests.cpp"
+// #include "grammars/signatureGrammarTests.cpp"
+// #include "grammars/talkPageGrammarTests.cpp"
+// #include "grammars/sectionGrammarTests.cpp"

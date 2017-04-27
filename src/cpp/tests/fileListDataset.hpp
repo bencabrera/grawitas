@@ -8,7 +8,7 @@
 
 namespace fs = boost::filesystem;
 
-namespace WikiTalkNet {
+namespace Grawitas {
 	namespace Tests {
 
 		class FileListDataset {
@@ -53,5 +53,5 @@ namespace WikiTalkNet {
 namespace boost { namespace unit_test { namespace data { namespace monomorphic {
 	// registering as a proper dataset
 	template <>
-		struct is_dataset<WikiTalkNet::Tests::FileListDataset> : boost::mpl::true_ {};
+		struct is_dataset<Grawitas::Tests::FileListDataset> : boost::mpl::true_ {};
 }}}}

@@ -1,8 +1,6 @@
-#pragma once
-
 #define BOOST_SPIRIT_DEBUG
 
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
 
@@ -13,7 +11,7 @@
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
 
-#include "../../parsers/grammars/sectionGrammar.hpp"
+#include "../../parsing/grammars/sectionGrammar.hpp"
 
 BOOST_AUTO_TEST_SUITE(SectionGrammarTests)
 
@@ -25,14 +23,14 @@ BOOST_AUTO_TEST_SUITE(SectionGrammarTests)
 	BOOST_DATA_TEST_CASE(test1,boost::unit_test::data::make(talk_page_examples),talk_page_str)
 	{
 		std::string str = talk_page_str;
-		auto it = str.begin();
-		std::vector<std::pair<std::string, std::string>> result;
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::SectionGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, result);
+		auto it = str.cbegin();
+		std::vector<std::tuple<std::string, std::string, int>> result;
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, result);
 
 		// for (auto i : result) {
 			// std::cout << i.first << ":::::::" << i.second << std::endl;	
 		// }
-		BOOST_CHECK(it == str.end());
+		BOOST_CHECK(it == str.cend());
 	}
 
 BOOST_AUTO_TEST_SUITE_END()

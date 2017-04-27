@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 2.8) 
 
-project(WikipediaParsers)
-#set(CMAKE_VERBOSE_MAKEFILE ON)
+project(Grawitas)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+# look for boost library
 find_package(Boost REQUIRED COMPONENTS program_options graph system filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 
+# --- GrawitasCoreLib files ---
 set(OUTPUT_SOURCE_FILES
 	output/graphGmlOutput.cpp
 	output/graphGraphmlOutput.cpp
@@ -19,7 +20,6 @@ set(OUTPUT_SOURCE_FILES
 	output/dateOutput.cpp
 	output/formats.cpp
 )
-
 
 set(MODELS_SOURCE_FILES
 	models/comment.cpp
@@ -44,31 +44,38 @@ set(GRAMMAR_SOURCE_FILES
 	parsing/grammars/sectionGrammar.cpp
 )
 
-
-set(TEST_SOURCE_FILES
-	tests/optimalTextMapping.cpp
-	tests/jsonToCommentList.cpp
-	tests/helpers.cpp
-)
-
 set(XML_DUMP_PARSING_FILES
 	parsing/xmlDumpParsingHandler.cpp
 	parsing/xmlDumpParserWrapper.cpp
 )
 
 
-add_library(CoreLib STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} ${GRAMMAR_SOURCE_FILES} ${XML_DUMP_PARSING_FILES})
-target_link_libraries(CoreLib ${Boost_LIBRARIES})
+add_library(GrawitasCoreLib STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} ${GRAMMAR_SOURCE_FILES} ${XML_DUMP_PARSING_FILES})
+target_link_libraries(GrawitasCoreLib ${Boost_LIBRARIES})
 
-add_executable(GrawitasCoreParser main_coreParser.cpp)
-target_link_libraries(GrawitasCoreParser ${Boost_LIBRARIES})
-target_link_libraries(GrawitasCoreParser CoreLib)
+add_executable(GrawitasCliCoreParser main_coreParser.cpp)
+target_link_libraries(GrawitasCliCoreParser ${Boost_LIBRARIES})
+target_link_libraries(GrawitasCliCoreParser GrawitasCoreLib)
 
-add_executable(GrawitasXmlDumpParser main_xmlDumpParser.cpp ${XML_DUMP_PARSING_FILES})
-target_link_libraries(GrawitasXmlDumpParser ${Boost_LIBRARIES})
-target_link_libraries(GrawitasXmlDumpParser xerces-c)
-target_link_libraries(GrawitasXmlDumpParser CoreLib)
+add_executable(GrawitasCliXmlDumpParser main_xmlDumpParser.cpp ${XML_DUMP_PARSING_FILES})
+target_link_libraries(GrawitasCliXmlDumpParser ${Boost_LIBRARIES})
+target_link_libraries(GrawitasCliXmlDumpParser xerces-c)
+target_link_libraries(GrawitasCliXmlDumpParser GrawitasCoreLib)
 
-add_executable(tests tests/main_tests.cpp ${GRAMMAR_SOURCE_FILES} ${TEST_SOURCE_FILES})
+
+
+
+# --- tests ---
+set(TEST_SOURCE_FILES
+	tests/helpers.cpp
+	tests/grammars/commentGrammarTests.cpp
+	tests/grammars/dateGrammarTests.cpp
+	tests/grammars/sectionGrammarTests.cpp
+	tests/grammars/signatureGrammarTests.cpp
+	tests/grammars/talkPageGrammarTests.cpp
+	tests/grammars/userGrammarTests.cpp
+)
+
+add_executable(tests tests/main_tests.cpp ${TEST_SOURCE_FILES})
 target_link_libraries(tests ${Boost_LIBRARIES})
-target_link_libraries(tests MainLibrary)
+target_link_libraries(tests GrawitasCoreLib)

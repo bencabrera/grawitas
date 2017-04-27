@@ -1,5 +1,4 @@
-#pragma once
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
 
@@ -17,7 +16,7 @@
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
-#include "../../parsers/grammars/dateGrammar.hpp"
+#include "../../parsing/grammars/dateGrammar.hpp"
 #include "../helpers.h"
 #include "../../output/dateOutput.h"
 
@@ -45,17 +44,17 @@ BOOST_AUTO_TEST_SUITE(DateGrammarTests)
 	BOOST_DATA_TEST_CASE(should_run,boost::unit_test::data::make(date_examples),date_str)
 	{
 		std::string str = date_str;
-		auto it = str.begin();
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::DateGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
-		BOOST_CHECK(it == str.end());
+		auto it = str.cbegin();
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::DateGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
+		BOOST_CHECK(it == str.cend());
 	}
 
 	BOOST_DATA_TEST_CASE(extracted,boost::unit_test::data::make(date_examples) ^ boost::unit_test::data::make(expected_dates), date_str,expected_date)
 	{
 		std::string str = date_str;
-		auto it = str.begin();
+		auto it = str.cbegin();
 		std::tm parsed_date{};
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::DateGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsed_date);
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::DateGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsed_date);
 		BOOST_CHECK_EQUAL(expected_date, parsed_date);
 	}
 

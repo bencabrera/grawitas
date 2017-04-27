@@ -1,8 +1,6 @@
-#pragma once
-
 #define BOOST_SPIRIT_DEBUG
 
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
 
@@ -13,7 +11,7 @@
 #include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
 
-#include "../../parsers/grammars/talkPageGrammar.hpp"
+#include "../../parsing/grammars/talkPageGrammar.hpp"
 
 BOOST_AUTO_TEST_SUITE(TalkPageGrammarTests)
 
@@ -25,9 +23,9 @@ BOOST_AUTO_TEST_SUITE(TalkPageGrammarTests)
 	BOOST_DATA_TEST_CASE(test1,boost::unit_test::data::make(talk_page_examples),talk_page_str)
 	{
 		std::string str = talk_page_str;
-		auto it = str.begin();
-		boost::spirit::qi::phrase_parse(it, str.end(), WikiTalkNet::TalkPageGrammar<std::string::iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
-		BOOST_CHECK(it == str.end());
+		auto it = str.cbegin();
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::TalkPageGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
+		BOOST_CHECK(it == str.cend());
 	}
 
 BOOST_AUTO_TEST_SUITE_END()
