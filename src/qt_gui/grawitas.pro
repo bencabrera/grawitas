@@ -18,13 +18,13 @@ QML_IMPORT_PATH =
 # Default rules for deployment.
 include(deployment.pri)
 
-unix|win32: LIBS += -L$$PWD/../../bin/release/ -lCoreLib
+unix|win32: LIBS += -L$$PWD/../../bin/release/ -lGrawitasCoreLib
 
 INCLUDEPATH += $$PWD/../cpp
 DEPENDPATH += $$PWD/../cpp
 
-win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/CoreLib.lib
-else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/libCoreLib.a
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/GrawitasCoreLib.lib
+else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../../bin/release/libGrawitasCoreLib.a
 
 HEADERS += \
     grawitasWrapper.h \
