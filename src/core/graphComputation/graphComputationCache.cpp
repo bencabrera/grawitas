@@ -198,7 +198,7 @@ namespace Grawitas {
 				if(user_it == nameToVertexMapper.end())
 				{
 					user_vertex = boost::add_vertex(g);
-					boost::put(vertex_name_map, user_vertex, UserOrCommentNode{ true, curComment.User });
+					boost::put(vertex_name_map, user_vertex, UserOrCommentNode{ true, curComment.User, Comment() });
 					nameToVertexMapper.insert({ curComment.User, user_vertex });
 				} else {
 					user_vertex = user_it->second;

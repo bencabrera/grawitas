@@ -119,7 +119,7 @@ std::vector<TalkPageFetcher::TalkPageResult> TalkPageFetcher::request(const std:
     else
     {
         //failure
-        qDebug() << "Failure" <<reply->errorString();
+        qDebug() << "Failure" << reply->errorString();
         delete reply;
     }
 

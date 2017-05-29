@@ -11,7 +11,7 @@ grawitas_core.file = core/grawitas_core.pro
 grawitas_crawler.file = crawler/grawitas_crawler.pro
 grawitas_gui.file = gui/grawitas_gui.pro
 grawitas_cli_core.file = cli/grawitas_cli_core.pro
-grawitas_cli_core.file = cli/grawitas_cli_crawler.pro
+grawitas_cli_crawler.file = cli/grawitas_cli_crawler.pro
 grawitas_cli_xml.file = cli/grawitas_cli_xml.pro
 
 grawitas_gui.depends = grawitas_core

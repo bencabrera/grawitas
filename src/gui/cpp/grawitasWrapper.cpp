@@ -116,10 +116,8 @@ void GrawitasWrapper::write_crawler_status(QString status_message)
 
 void GrawitasWrapper::write_xml_dump_status(QString status_message)
 {
-    qDebug() << status_message;
     if(_xml_dump_text_area != nullptr)
     {
-        qDebug() << status_message;
         auto current_time = QDateTime::currentDateTime();
         status_message = QString("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")) + QString("] ") + status_message;
         QMetaObject::invokeMethod(_xml_dump_text_area,"append",Qt::DirectConnection,Q_ARG(QVariant, QVariant(status_message)));
