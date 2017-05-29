@@ -26,7 +26,25 @@ cp ${BINARY_FOLDER}/gui/grawitas_gui ${PACKAGE_FOLDER}/bin/
 
 cp  binary_wrapper_dummy.txt ${PACKAGE_FOLDER}/.wrapper
 cd ${PACKAGE_FOLDER}
-ln -s .wrapper grawitas_cli_core
-chmod +x grawitas_cli_core
+if [ ! -f grawitas_cli_core ]; then
+	ln -s .wrapper grawitas_cli_core
+	chmod +x grawitas_cli_core
+fi
+
+if [ ! -f grawitas_cli_xml ]; then
+	ln -s .wrapper grawitas_cli_xml
+	chmod +x grawitas_cli_xml
+fi
+
+if [ ! -f grawitas_cli_crawler ]; then
+	ln -s .wrapper grawitas_cli_crawler
+	chmod +x grawitas_cli_crawler
+fi
+
+if [ ! -f grawitas_gui ]; then
+	ln -s .wrapper grawitas_gui
+	chmod +x grawitas_gui
+fi
+
 cd ..
 
