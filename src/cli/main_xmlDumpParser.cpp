@@ -5,10 +5,10 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
-#include "helpers/stepTimer.h"
-#include "output/formats.h"
+#include "../core/helpers/stepTimer.h"
+#include "../core/output/formats.h"
 
-#include "parsing/xmlDumpParserWrapper.h"
+#include "../core/parsing/xmlDumpParserWrapper.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
