@@ -53,11 +53,11 @@ set(XML_DUMP_PARSING_FILES
 add_library(GrawitasCoreLib STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} ${GRAMMAR_SOURCE_FILES} ${XML_DUMP_PARSING_FILES})
 target_link_libraries(GrawitasCoreLib ${Boost_LIBRARIES})
 
-add_executable(GrawitasCliCoreParser main_coreParser.cpp)
+add_executable(GrawitasCliCoreParser ../cli/main_coreParser.cpp)
 target_link_libraries(GrawitasCliCoreParser ${Boost_LIBRARIES})
 target_link_libraries(GrawitasCliCoreParser GrawitasCoreLib)
 
-add_executable(GrawitasCliXmlDumpParser main_xmlDumpParser.cpp ${XML_DUMP_PARSING_FILES})
+add_executable(GrawitasCliXmlDumpParser ../cli/main_xmlDumpParser.cpp ${XML_DUMP_PARSING_FILES})
 target_link_libraries(GrawitasCliXmlDumpParser ${Boost_LIBRARIES})
 target_link_libraries(GrawitasCliXmlDumpParser xerces-c)
 target_link_libraries(GrawitasCliXmlDumpParser GrawitasCoreLib)

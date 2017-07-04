@@ -92,7 +92,7 @@ To compile the c++ do the following steps:
 4. *Obtain the source code via git* and switch to the directory
 	
 	```
-	git clone git@github.com:Ace7k3/grawitas.git
+	git clone --recursive git@github.com:Ace7k3/grawitas.git
 	cd grawitas
 	```
 
@@ -101,8 +101,34 @@ To compile the c++ do the following steps:
 	```
 	mkdir bin 				# build a separate folder for binaries
 	cd bin 					# switch to the new folder
-	cmake ../src/cpp/ 		# run cmake to initialize Makefiles
+	cmake ../src/core/	 		# run cmake to initialize Makefiles
 	make 					# run make to compile 
 	```
+### Compiling under macOS
+The following was tested on Sierra (10.12.5). You will need [homebrew](https://brew.sh).
+
+1. *Install GCC 4.9, the boost dependencies, the Xerces dependencies and the CMake build tool*. To do so type the following commands in a console:
+
+        ```
+        brew install homebrew/versions/gcc49
+	brew install boost --cc=gcc-4.9
+	brew install xerces-c
+	brew install cmake
+        ```
+2. *Obtain the source code via git* and switch to the directory
+
+        ```
+        git clone --recursive git@github.com:Ace7k3/grawitas.git
+        cd grawitas
+        ```
+
+3. *Build the source*. Now we can run cmake to generate the Makefiles to then compile the **GrawitasCoreParser** and the **GrawitasXmlDumpParser**.
+
+        ```
+        mkdir bin                               					# build a separate folder for binaries
+        cd bin                                  					# switch to the new folder
+	cmake -DCMAKE_C_COMPILER=gcc-4.9 -DCMAKE_CXX_COMPILER=g++-4.9 ../src/core/	# run cmake to initialize Makefiles
+        make                                    					# run make to compile
+
 
 # Usage

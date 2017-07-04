@@ -3,9 +3,9 @@
 
 #include <boost/program_options.hpp>
 
-#include "output/outputWrapper.h"
-#include "helpers/stepTimer.h"
-#include "parsing/coreTalkPageParsing.h"
+#include "../core/output/outputWrapper.h"
+#include "../core/helpers/stepTimer.h"
+#include "../core/parsing/coreTalkPageParsing.h"
 
 namespace po = boost::program_options;
 
