@@ -8,8 +8,7 @@ In addition to the core parser component we provide two ways to access the Wikip
 ## Additional Reference and Citing the Article
 The source code was made available as part of a publication in EACL 2017. If you are using the parser for your research please cite the article as
 
-```Cabrera, B., Steinert, L., Ross, B. (2017). Grawitas: A Grammar-based Wikipedia Talk Page Parser. 
-Proceedings of the Software Demonstrations of the 15th Conference of the European Chapter of the Association for Computational Linguistics, pp. 21-24.```
+```Cabrera, B., Steinert, L., Ross, B. (2017). Grawitas: A Grammar-based Wikipedia Talk Page Parser. Proceedings of the Software Demonstrations of the 15th Conference of the European Chapter of the Association for Computational Linguistics, pp. 21-24.```
 
 ## Demo Webapp
 To view a quick demo of the core parsing component visit the link below. There you can manually enter Talk pages in the Wikipedia syntax and observe the parsed output in its various formats.
