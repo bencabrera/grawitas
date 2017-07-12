@@ -32,11 +32,10 @@ void Task::run()
     connect(&crawler, SIGNAL(write_status(QString)), this, SLOT(print_status(QString)));
     crawler.run();
 
-
     emit finished();
 }
 
-void Task::print_status(QString msg)
+void Task::print_status(std::string msg)
 {
-    std::cout << msg.toStdString() << std::endl;
+    std::cout << msg << std::endl;
 }

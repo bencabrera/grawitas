@@ -5,8 +5,12 @@
 #include <stack>
 #include <vector>
 
-class TalkPageFetcher
+#include <QObject>
+
+class TalkPageFetcher : public QObject
 {
+    Q_OBJECT
+
 public:
     struct TalkPageResult {
         bool missing;
@@ -26,20 +30,20 @@ public:
 
     TalkPageFetcher(std::vector<std::string> titles);
 
-    std::vector<std::function<void(std::string, std::string, std::string) >> new_page_callbacks; 		// [normalized_title] [long_title] [content]
-    std::vector<std::function<void(std::string) >> finished_last_archive_callbacks;	 	// [normalized_title] [title]
-    std::vector<std::function<void(std::string) >> status_callbacks;	 					// [status message]
-
     void run();
-    std::vector<TalkPageResult> request(std::vector<std::string> cur_titles);
 
-    void generate_next_titles_to_get(const std::vector<TalkPageFetcher::TalkPageResult>& results);
-
-private:
-
+protected:
     static TalkPageTitle split_title(std::string title);
     const std::vector<std::string> _titles;
     std::stack<std::string> _next_titles;
+
+    std::vector<TalkPageResult> request(std::vector<std::string> cur_titles);
+    void generate_next_titles_to_get(const std::vector<TalkPageFetcher::TalkPageResult>& results);
+
+signals:
+	void start_new_article(std::string article_title, std::string full_page_title, std::string page_content);
+	void finish_last_archive(std::string article_title);
+    void write_status(std::string status_message);
 };
 
 #endif // TALKPAGEFETCHER_H

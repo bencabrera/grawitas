@@ -7,7 +7,6 @@
 #include "parsing/coreTalkPageParsing.h"
 #include "graphComputation/graphComputationCache.h"
 #include "models/parsedTalkPage.h"
-#include "output/outputWrapper.h"
 #include "parsing/xmlDumpParserWrapper.h"
 #include "parsing/xmlDumpParsingHandler.h"
 #include "output/formats.h"
@@ -24,10 +23,10 @@ CrawlerThread::CrawlerThread(QString _input_file_path, QString _output_folder, s
       options(_options)
 {}
 
-void CrawlerThread::run()
+std::vector<std::string> read_titles_from_file(std::string file_path)
 {
     std::vector<std::string> titles;
-    std::ifstream input_file(input_file_path.toStdString());
+    std::ifstream input_file(file_path);
     std::string line;
     while(std::getline(input_file,line))
     {
@@ -35,43 +34,45 @@ void CrawlerThread::run()
         titles.push_back(line);
     }
 
+	return titles;
+}
+
+void CrawlerThread::run()
+{
+    auto titles = read_titles_from_file(input_file_path.toStdString());
+
     TalkPageFetcher fetcher(titles);
-    ParsedTalkPageArchiver archiver;
+    ParsedTalkPageArchiver archiver(formats, output_folder.toStdString());
 
-    archiver.write_finished_talk_page = [this](std::string title, const Grawitas::ParsedTalkPage& parsed_talk_page){
-        std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
-        std::map<Grawitas::Format, std::string> formats_with_paths;
-        for (auto format : formats)
-            formats_with_paths.insert({ format, output_folder.toStdString() + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
+	connect(&archiver, SIGNAL(write_status(std::string)), this, SIGNAL(write_status(std::string))); // forward write_status signal from archiver to CrawlerThread
 
-        Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page);
-    };
-
-    fetcher.new_page_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::parse_talk_page, &archiver, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    fetcher.finished_last_archive_callbacks.push_back(std::bind(&ParsedTalkPageArchiver::finish_and_export_talk_page, &archiver, std::placeholders::_1));
-    fetcher.status_callbacks.push_back([this](std::string msg){ emit write_status(QString::fromStdString(msg)); });
-    archiver.status_callbacks.push_back([this](std::string msg){ emit write_status(QString::fromStdString(msg)); });
-
+	connect(&fetcher, SIGNAL(start_new_article(std::string,std::string,std::string)), &archiver, SLOT(parse_talk_page(std::string,std::string,std::string)));
+	connect(&fetcher, SIGNAL(finish_last_archive(std::string)), &archiver, SLOT(finish_and_export_talk_page(std::string)));
+	connect(&fetcher, SIGNAL(write_status(std::string)), this, SIGNAL(write_status(std::string)));
+	
     if(options.count(KEEP_TALK_PAGE_FILES) > 0)
     {
-        std::map<std::string, std::ofstream*> raw_talk_page_files;
-
-        fetcher.new_page_callbacks.push_back([&raw_talk_page_files, this](std::string normalized_title, std::string, std::string content)
-        {
-            auto it = raw_talk_page_files.find(normalized_title);
-            if(it == raw_talk_page_files.end())
-            {
-                std::string title_filename = Grawitas::safeEncodeTitleToFilename(normalized_title);
-                raw_talk_page_files.insert({ normalized_title, new std::ofstream(output_folder.toStdString() + "/" + title_filename + "_raw.wikimd") });
-            }
-            *raw_talk_page_files[normalized_title] << content << std::endl;
-        });
-
-        fetcher.finished_last_archive_callbacks.push_back([&raw_talk_page_files](std::string normalized_title){
-            delete raw_talk_page_files[normalized_title];
-            raw_talk_page_files.erase(normalized_title);
-        });
+		connect(&fetcher, SIGNAL(start_new_article(std::string,std::string,std::string)), this, SLOT(start_raw_talk_page_file(std::string,std::string,std::string)));
+		connect(&fetcher, SIGNAL(finish_last_archive(std::string)), this, SLOT(finish_raw_talk_page_file(std::string)));
     }
 
     fetcher.run();
+}
+
+void CrawlerThread::start_raw_talk_page_file(std::string normalized_title, std::string, std::string content)
+{
+	auto it = raw_talk_page_files.find(normalized_title);
+	if(it == raw_talk_page_files.end())
+	{
+		std::string title_filename = Grawitas::safeEncodeTitleToFilename(normalized_title);
+		raw_talk_page_files.insert({ normalized_title, new std::ofstream(output_folder.toStdString() + "/" + title_filename + "_raw.wikimd") });
+	}
+	*raw_talk_page_files[normalized_title] << content << std::endl;
+}
+
+void CrawlerThread::finish_raw_talk_page_file(std::string normalized_title)
+{
+
+	delete raw_talk_page_files[normalized_title];
+	raw_talk_page_files.erase(normalized_title);
 }

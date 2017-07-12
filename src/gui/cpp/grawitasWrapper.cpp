@@ -104,8 +104,9 @@ void GrawitasWrapper::tab_view_changed()
         _xml_dump_text_area = root_objects.front()->findChild<QObject*>("xml_status_text_area");
 }
 
-void GrawitasWrapper::write_crawler_status(QString status_message)
+void GrawitasWrapper::write_crawler_status(std::string std_status_message)
 {
+	QString status_message = QString::fromStdString(std_status_message);
     if(_crawler_text_area != nullptr)
     {
         auto current_time = QDateTime::currentDateTime();
@@ -130,7 +131,7 @@ void GrawitasWrapper::crawler_component(QString input_file_path, QString output_
     auto options = options_from_variant_list(readable_option_strs);
 
     CrawlerThread* thread = new CrawlerThread(input_file_path, output_folder, formats, options);
-    connect(thread,SIGNAL(write_status(QString)),this,SLOT(write_crawler_status(QString)));
+    connect(thread,SIGNAL(write_status(std::string)),this,SLOT(write_crawler_status(std::string)));
     connect(thread,SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
 }

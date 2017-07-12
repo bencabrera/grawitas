@@ -1,8 +1,11 @@
 #include "parsedTalkPageArchiver.h"
 
 #include "parsing/coreTalkPageParsing.h"
+#include "output/outputWrapper.h"
 
-ParsedTalkPageArchiver::ParsedTalkPageArchiver()
+ParsedTalkPageArchiver::ParsedTalkPageArchiver(const std::set<Grawitas::Format> formats, const std::string output_folder)
+	:_formats(formats),
+	_output_folder(output_folder)
 {}
 
 void ParsedTalkPageArchiver::parse_talk_page(std::string normalized_title, std::string long_title, std::string content)
@@ -18,8 +21,7 @@ void ParsedTalkPageArchiver::parse_talk_page(std::string normalized_title, std::
     else
         _parsed_talk_pages.insert({ normalized_title, parsed });
 
-    for(auto& f : status_callbacks)
-        f(std::string("Parsing page '") + long_title + std::string("'"));
+    emit write_status(std::string("Parsing page '") + long_title + std::string("'"));
 }
 
 void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string normalized_title)
@@ -37,6 +39,15 @@ void ParsedTalkPageArchiver::finish_and_export_talk_page(std::string normalized_
     write_finished_talk_page(normalized_title, parsed);
     _parsed_talk_pages.erase(it);
 
-    for(auto& f : status_callbacks)
-        f(std::string("Finished parsing all parts of '") + normalized_title + "'");
+    emit write_status(std::string("Finished parsing all parts of '") + normalized_title + "'");
+}
+
+void ParsedTalkPageArchiver::write_finished_talk_page(std::string title, const Grawitas::ParsedTalkPage& parsed_talk_page)
+{
+	std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
+	std::map<Grawitas::Format, std::string> formats_with_paths;
+	for (const auto& format : _formats)
+		formats_with_paths.insert({ format, _output_folder + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
+
+	Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page);
 }

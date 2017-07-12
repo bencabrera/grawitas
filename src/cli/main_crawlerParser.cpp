@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <QtCore>
+#include <QMetaType>
 
 #include <boost/program_options.hpp>
 
@@ -9,6 +10,7 @@
 #include "parsing/coreTalkPageParsing.h"
 #include "task.h"
 
+Q_DECLARE_METATYPE(std::string)
 
 namespace po = boost::program_options;
 
@@ -55,6 +57,8 @@ int main(int argc, char** argv)
         cout << desc << endl;
         return 0;
     }
+
+    qRegisterMetaType<std::string>();
 
     QCoreApplication a(argc, argv);
 

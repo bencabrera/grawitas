@@ -3,23 +3,32 @@
 
 #include "models/parsedTalkPage.h"
 #include <map>
+#include <set>
 #include <functional>
+#include "output/formats.h"
 
-class ParsedTalkPageArchiver
+#include <QObject>
+
+class ParsedTalkPageArchiver : public QObject
 {
+    Q_OBJECT
+
 public:
+    ParsedTalkPageArchiver(const std::set<Grawitas::Format> formats, const std::string output_folder);
 
-    ParsedTalkPageArchiver();
+protected:
+    const std::set<Grawitas::Format> _formats;
+    const std::string _output_folder;
 
+    std::map<std::string, Grawitas::ParsedTalkPage> _parsed_talk_pages;
+	void write_finished_talk_page(std::string title, const Grawitas::ParsedTalkPage& parsed_talk_page);
+
+public slots:
     void parse_talk_page(std::string normalized_title, std::string long_title, std::string content);
     void finish_and_export_talk_page(std::string normalized_title);
 
-    std::function<void(std::string, const Grawitas::ParsedTalkPage&)> write_finished_talk_page;
-
-    std::vector<std::function<void(std::string)>> status_callbacks;	 			// [status message]
-
-private:
-    std::map<std::string, Grawitas::ParsedTalkPage> _parsed_talk_pages;
+signals:
+    void write_status(std::string status_message);
 };
 
 #endif // PARSEDTALKPAGEARCHIVER_H

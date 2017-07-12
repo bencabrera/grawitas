@@ -34,7 +34,7 @@ public:
 signals:
 
 public slots:
-    void write_crawler_status(QString status_message);
+    void write_crawler_status(std::string status_message);
     void write_xml_dump_status(QString status_message);
 
 };

@@ -15,7 +15,7 @@ private:
 
     public slots:
         void run();
-        void print_status(QString);
+        void print_status(std::string);
 
     signals:
         void finished();
