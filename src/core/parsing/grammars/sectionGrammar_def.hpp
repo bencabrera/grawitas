@@ -52,6 +52,8 @@ namespace Grawitas {
 
 			section_text.name("SectionGrammar::SectionText");
 			section.name("SectionGrammar::Section");
+
+			// BOOST_SPIRIT_DEBUG_NODE(section);
 		}
 
 }

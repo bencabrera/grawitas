@@ -30,8 +30,8 @@ namespace Grawitas {
 
 		// remove empty sections
 		sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string, int>& t) {
-			return std::get<1>(t) == "";
-		}));
+			return std::get<1>(t).empty();
+		}), sections.end());
 
 		return sections;
 	}
@@ -115,10 +115,13 @@ namespace Grawitas {
 		// split everything into sections
 		auto sections = split_into_sections(content);
 
+
+
 		// parse each section
 		std::size_t current_section_outdent = 0;
 		std::size_t last_comment_level = 0;
 		for (auto sec : sections) {
+
 			auto& section_content = std::get<1>(sec);
 			auto& section_outdent  = std::get<2>(sec);
 			auto parsed_section = parse_one_section(section_content, section_outdent, current_section_outdent, last_comment_level);
