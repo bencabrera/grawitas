@@ -21,12 +21,11 @@ namespace Grawitas {
 	template<typename Iterator, typename Skipper>
 		struct UserGrammar : public boost::spirit::qi::grammar<Iterator, std::string(), Skipper> {
 
-			using S_RULE = boost::spirit::qi::rule<Iterator,std::string(), Skipper>;
-
 			UserGrammar();
 
-			S_RULE start;
-			S_RULE user_related_link;
+			boost::spirit::qi::rule<Iterator,std::string(),Skipper> start;
+			boost::spirit::qi::rule<Iterator,std::string(),Skipper> user_related_link;
+			boost::spirit::qi::rule<Iterator,std::string()> username;
 			
 			boost::spirit::qi::rule<Iterator> between_links_skippers;
 			boost::spirit::qi::symbols<char> possible_user_link_labels;
