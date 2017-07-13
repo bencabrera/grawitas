@@ -27,25 +27,26 @@ int main(int argc, char** argv)
                     ("output-folder,o", po::value<string>(), "Path to an input file containing a talk page in the Wikipedia syntax.")
 
                     // network output
-                    ("user-network-gml", po::bool_switch()->default_value(false), "Path for the potential output file containing the user network of the talk page in an .gml-format.")
-                    ("user-network-graphml", po::bool_switch()->default_value(false), "Path for the potential output file containing the user network of the talk page in an .graphml-format.")
-                    ("user-network-graphviz", po::bool_switch()->default_value(false), "Path for the potential output file containing the user network of the talk page in an .graphviz-format.")
+                    ("user-network-gml", po::bool_switch()->default_value(false), "Set this flag for exporting the user network in GML format.")
+                    ("user-network-graphml", po::bool_switch()->default_value(false), "Set this flag for exporting the user network in GraphML format.")
+                    ("user-network-graphviz", po::bool_switch()->default_value(false), "Set this flag for exporting the user network in GraphViz format.")
 
-                    ("comment-network-gml", po::bool_switch()->default_value(false), "Path for the potential output file containing the comment network of the talk page in an .gml-format.")
-                    ("comment-network-graphml", po::bool_switch()->default_value(false), "Path for the potential output file containing the comment network of the talk page in an .graphml-format.")
-                    ("comment-network-graphviz", po::bool_switch()->default_value(false), "Path for the potential output file containing the comment network of the talk page in an .graphviz-format.")
+                    ("comment-network-gml", po::bool_switch()->default_value(false), "Set this flag for exporting the comment network in GML format.")
+                    ("comment-network-graphml", po::bool_switch()->default_value(false), "Set this flag for exporting the comment network in GraphML format.")
+                    ("comment-network-graphviz", po::bool_switch()->default_value(false), "Set this flag for exporting the comment network in GraphViz format.")
 
-                    ("two-mode-network-gml", po::bool_switch()->default_value(false), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .gml-format.")
-                    ("two-mode-network-graphml", po::bool_switch()->default_value(false), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphml-format.")
-                    ("two-mode-network-graphviz", po::bool_switch()->default_value(false), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphviz-format.")
+                    ("two-mode-network-gml", po::bool_switch()->default_value(false), "Set this flag for exporting the two-mode network in GML format.")
+                    ("two-mode-network-graphml", po::bool_switch()->default_value(false), "Set this flag for exporting the two-mode network in GraphML format.")
+                    ("two-mode-network-graphviz", po::bool_switch()->default_value(false), "Set this flag for exporting the two-mode network in GraphViz format.")
 
                     // list output
-                    ("comment-list-csv", po::bool_switch()->default_value(false), "Path for the potential output file containing the list of comments with user, date, and parent comment in .csv-format.")
-                    ("comment-list-human-readable", po::bool_switch()->default_value(false), "Path for the potential output file containing the list of comments with user, date, and parent comment in an human readable format.")
-                    ("comment-list-json", po::bool_switch()->default_value(false), "Path for the potential output file containing the list of comments with user, date, and parent comment in a .json-format.")
+                    ("comment-list-csv", po::bool_switch()->default_value(false), "Set this flag for exporting the list of comments as a CSV format.")
+                    ("comment-list-human-readable", po::bool_switch()->default_value(false), "Set this flag for exporting the list of comments as a human readable format.")
+                    ("comment-list-json", po::bool_switch()->default_value(false), "Set this flag for exporting the list of comments as a JSON format (recommended).")
 
+                    ("keep-raw-talk-pages", po::bool_switch()->default_value(false), "Set this flag if you want to keep the raw crawled talk pages.")
                     // misc
-                    ("show-timings", po::bool_switch()->default_value(false), "Show the timings for the different parsing steps.")
+                    ("show-timings", po::bool_switch()->default_value(false), "Show the timings for the different steps.")
                     ;
 
     po::variables_map vm;
