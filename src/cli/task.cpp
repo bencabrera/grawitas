@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <set>
+#include <chrono>
+#include <iomanip>
 #include "crawlerThread.h"
 
 Task::Task(QObject *parent, const boost::program_options::variables_map& new_vm)
@@ -29,7 +31,7 @@ void Task::run()
     std::set<CrawlerOptions> options = {};
 
     CrawlerThread crawler(input_file, output_folder, formats, options);
-    connect(&crawler, SIGNAL(write_status(QString)), this, SLOT(print_status(QString)));
+    connect(&crawler, SIGNAL(write_status(std::string)), this, SLOT(print_status(std::string)));
     crawler.run();
 
     emit finished();
@@ -37,5 +39,8 @@ void Task::run()
 
 void Task::print_status(std::string msg)
 {
+ 	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::cout << "[" << std::put_time(std::localtime(&now_c), "%F %T") << "]: ";
     std::cout << msg << std::endl;
 }
