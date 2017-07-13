@@ -2,7 +2,7 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-SOURCES += main_coreParser.cpp
+SOURCES += main_xmlDumpParser.cpp
 
 unix|win32: LIBS += -L$$OUT_PWD/../core/ -lgrawitas_core
 

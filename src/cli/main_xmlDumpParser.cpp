@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	po::options_description desc("Allowed options");
 	desc.add_options()
 		("help", "Produce help message.")
-		("input-xml-folder", po::value<string>(), "The folder that should be scanned for .xml files that are part of a dump of Wikipedia.")
+		("input-xml-folder", po::value<string>(), "The folder that should be scanned for .xml files that are part of a dump of Wikipedia. WARNING: This folder should only contain readable .xml files!")
 		("output-folder", po::value<string>(), "The folder in which the results (articlesWithDates.txt, categories.txt, redirects.txt) should be stored.")
 		("article-list-file", po::value<string>(), "Path to a file containing the list of articles for which talk pages should be parsed.")
 
