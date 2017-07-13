@@ -17,6 +17,10 @@ The source code was made available as part of a publication in EACL 2017. If you
 
 ```Cabrera, B., Steinert, L., Ross, B. (2017). Grawitas: A Grammar-based Wikipedia Talk Page Parser. Proceedings of the Software Demonstrations of the 15th Conference of the European Chapter of the Association for Computational Linguistics, pp. 21-24.```
 
+## Feedback, Issues and Bug reports
+For feedback or questions please contact *benjamin.cabrera[at]uni-due.de*. If you find any bugs or have feature requests please use the github issue tracker on this repository.
+
+
 # Usage
 The full Grawitas toolset consists of four binaries. Three of those are cli (command line interface) programs and one is the GUI (graphical user interface). For the cli tools there is always a ```--help``` argument that can be passed to the program that leads to displaying a help message which should be mostly self-explanatory.
 - **grawitas_cli_core** provides only the basic parsing functionality. It can be fed a raw talk page in [WikiMarkup](https://en.wikipedia.org/wiki/Help:Wiki_markup) and outputs the parsed talk page structure in various output formats (see Formats). 
@@ -34,38 +38,41 @@ Exemplary command:
 - **grawitas_cli_xml** works on [full xml dumps of wikipedia](https://en.wikipedia.org/wiki/Wikipedia:Database_download). This allows for a large scale analysis of all talk pages in Wikipedia.
 Exemplary command:
 ```
-./grawitas_cli_crawler -i list_of_article_names.txt -o output_folder/ --comment-list-json --user-network-gml --keep-raw-talk-pages
+./grawitas_cli_xml --input-xml-folder folder_with_dump_files/ --output-folder output_folder/ --comment-list-json
 ```
 
+- **grawitas_gui** is the GUI containing mostly the same features as the cli programs. For a quick overview have a look at the video above.
+Start the GUI from the main folder running the following command from a terminal.
+```
+./grawitas_gui
+```
+
+
+
 # Getting the parser (to run)
-To work with the parser you first have to obtain a running version of its binaries. This can be done by using one of two methods:
+
+To work with Grawitas you first have to obtain a running version of its binaries. This can be done by using one of two methods:
 
 - Downloading the binaries for your operating system
 - Compiling the source code for yourself
 
-If you quickly want to use the parser as is for your project or have little experience in compiling from sources use the first method. If you want full control, want to modify the source, or have problems with the provided binaries for your system, then use the second method.
+If you quickly want to use the parser as is for your project or have little experience in compiling from sources use the first method. If you want full control, want to modify the source, or have problems with the provided binaries for your system, then compile from sources yourself.
 
 ## Obtaining the binaries
 
-The binaries can be found here. Currently we provide binaries for Linux (Ubuntu) and Windows.
+The binaries can be found if you go to [releases](https://github.com/Ace7k3/grawitas/releases). Currently we provide only binaries for Linux (tested on Ubuntu 16.04). However, in the future we will also provide a Windows version. If you are particulary interested in it please write us an email.
 
-To use them you just have to 
+After downloading from *releases* unzip the packed folder. In it you will find the mentioned 4 binaries. For example, navigate to the folder in a terminal and try out one of the commands above with correct input or start the gui.
 
-1. download the correct binaries for your operating system
-2. install needed dependencies (see *Dependencies* down below)
-2. open a command line (e.g. terminal for ubuntu, powershell for windows)
-3. go to the directory where you saved the binaries,
-4. run the binaries as described in *Usage* down below.
+*Note: The folders bin and libs have to be kept in place in relation to the binary files. However, you will never have to start or modify something in them.*
 
 ### Dependencies ###
 
 *Ubuntu:*
-* for binaries of the C++ components there should be no additional dependencies
-* if you want to run the crawler component you need to install a Java JDK
+- *[to be written]*
 
 *Windows:*
-* for the C++ the *Visual C++ Redistributable* is needed. It can be found here and has to be installed.
-* if you want to run the crawler component you need to install a Java JDK
+- *[to be written]*
 
 ## Compiling the source code yourself
 
@@ -126,5 +133,3 @@ To compile the c++ do the following steps:
 	cmake ../src/cpp/ 		# run cmake to initialize Makefiles
 	make 					# run make to compile 
 	```
-
-# Usage
