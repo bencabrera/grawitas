@@ -3,7 +3,7 @@ TEMPLATE = app
 QT += quick
 CONFIG += c++11
 
-QMAKE_RPATHDIR = $$OUT_PWD/../core/ 
+QMAKE_RPATHDIR += $$OUT_PWD/../core/ 
 QMAKE_RPATHDIR += $$OUT_PWD/../crawler/
 
 SOURCES += main_crawlerParser.cpp \

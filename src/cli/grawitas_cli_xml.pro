@@ -2,7 +2,7 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-QMAKE_RPATHDIR = $$OUT_PWD/../core/ 
+QMAKE_RPATHDIR += $$OUT_PWD/../core/ 
 
 SOURCES += main_xmlDumpParser.cpp
 
