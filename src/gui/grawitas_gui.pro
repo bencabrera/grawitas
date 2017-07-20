@@ -3,6 +3,9 @@ TEMPLATE = app
 QT += qml quick
 CONFIG += c++11
 
+QMAKE_RPATHDIR = $$OUT_PWD/../core/ 
+QMAKE_RPATHDIR += $$OUT_PWD/../crawler/
+
 SOURCES += cpp/main.cpp \
     cpp/grawitasWrapper.cpp \
     cpp/dumpParserThread.cpp
