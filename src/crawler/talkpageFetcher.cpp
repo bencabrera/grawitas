@@ -3,9 +3,9 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QDebug>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
 #include <QEventLoop>
 #include <QJsonDocument>
 #include <QJsonObject>

@@ -6,7 +6,7 @@
 
 #include <set>
 #include <string>
-#include "output/formats.h"
+#include "../../core/output/formats.h"
 
 class DumpParserThread : public QThread
 {

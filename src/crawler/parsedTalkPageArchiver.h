@@ -1,11 +1,11 @@
 #ifndef PARSEDTALKPAGEARCHIVER_H
 #define PARSEDTALKPAGEARCHIVER_H
 
-#include "models/parsedTalkPage.h"
+#include "../core/models/parsedTalkPage.h"
 #include <map>
 #include <set>
 #include <functional>
-#include "output/formats.h"
+#include "../core/output/formats.h"
 
 #include <QObject>
 

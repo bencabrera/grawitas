@@ -4,10 +4,10 @@
 #include "../../libs/cxxopts/include/cxxopts.hpp"
 #include <boost/algorithm/string/trim.hpp>
 
-#include "helpers/stepTimer.h"
-#include "output/formats.h"
+#include "../core/helpers/stepTimer.h"
+#include "../core/output/formats.h"
 
-#include "parsing/xmlDumpParserWrapper.h"
+#include "../core/parsing/xmlDumpParserWrapper.h"
 
 using namespace Grawitas;
 using namespace std;

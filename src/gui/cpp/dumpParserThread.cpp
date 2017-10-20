@@ -1,6 +1,6 @@
 #include "dumpParserThread.h"
 
-#include "parsing/xmlDumpParserWrapper.h"
+#include "../../core/parsing/xmlDumpParserWrapper.h"
 
 DumpParserThread::DumpParserThread(QString _input_xml_path, QString _output_folder, std::set<Grawitas::Format> _formats)
     :input_xml_path(_input_xml_path),

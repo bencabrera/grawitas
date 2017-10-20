@@ -5,9 +5,9 @@
 
 #include "../../libs/cxxopts/include/cxxopts.hpp"
 
-#include "output/outputWrapper.h"
-#include "output/formats.h"
-#include "parsing/coreTalkPageParsing.h"
+#include "../core/output/outputWrapper.h"
+#include "../core/output/formats.h"
+#include "../core/parsing/coreTalkPageParsing.h"
 #include "task.h"
 
 Q_DECLARE_METATYPE(std::string)

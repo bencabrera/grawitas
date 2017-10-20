@@ -3,13 +3,13 @@
 #include <fstream>
 #include <QDebug>
 
-#include "helpers/stepTimer.h"
-#include "parsing/coreTalkPageParsing.h"
-#include "graphComputation/graphComputationCache.h"
-#include "models/parsedTalkPage.h"
-#include "parsing/xmlDumpParserWrapper.h"
-#include "parsing/xmlDumpParsingHandler.h"
-#include "output/formats.h"
+#include "../core/helpers/stepTimer.h"
+#include "../core/parsing/coreTalkPageParsing.h"
+#include "../core/graphComputation/graphComputationCache.h"
+#include "../core/models/parsedTalkPage.h"
+#include "../core/parsing/xmlDumpParserWrapper.h"
+#include "../core/parsing/xmlDumpParsingHandler.h"
+#include "../core/output/formats.h"
 
 #include <boost/algorithm/string/trim.hpp>
 

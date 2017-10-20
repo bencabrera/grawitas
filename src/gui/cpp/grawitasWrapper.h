@@ -6,8 +6,8 @@
 
 #include <set>
 
-#include "output/formats.h"
-#include "crawlerThread.h"
+#include "../../core/output/formats.h"
+#include "../../crawler/crawlerThread.h"
 #include "dumpParserThread.h"
 
 class GrawitasWrapper : public QObject

@@ -5,7 +5,7 @@
 #include <QThread>
 #include <set>
 #include <string>
-#include "output/formats.h"
+#include "../core/output/formats.h"
 
 
 enum CrawlerOptions {

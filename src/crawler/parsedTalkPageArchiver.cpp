@@ -1,7 +1,7 @@
 #include "parsedTalkPageArchiver.h"
 
-#include "parsing/coreTalkPageParsing.h"
-#include "output/outputWrapper.h"
+#include "../core/parsing/coreTalkPageParsing.h"
+#include "../core/output/outputWrapper.h"
 
 ParsedTalkPageArchiver::ParsedTalkPageArchiver(const std::set<Grawitas::Format> formats, const std::string output_folder)
 	:_formats(formats),

@@ -2,8 +2,8 @@
 #define TASK_H
 
 #include <QObject>
-#include "output/formats.h"
-#include "crawlerThread.h"
+#include "../core/output/formats.h"
+#include "../crawler/crawlerThread.h"
 #include "../../libs/cxxopts/include/cxxopts.hpp"
 
 class Task : public QObject
