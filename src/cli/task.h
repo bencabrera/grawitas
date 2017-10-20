@@ -2,22 +2,22 @@
 #define TASK_H
 
 #include <QObject>
-#include <boost/program_options.hpp>
 #include "output/formats.h"
 #include "crawlerThread.h"
+#include "../../libs/cxxopts/include/cxxopts.hpp"
 
 class Task : public QObject
 {
     Q_OBJECT
 public:
-    Task(QObject *parent, const boost::program_options::variables_map& vm);
+    Task(QObject *parent, const cxxopts::Options& options);
 private:
-	const boost::program_options::variables_map& vm;
+	const cxxopts::Options& arguments;
 	const std::set<Grawitas::Format> formats;
 	const std::set<CrawlerOptions> options;
 
-	static std::set<Grawitas::Format> formats_from_parameters(const boost::program_options::variables_map& vm);
-	static std::set<CrawlerOptions> options_from_parameters(const boost::program_options::variables_map& vm);
+	static std::set<Grawitas::Format> formats_from_parameters(const cxxopts::Options& options);
+	static std::set<CrawlerOptions> options_from_parameters(const cxxopts::Options& options);
 
 public slots:
 	void run();

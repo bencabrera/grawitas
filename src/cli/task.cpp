@@ -5,28 +5,28 @@
 #include <chrono>
 #include <iomanip>
 
-Task::Task(QObject *parent, const boost::program_options::variables_map& vm)
+Task::Task(QObject *parent, const cxxopts::Options& arguments)
         : QObject(parent),
-		  vm(vm),
-          formats(formats_from_parameters(vm)),
-		  options(options_from_parameters(vm))
+		  arguments(arguments),
+          formats(formats_from_parameters(arguments)),
+		  options(options_from_parameters(arguments))
 {}
 
 
-std::set<Grawitas::Format> Task::formats_from_parameters(const boost::program_options::variables_map& vm)
+std::set<Grawitas::Format> Task::formats_from_parameters(const cxxopts::Options& arguments)
 {
 	std::set<Grawitas::Format> formats;
 
 	for (auto form_parameter : Grawitas::FormatParameterStrings) 
-		if(vm.count(form_parameter) > 0 && vm[form_parameter].as<bool>())
+		if(arguments.count(form_parameter) > 0 && arguments[form_parameter].as<bool>())
 			formats.insert(Grawitas::parameter_to_format(form_parameter));
 
 	return formats;
 }
 
-std::set<CrawlerOptions> Task::options_from_parameters(const boost::program_options::variables_map& vm)
+std::set<CrawlerOptions> Task::options_from_parameters(const cxxopts::Options& arguments)
 {
-	if(vm.count("keep-raw-talk-pages"))
+	if(arguments.count("keep-raw-talk-pages"))
 		return { KEEP_TALK_PAGE_FILES };
 	else 
 		return std::set<CrawlerOptions>();
@@ -36,18 +36,18 @@ void Task::run()
 {
 	// Do processing here
 
-	if (!vm.count("talk-page-list-file")) {
+	if (!arguments.count("talk-page-list-file")) {
 		std::cout << "Please specify a file containing a list of articles for which the talk pages should be extracted." << std::endl;
 		return;
 	}
 
-	if (!vm.count("output-folder")) {
+	if (!arguments.count("output-folder")) {
 		std::cout << "Please specify a output folder." << std::endl;
 		return;
 	}
 
-	QString input_file = QString::fromStdString(vm.at("talk-page-list-file").as<std::string>());
-	QString output_folder = QString::fromStdString(vm.at("output-folder").as<std::string>());
+	QString input_file = QString::fromStdString(arguments["talk-page-list-file"].as<std::string>());
+	QString output_folder = QString::fromStdString(arguments["output-folder"].as<std::string>());
 
 	CrawlerThread crawler(input_file, output_folder, formats, options);
 	connect(&crawler, SIGNAL(write_status(std::string)), this, SLOT(print_status(std::string)));

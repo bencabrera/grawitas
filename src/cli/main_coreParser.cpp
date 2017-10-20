@@ -1,55 +1,51 @@
 #include <iostream>
 #include <fstream>
 
-#include <boost/program_options.hpp>
+#include "../../libs/cxxopts/include/cxxopts.hpp"
 
 #include "output/outputWrapper.h"
 #include "helpers/stepTimer.h"
 #include "parsing/coreTalkPageParsing.h"
-
-namespace po = boost::program_options;
 
 using namespace Grawitas;
 using namespace std;
 
 int main(int argc, char** argv) 
 {
-    po::options_description desc("Allowed options");
-	desc.add_options()
+    cxxopts::Options options("grawitas_cli_core", "Grawitas CLI core parser.");
+	options.add_options()
 		("help", "Produces this help message.")
 
 		// input
-		("input-talk-page-file", po::value<string>(), "Path to an input file containing a talk page in the Wikipedia syntax.")
+		("i,input-talk-page-file", "Path to an input file containing a talk page in the Wikipedia syntax.", cxxopts::value<string>())
 
 		// network output
-		("user-network-gml", po::value<string>(), "Path for the potential output file containing the user network of the talk page in an .gml-format.")
-		("user-network-graphml", po::value<string>(), "Path for the potential output file containing the user network of the talk page in an .graphml-format.")
-		("user-network-graphviz", po::value<string>(), "Path for the potential output file containing the user network of the talk page in an .graphviz-format.")
+		("user-network-gml", "Path for the potential output file containing the user network of the talk page in an .gml-format.", cxxopts::value<string>())
+		("user-network-graphml", "Path for the potential output file containing the user network of the talk page in an .graphml-format.", cxxopts::value<string>())
+		("user-network-graphviz", "Path for the potential output file containing the user network of the talk page in an .graphviz-format.", cxxopts::value<string>())
 
-		("comment-network-gml", po::value<string>(), "Path for the potential output file containing the comment network of the talk page in an .gml-format.")
-		("comment-network-graphml", po::value<string>(), "Path for the potential output file containing the comment network of the talk page in an .graphml-format.")
-		("comment-network-graphviz", po::value<string>(), "Path for the potential output file containing the comment network of the talk page in an .graphviz-format.")
+		("comment-network-gml", "Path for the potential output file containing the comment network of the talk page in an .gml-format.", cxxopts::value<string>())
+		("comment-network-graphml", "Path for the potential output file containing the comment network of the talk page in an .graphml-format.", cxxopts::value<string>())
+		("comment-network-graphviz", "Path for the potential output file containing the comment network of the talk page in an .graphviz-format.", cxxopts::value<string>())
 
-		("two-mode-network-gml", po::value<string>(), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .gml-format.")
-		("two-mode-network-graphml", po::value<string>(), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphml-format.")
-		("two-mode-network-graphviz", po::value<string>(), "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphviz-format.")
+		("two-mode-network-gml", "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .gml-format.", cxxopts::value<string>())
+		("two-mode-network-graphml", "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphml-format.", cxxopts::value<string>())
+		("two-mode-network-graphviz", "Path for the potential output file containing the talk page network as a two mode network consisting of user and comment vertices in an .graphviz-format.", cxxopts::value<string>())
 
 		// list output
-		("comment-list-csv", po::value<string>(), "Path for the potential output file containing the list of comments with user, date, and parent comment in .csv-format.")
-		("comment-list-human-readable", po::value<string>(), "Path for the potential output file containing the list of comments with user, date, and parent comment in an human readable format.")
-		("comment-list-json", po::value<string>(), "Path for the potential output file containing the list of comments with user, date, and parent comment in a .json-format.")
+		("comment-list-csv", "Path for the potential output file containing the list of comments with user, date, and parent comment in .csv-format.", cxxopts::value<string>())
+		("comment-list-human-readable", "Path for the potential output file containing the list of comments with user, date, and parent comment in an human readable format.", cxxopts::value<string>())
+		("comment-list-json", "Path for the potential output file containing the list of comments with user, date, and parent comment in a .json-format.", cxxopts::value<string>())
 
 		// misc
-		("show-timings", po::bool_switch()->default_value(false), "Show the timings for the different parsing steps.")
+		("show-timings", "Show the timings for the different parsing steps.")
 		;
 
-	po::variables_map vm;
-	po::store(po::parse_command_line(argc, argv, desc), vm);
-	po::notify(vm);
+	options.parse(argc, argv);
 
 	// show help and exit program if --help is set
-	if (vm.count("help")) {
-		cout << desc << endl;
+	if (options.count("help")) {
+		cout << options.help() << endl;
 		return 0;
 	}
 
@@ -57,7 +53,7 @@ int main(int argc, char** argv)
 	StepTimer timings;
 	timings.startTiming("global", "Total");
 
-	if(!vm.count("input-talk-page-file")) {
+	if(!options.count("input-talk-page-file")) {
 		cout << "The parameter --input-talk-page-file was NOT specified. Please specify the input file. To display a parameter description please use --help." << std::endl;
 		return 1;
 	} 
@@ -65,9 +61,9 @@ int main(int argc, char** argv)
 	// the actual parsing part of the program; starts by reading from a file
 	timings.startTiming("parsing", "Splitting talk page into comments");
 	ParsedTalkPage parsedTalkPage;
-	if(vm.count("input-talk-page-file"))
+	if(options.count("input-talk-page-file"))
 	{
-		std::ifstream wiki_input_file(vm["input-talk-page-file"].as<string>());
+		std::ifstream wiki_input_file(options["input-talk-page-file"].as<string>());
 		parsedTalkPage = parse_talk_page(wiki_input_file);	
 	}
 	timings.stopTiming("parsing");
@@ -76,8 +72,8 @@ int main(int argc, char** argv)
 	timings.startTiming("output", "Generation of output");
 	std::map<Format, std::string> formats;
 	for (auto form_parameter : FormatParameterStrings) {
-		if(vm.count(form_parameter))
-			formats.insert({ parameter_to_format(form_parameter), vm.at(form_parameter).as<std::string>() });
+		if(options.count(form_parameter))
+			formats.insert({ parameter_to_format(form_parameter), options[form_parameter].as<std::string>() });
 	}
 	output_in_formats_to_files(formats, parsedTalkPage);
 	timings.stopTiming("output");
@@ -85,7 +81,7 @@ int main(int argc, char** argv)
 	timings.stopTiming("global");
 
 	// if --show-timings was set, show the timings of the different steps
-	if(vm.count("show-timings") && vm["show-timings"].as<bool>())
+	if(options.count("show-timings") && options["show-timings"].as<bool>())
 	{
 		std::cout << std::endl << "--- Timings ---" << std::endl;
 		timings.printTimings(std::cout);

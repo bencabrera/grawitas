@@ -1,3 +1,6 @@
 [submodule "libs/wiki_xml_dump_xerces"]
 	path = libs/wiki_xml_dump_xerces
 	url = git@github.com:Ace7k3/wiki_xml_dump_xerces.git
+[submodule "libs/cxxopts"]
+	path = libs/cxxopts
+	url = git@github.com:jarro2783/cxxopts.git

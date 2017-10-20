@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional>
-#include <boost/program_options.hpp>
+#include <set>
 #include <boost/filesystem.hpp>
 
 #include "../../../libs/wiki_xml_dump_xerces/src/handlers/abstractWikiPageHandler.hpp"

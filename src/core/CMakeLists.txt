@@ -4,7 +4,7 @@ project(Grawitas)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # look for boost library
-find_package(Boost REQUIRED COMPONENTS program_options graph system filesystem)
+find_package(Boost REQUIRED COMPONENTS graph system filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 
 # --- GrawitasCoreLib files ---
