@@ -23,5 +23,3 @@ INCLUDEPATH += $$PWD/../core
 INCLUDEPATH += $$PWD/../crawler
 
 unix|win32: LIBS += -lxerces-c
-unix|win32: LIBS += -lboost_filesystem
-unix|win32: LIBS += -lboost_system

@@ -2,15 +2,12 @@
 #include <fstream>
 
 #include "../../libs/cxxopts/include/cxxopts.hpp"
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 #include "helpers/stepTimer.h"
 #include "output/formats.h"
 
 #include "parsing/xmlDumpParserWrapper.h"
-
-namespace fs = boost::filesystem;
 
 using namespace Grawitas;
 using namespace std;
@@ -23,8 +20,8 @@ int main(int argc, char** argv)
     cxxopts::Options options("grawitas_cli_xml", "Grawitas CLI xml parser.");
 	options.add_options()
 		("help", "Produce help message.")
-		("input-xml-folder", "The folder that should be scanned for .xml files that are part of a dump of Wikipedia. WARNING: This folder should only contain readable .xml files!", cxxopts::value<string>())
-		("output-folder", "The folder in which the results (articlesWithDates.txt, categories.txt, redirects.txt) should be stored.", cxxopts::value<string>())
+		("input-xml-file", "The XML file that is part of a dump of Wikipedia.", cxxopts::value<string>())
+		("output-folder", "The folder in which the results should be stored. WARNING: always has to end with / or \\.", cxxopts::value<string>())
 		("article-list-file", "Path to a file containing the list of articles for which talk pages should be parsed.", cxxopts::value<string>())
 
 		// network output
@@ -63,28 +60,15 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	const fs::path inputFolder(options["input-xml-folder"].as<std::string>());
-	const fs::path outputFolder(options["output-folder"].as<std::string>());
-
-	if(!fs::is_directory(inputFolder))
-	{
-		std::cerr << "Parameter --input-xml-folder is no folder." << std::endl;
-		return 1;
-	}
-
-	if(!fs::is_directory(outputFolder))
-	{
-		std::cerr << "Parameter --ouput-folder is no folder, creating it..." << std::endl;
-		fs::create_directory(outputFolder);
-	}
-
+	const std::string input_file = options["input-xml-file"].as<std::string>();
+	const std::string output_folder = options["output-folder"].as<std::string>();
 
 	std::set<Format> formats;
 	for (auto form_parameter : FormatParameterStrings) 
 		if(options[form_parameter].as<bool>())
 			formats.insert(parameter_to_format(form_parameter));
 
-	xml_dump_parsing(inputFolder.string(), outputFolder.string(), formats);
+	xml_dump_parsing(input_file, output_folder, formats);
 
 	// std::cout << "-----------------------------------------------------------------------" << std::endl;
 	// std::cout << "Status: " << std::endl;

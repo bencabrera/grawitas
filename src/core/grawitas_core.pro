@@ -27,5 +27,3 @@ SOURCES += output/graphGmlOutput.cpp \
 	parsing/xmlDumpParserWrapper.cpp \
 
 LIBS += -lxerces-c
-LIBS += -lboost_filesystem
-LIBS += -lboost_system
