@@ -54,9 +54,9 @@ int main(int argc, char** argv)
 		return 0;
 	}
 
-	if(!options.count("input-xml-folder") || !options.count("output-folder"))
+	if(!options.count("input-xml-file") || !options.count("output-folder"))
 	{
-		std::cerr << "Please specify the parameters --input-xml-folder and --output-folder." << std::endl;
+		std::cerr << "Please specify the parameters --input-xml-file and --output-folder." << std::endl;
 		return 1;
 	}
 
