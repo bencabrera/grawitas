@@ -20,6 +20,8 @@ find_package(Qt5Qml)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
+# Instruct CMake to run rcc automatically when needed.
+set(CMAKE_AUTORCC ON)
 
 # --- GrawitasCoreLib files ---
 set(OUTPUT_SOURCE_FILES
@@ -89,7 +91,7 @@ target_link_libraries(grawitas_cli_crawler grawitas_core_lib)
 target_link_libraries(grawitas_cli_crawler Qt5::Core)
 target_link_libraries(grawitas_cli_crawler Qt5::Network)
 
-add_executable(grawitas_gui gui/cpp/main.cpp ${GUI_FILES} ${CRAWLER_FILES})
+add_executable(grawitas_gui gui/cpp/main.cpp ${GUI_FILES} ${CRAWLER_FILES} gui/qml/qml.qrc)
 target_link_libraries(grawitas_gui grawitas_core_lib)
 target_link_libraries(grawitas_gui Qt5::Core)
 target_link_libraries(grawitas_gui Qt5::Network)
