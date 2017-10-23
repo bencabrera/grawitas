@@ -4,7 +4,6 @@
 #include <list>
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/regex.hpp>
 #include <string>
 #include <iomanip>
 #include <streambuf>
