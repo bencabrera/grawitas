@@ -1,4 +1,5 @@
 #include "stepTimer.h"
+#include <algorithm>
 
 void StepTimer::startTiming(const std::string label, const std::string description)
 {
@@ -15,7 +16,7 @@ void StepTimer::stopTiming(const std::string label)
 		throw std::logic_error("Tried to stop non-started timer.");
 
 	auto endTime = std::chrono::steady_clock::now();
-	auto diff = std::chrono::duration<double, std::milli>(endTime-it->second.second).count();
+	auto diff = static_cast<std::size_t>(std::chrono::duration<double, std::milli>(endTime-it->second.second).count());
 	finishedTimings.push_back({ it->second.first, diff });
 
 	timers.erase(it);

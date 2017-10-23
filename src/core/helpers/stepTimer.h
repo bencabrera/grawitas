@@ -17,7 +17,7 @@ class StepTimer {
 
 	private:
 
-		std::vector<std::pair<std::string, double>> finishedTimings;
+		std::vector<std::pair<std::string, std::size_t>> finishedTimings;
 		std::map<std::string, std::pair<std::string, std::chrono::time_point<std::chrono::steady_clock>>> timers;
 
 		std::string timingToReadable(std::size_t milliseconds);

@@ -1,6 +1,7 @@
 #include "dateOutput.h"
 #include <sstream>
 #include <iomanip>
+#include <ctime>
 
 namespace Grawitas {
 
@@ -19,9 +20,14 @@ namespace Grawitas {
 	std::string to_human_readable(const std::tm& t)
 	{
 		std::stringstream ss;
-		ss << std::asctime(&t);
 
-		return ss.str().substr(0, ss.str().size()-1);
+		char mbstr[100];
+		if (!std::strftime(mbstr, sizeof(mbstr), "%c", &t))
+			throw std::runtime_error("Date buffer was not large enough.");
+
+		ss << mbstr;
+
+		return ss.str();
 	}
 
 }
