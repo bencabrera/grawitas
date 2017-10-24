@@ -9,7 +9,7 @@
 #include <streambuf>
 #include <stack>
 
-#include "grammars/sectionGrammar.hpp"
+#include "grammars/sections/sectionGrammar.hpp"
 #include "grammars/talkPageGrammar.hpp"
 
 namespace Grawitas {
@@ -18,19 +18,19 @@ namespace Grawitas {
 	{
 		std::vector<std::tuple<std::string, std::string, int>> sections;
 
-		// first split wikisyntax into sections
-		auto content_it = content.cbegin();
-		Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> sectionGrammar;
-		try {
-			boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::blank, sections);
-		}
-		catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
-		{}
+		// // first split wikisyntax into sections
+		// auto content_it = content.cbegin();
+		// Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> sectionGrammar;
+		// try {
+			// boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::blank, sections);
+		// }
+		// catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
+		// {}
 
-		// remove empty sections
-		sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string, int>& t) {
-			return std::get<1>(t).empty();
-		}), sections.end());
+		// // remove empty sections
+		// sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string, int>& t) {
+			// return std::get<1>(t).empty();
+		// }), sections.end());
 
 
 		return sections;

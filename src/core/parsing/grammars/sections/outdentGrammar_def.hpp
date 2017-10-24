@@ -16,11 +16,6 @@ namespace Grawitas {
 			heading_text = *(+(char_ - '=') [_val += boost::spirit::qi::_1] >> -(!heading_end >> char_('=') [_val += boost::spirit::qi::_1]));
 			heading_end = char_('=') >> char_('=') >> -char_('=') >> *blank >> eol;
 
-			html_element = lit('<') >> -char_('/') >> html_element_name >> *(char_ - '>' - '\n') >> '>';
-			html_comment_text = *(char_ - '-' ) >> -(!lit("-->") >> lit('-') >> html_comment_text);
-			html_comment = lit("<!--") >> html_comment_text >> lit("-->");
-			html_element_name = "span", "small", "large", "sup", "sub", "font", "ref";
-
 			// section_text = *(
 				// no_skip[*(char_ - '=' - '<' - '{') [_val += boost::spirit::qi::_1]]
 				// >> !(outdent | heading) 
