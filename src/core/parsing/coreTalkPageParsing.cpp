@@ -11,9 +11,21 @@
 
 #include "grammars/sections/outdentGrammar.hpp"
 #include "grammars/sections/sectionGrammar.hpp"
+#include "grammars/preprocessing/htmlCleaningGrammar.hpp"
 #include "grammars/talkPageGrammar.hpp"
 
 namespace Grawitas {
+
+	std::string clean_content(const std::string& content)
+	{
+		// clean syntax of html and stuff
+		auto content_it = content.cbegin();
+		std::string result;
+		Grawitas::HtmlCleaningGrammar<std::string::const_iterator> htmlGrammar;
+		boost::spirit::qi::parse(content_it, content.cend(), htmlGrammar, result);
+
+		return result;
+	}
 
 	std::vector<std::tuple<std::string, std::string, int>> split_section_into_outdents(const std::tuple<std::string, std::string>& sec)
 	{
@@ -38,8 +50,10 @@ namespace Grawitas {
 	}
 
 
-	std::vector<std::tuple<std::string, std::string, int>> split_into_sections(const std::string& content)
+	std::vector<std::tuple<std::string, std::string, int>> split_into_sections(const std::string& uncleaned_content)
 	{
+		std::string content = clean_content(uncleaned_content);
+
 		std::vector<std::tuple<std::string, std::string>> sections;
 
 		// first split wikisyntax into sections
@@ -53,8 +67,8 @@ namespace Grawitas {
 
 		// remove empty sections
 		sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string>& t) {
-			return std::get<1>(t).empty();
-		}), sections.end());
+					return std::get<1>(t).empty();
+					}), sections.end());
 
 		std::vector<std::tuple<std::string, std::string, int>> rtn;
 		for(auto& sec : sections)
@@ -157,7 +171,7 @@ namespace Grawitas {
 			// if no comments could be parsed -> don't add to parsed talk page
 			if(parsed_section.size() == 0)
 				continue;
-				
+
 			if(section_outdent == -1 || parsed_talk_page.size() == 0)
 				parsed_talk_page.push_back({ std::get<0>(sec), std::move(parsed_section) });
 			else
