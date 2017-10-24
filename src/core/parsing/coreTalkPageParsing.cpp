@@ -9,31 +9,61 @@
 #include <streambuf>
 #include <stack>
 
+#include "grammars/sections/outdentGrammar.hpp"
 #include "grammars/sections/sectionGrammar.hpp"
 #include "grammars/talkPageGrammar.hpp"
 
 namespace Grawitas {
 
+	std::vector<std::tuple<std::string, std::string, int>> split_section_into_outdents(const std::tuple<std::string, std::string>& sec)
+	{
+		std::vector<std::tuple<std::string, std::string, int>> rtn;
+
+		Grawitas::OutdentGrammar<std::string::const_iterator> outdentGrammar;
+
+		auto& str = std::get<1>(sec);
+		auto str_it = str.cbegin();
+		std::vector<std::tuple<std::string, int>> outdents;
+
+		try {
+			boost::spirit::qi::parse(str_it, str.cend(), outdentGrammar, outdents);
+		}
+		catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
+		{}
+
+		for(auto& outdent : outdents)
+			rtn.push_back({ std::get<0>(sec), std::get<0>(outdent), std::get<1>(outdent) });
+
+		return rtn;
+	}
+
+
 	std::vector<std::tuple<std::string, std::string, int>> split_into_sections(const std::string& content)
 	{
-		std::vector<std::tuple<std::string, std::string, int>> sections;
+		std::vector<std::tuple<std::string, std::string>> sections;
 
-		// // first split wikisyntax into sections
-		// auto content_it = content.cbegin();
-		// Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> sectionGrammar;
-		// try {
-			// boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::blank, sections);
-		// }
-		// catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
-		// {}
+		// first split wikisyntax into sections
+		auto content_it = content.cbegin();
+		Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> sectionGrammar;
+		try {
+			boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::blank, sections);
+		}
+		catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
+		{}
 
-		// // remove empty sections
-		// sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string, int>& t) {
-			// return std::get<1>(t).empty();
-		// }), sections.end());
+		// remove empty sections
+		sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string>& t) {
+			return std::get<1>(t).empty();
+		}), sections.end());
 
+		std::vector<std::tuple<std::string, std::string, int>> rtn;
+		for(auto& sec : sections)
+		{
+			auto outdents = split_section_into_outdents(sec);
+			rtn.insert(rtn.end(), outdents.begin(), outdents.end());
+		}
 
-		return sections;
+		return rtn;
 	}
 
 	std::list<Comment> parse_one_section(const std::string& section_content, const int outdent, std::size_t& current_section_outdent, const std::size_t last_comment_level)
@@ -114,8 +144,6 @@ namespace Grawitas {
 
 		// split everything into sections
 		auto sections = split_into_sections(content);
-
-
 
 		// parse each section
 		std::size_t current_section_outdent = 0;

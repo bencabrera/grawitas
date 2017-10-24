@@ -58,6 +58,7 @@ set(GRAMMAR_SOURCE_FILES
 	core/parsing/grammars/talkPageGrammar.cpp
 	core/parsing/grammars/commentEndingGrammar.cpp
 	core/parsing/grammars/sections/sectionGrammar.cpp
+	core/parsing/grammars/sections/outdentGrammar.cpp
 	core/parsing/grammars/preprocessing/htmlCleaningGrammar.cpp
 )
 

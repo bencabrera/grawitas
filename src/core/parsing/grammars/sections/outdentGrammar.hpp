@@ -23,31 +23,18 @@
 
 namespace Grawitas {
 
-	template<typename Iterator, typename Skipper>
-		struct SectionGrammar : boost::spirit::qi::grammar<Iterator, std::vector<std::tuple<std::string, std::string, int>>(), Skipper> {
+	template<typename Iterator>
+		struct OutdentGrammar : boost::spirit::qi::grammar<Iterator, std::vector<std::tuple<std::string, int>>()> {
 
-			SectionGrammar();
+			OutdentGrammar();
 
-			boost::spirit::qi::rule<Iterator, std::vector<std::tuple<std::string, std::string, int>>(), Skipper> start;
-			boost::spirit::qi::rule<Iterator, std::string(), Skipper> heading;
-			boost::spirit::qi::rule<Iterator, std::string()> heading_text;
-			boost::spirit::qi::rule<Iterator> heading_end;
+			boost::spirit::qi::rule<Iterator, std::vector<std::tuple<std::string, int>>()> start;
 
-			boost::spirit::qi::rule<Iterator, std::tuple<std::string, std::string, int>(), Skipper> section;
-			boost::spirit::qi::rule<Iterator, std::string(), Skipper> section_text;
-			boost::spirit::qi::rule<Iterator, Skipper> html_element;
+			boost::spirit::qi::rule<Iterator, std::tuple<std::string, int>()> section;
 
 			boost::spirit::qi::rule<Iterator, int()> outdent;
 			boost::spirit::qi::rule<Iterator, int()> outdent_colons;
 			boost::spirit::qi::symbols<char> outdent_labels;
-
-			boost::spirit::qi::rule<Iterator, Skipper> html_comment_text;
-			boost::spirit::qi::rule<Iterator, Skipper> html_comment;
-
-			boost::spirit::qi::symbols<char> html_element_name;
-
-			std::tuple<std::string, std::string, int> helper_section;
-
 		};
 
 }

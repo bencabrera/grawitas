@@ -1,3 +1,3 @@
-#include "sectionGrammar_def.hpp"
+#include "outdentGrammar_def.hpp"
 
-template Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>::SectionGrammar();
+template Grawitas::OutdentGrammar<std::string::const_iterator>::OutdentGrammar();
