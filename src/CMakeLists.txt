@@ -58,6 +58,7 @@ set(GRAMMAR_SOURCE_FILES
 	core/parsing/grammars/talkPageGrammar.cpp
 	core/parsing/grammars/commentEndingGrammar.cpp
 	core/parsing/grammars/sectionGrammar.cpp
+	core/parsing/grammars/preprocessing/htmlCleaningGrammar.cpp
 )
 
 set(XML_DUMP_PARSING_FILES
@@ -78,6 +79,9 @@ set(GUI_FILES
 
 
 add_library(grawitas_core_lib STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} ${GRAMMAR_SOURCE_FILES} ${XML_DUMP_PARSING_FILES})
+
+add_executable(tryout core/main_tryout.cpp)
+target_link_libraries(tryout grawitas_core_lib)
 
 add_executable(grawitas_cli_core cli/main_coreParser.cpp)
 target_link_libraries(grawitas_cli_core grawitas_core_lib)

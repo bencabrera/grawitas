@@ -37,8 +37,8 @@ namespace Grawitas {
 			boost::spirit::qi::rule<Iterator, std::string(), Skipper> section_text;
 			boost::spirit::qi::rule<Iterator, Skipper> html_element;
 
-			boost::spirit::qi::rule<Iterator, Skipper, int()> outdent;
-			boost::spirit::qi::rule<Iterator, Skipper, int()> outdent_colons;
+			boost::spirit::qi::rule<Iterator, int()> outdent;
+			boost::spirit::qi::rule<Iterator, int()> outdent_colons;
 			boost::spirit::qi::symbols<char> outdent_labels;
 
 			boost::spirit::qi::rule<Iterator, Skipper> html_comment_text;

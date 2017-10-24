@@ -32,6 +32,7 @@ namespace Grawitas {
 			return std::get<1>(t).empty();
 		}), sections.end());
 
+
 		return sections;
 	}
 

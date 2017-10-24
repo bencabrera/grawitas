@@ -13,7 +13,7 @@ namespace Grawitas {
 			using boost::phoenix::push_back;
 
 			heading = char_('=') >> char_('=') >> -char_('=') >> heading_text [_val = boost::spirit::qi::_1] >> -html_comment_text >> heading_end;
-			heading_text = *(char_ - '=') [_val += boost::spirit::qi::_1] >> -(!heading_end >> char_('=') [_val += boost::spirit::qi::_1] >> heading_text [_val += boost::spirit::qi::_1]);
+			heading_text = *(+(char_ - '=') [_val += boost::spirit::qi::_1] >> -(!heading_end >> char_('=') [_val += boost::spirit::qi::_1]));
 			heading_end = char_('=') >> char_('=') >> -char_('=') >> *blank >> eol;
 
 			html_element = lit('<') >> -char_('/') >> html_element_name >> *(char_ - '>' - '\n') >> '>';
@@ -21,15 +21,23 @@ namespace Grawitas {
 			html_comment = lit("<!--") >> html_comment_text >> lit("-->");
 			html_element_name = "span", "small", "large", "sup", "sub", "font", "ref";
 
-			section_text = *(
-				no_skip[*(char_ - '=' - '<' - '{') [_val += boost::spirit::qi::_1]]
-				>> !(outdent | heading) 
-				>> (
-					(&html_element >> html_element)
-					| (&html_comment >> html_comment)
-					| char_("=<{") [_val += boost::spirit::qi::_1]
-				) 
-			);
+			// section_text = *(
+				// no_skip[*(char_ - '=' - '<' - '{') [_val += boost::spirit::qi::_1]]
+				// >> !(outdent | heading) 
+				// >> (
+					// (&html_element >> html_element)
+					// | (&html_comment >> html_comment)
+					// | char_("=<{") [_val += boost::spirit::qi::_1]
+				// ) 
+			// );
+
+			section_text = *(!(outdent | heading) >> char_ [_val += boost::spirit::qi::_1]);
+				// >> !(outdent | heading) 
+				// >> (
+					// (&html_element >> html_element)
+					// | (&html_comment >> html_comment)
+					// | char_("=<{") [_val += boost::spirit::qi::_1]
+				// ) 
 
 			section = (outdent [at_c<2>(_val) = boost::spirit::_1] | heading [at_c<0>(_val) = boost::spirit::qi::_1, at_c<2>(_val) = -1]) >> section_text [at_c<1>(_val) = boost::spirit::qi::_1];
 
