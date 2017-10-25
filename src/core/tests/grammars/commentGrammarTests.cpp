@@ -47,6 +47,8 @@ BOOST_AUTO_TEST_SUITE(CommentGrammarTests)
 		"Lihaas",
 		"Lihaas",
 		"Lihaas",
+		"Lihaas",
+		"Lihaas",
 		"Baseball Bugs",
 		"Baseball Bugs"
 	};
@@ -59,13 +61,13 @@ BOOST_AUTO_TEST_SUITE(CommentGrammarTests)
 		BOOST_CHECK(it == str.cend());
 	}
 
-	// BOOST_DATA_TEST_CASE(ExtractedUsernameShouldBeCorrect,boost::unit_test::data::make(comment_examples) ^ boost::unit_test::data::make(expected_users),comment_str,expected_user)
-	// {
-		// std::string str = comment_str;
-		// auto it = str.begin();
-		// Grawitas::Comment parsed_comment;
-		// boost::spirit::qi::phrase_parse(it, str.end(), Grawitas::CommentGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsed_comment);
-		// BOOST_CHECK_EQUAL(expected_user, parsed_comment.User);
-	// }
+	BOOST_DATA_TEST_CASE(ExtractedUsernameShouldBeCorrect,boost::unit_test::data::make(comment_examples) ^ boost::unit_test::data::make(expected_users),comment_str,expected_user)
+	{
+		std::string str = comment_str;
+		auto it = str.cbegin();
+		Grawitas::Comment parsed_comment;
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::CommentGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsed_comment);
+		BOOST_CHECK_EQUAL(expected_user, parsed_comment.User);
+	}
 
 BOOST_AUTO_TEST_SUITE_END()

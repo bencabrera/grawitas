@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_SUITE(DateGrammarTests)
 		{	   0,	   37,		 9,		29,		0,	  111 							},
 	};
 
-	BOOST_DATA_TEST_CASE(should_run,boost::unit_test::data::make(date_examples),date_str)
+	BOOST_DATA_TEST_CASE(date_extraction_should_run,boost::unit_test::data::make(date_examples),date_str)
 	{
 		std::string str = date_str;
 		auto it = str.cbegin();
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_SUITE(DateGrammarTests)
 		BOOST_CHECK(it == str.cend());
 	}
 
-	BOOST_DATA_TEST_CASE(extracted,boost::unit_test::data::make(date_examples) ^ boost::unit_test::data::make(expected_dates), date_str,expected_date)
+	BOOST_DATA_TEST_CASE(correct_date_should_be_extracted,boost::unit_test::data::make(date_examples) ^ boost::unit_test::data::make(expected_dates), date_str,expected_date)
 	{
 		std::string str = date_str;
 		auto it = str.cbegin();

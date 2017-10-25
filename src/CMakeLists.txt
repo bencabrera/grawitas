@@ -78,6 +78,16 @@ set(GUI_FILES
 	gui/cpp/grawitasWrapper.cpp
 )
 
+set(CORE_TEST_FILES
+	core/tests/grammars/commentGrammarTests.cpp
+	core/tests/grammars/dateGrammarTests.cpp
+	core/tests/grammars/sectionGrammarTests.cpp
+	core/tests/grammars/signatureGrammarTests.cpp
+	core/tests/grammars/talkPageGrammarTests.cpp
+	core/tests/grammars/userGrammarTests.cpp
+	core/tests/helpers.cpp
+)
+
 
 add_library(grawitas_core_lib STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} ${GRAMMAR_SOURCE_FILES} ${XML_DUMP_PARSING_FILES})
 
@@ -100,3 +110,6 @@ target_link_libraries(grawitas_gui Qt5::Network)
 target_link_libraries(grawitas_gui Qt5::Widgets)
 target_link_libraries(grawitas_gui Qt5::Qml)
 target_link_libraries(grawitas_gui ${XercesC_LIBRARY})
+
+add_executable(core_tests core/tests/main_tests.cpp ${CORE_TEST_FILES})
+target_link_libraries(core_tests grawitas_core_lib)

@@ -61,14 +61,4 @@ BOOST_AUTO_TEST_SUITE(UserGrammarTests)
 		BOOST_CHECK_EQUAL(expected, parsedUsername);
 	}
 
-	// BOOST_DATA_TEST_CASE(ExtractedUsernameShouldBeCorrect2,boost::unit_test::data::make(user_examples) ^ boost::unit_test::data::make(expected_values),user_str,expected)
-	// {
-		// std::string str = user_str;
-		// auto it = str.cbegin();
-		// std::string parsedUsername;
-		// boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::UserGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>().username_link, boost::spirit::qi::blank, parsedUsername);
-		// BOOST_CHECK(it == str.cend());
-		// BOOST_CHECK_EQUAL(expected, parsedUsername);
-	// }
-
 BOOST_AUTO_TEST_SUITE_END()
