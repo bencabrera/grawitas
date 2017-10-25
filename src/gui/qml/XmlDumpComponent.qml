@@ -16,7 +16,7 @@ Item {
 
 
         Label {
-            text: "Path to folder containing XML-Files:"
+            text: "Path to .xml file (containing a Wikipedia dump):"
         }
         TextField{
             Layout.fillWidth: true
@@ -32,24 +32,23 @@ Item {
             }
             width: 20
             height: 20
-            onClicked: xml_folder_dialog.open()
+            onClicked: xml_file_dialog.open()
 
             FileDialog {
-                id: xml_folder_dialog
-                title: "Please choose a folder containing Wiki-Dump XML files"
+                id: xml_file_dialog
+                title: "Please choose a .xml file (containing a Wikipedia dump)"
                 folder: shortcuts.home
-                selectFolder: true
                 visible: false
 
                 onAccepted: {
-                     xml_folder_field.text = folder.toString().substring(7);
+					 var path = fileUrl.toString().replace(/^(file:\/{2})/,"");
+                     xml_folder_field.text = path;
                 }
             }
-
         }
 
         Label {
-            text: "Path to folder for output files:"
+            text: "Path to output folder:"
         }
         TextField{
             Layout.fillWidth: true
@@ -67,15 +66,17 @@ Item {
             height: 20
             onClicked: output_folder_dialog.open()
 
+
             FileDialog {
                 id: output_folder_dialog
-                title: "Please choose a folder to output the files to"
+                title: "Please choose an output folder"
                 folder: shortcuts.home
                 selectFolder: true
                 visible: false
 
                 onAccepted: {
-                     output_folder_field.text = folder.toString().substring(7);
+					 var path = folder.toString().replace(/^(file:\/{2})/,"");
+                     output_folder_field.text = path;
                 }
             }
         }

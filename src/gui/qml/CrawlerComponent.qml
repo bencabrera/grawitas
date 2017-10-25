@@ -16,7 +16,7 @@ Item {
 
 
         Label {
-            text: "Path to file containing Wikipedia URLs:"
+            text: "Path to file containing article names:"
         }
         TextField{
             Layout.fillWidth: true
@@ -36,19 +36,20 @@ Item {
 
             FileDialog {
                 id: input_file_dialog
-                title: "Please choose a folder containing Wiki-Dump XML files"
+                title: "Please choose a file containing article names"
                 folder: shortcuts.home
                 visible: false
 
                 onAccepted: {
-                     input_file_field.text = fileUrl.toString().substring(7);
+					 var path = fileUrl.toString().replace(/^(file:\/{2})/,"");
+                     input_file_field.text = path;
                 }
             }
 
         }
 
         Label {
-            text: "Path to folder for output files:"
+            text: "Path to output folder:"
         }
         TextField{
             Layout.fillWidth: true
@@ -68,13 +69,14 @@ Item {
 
             FileDialog {
                 id: output_folder_dialog
-                title: "Please choose a folder to output the files to"
+                title: "Please choose an output folder"
                 folder: shortcuts.home
                 selectFolder: true
                 visible: false
 
                 onAccepted: {
-                     output_folder_field.text = folder.toString().substring(7);
+					 var path = folder.toString().replace(/^(file:\/{2})/,"");
+                     output_folder_field.text = path;
                 }
             }
         }
