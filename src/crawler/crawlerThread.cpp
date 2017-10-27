@@ -10,6 +10,7 @@
 #include "../core/parsing/xmlDumpParserWrapper.h"
 #include "../core/parsing/xmlDumpParsingHandler.h"
 #include "../core/output/formats.h"
+#include "../core/output/outputHelpers.h"
 
 #include <boost/algorithm/string/trim.hpp>
 
@@ -17,8 +18,8 @@
 #include "parsedTalkPageArchiver.h"
 
 CrawlerThread::CrawlerThread(QString _input_file_path, QString _output_folder, std::set<Grawitas::Format> _formats, std::set<CrawlerOptions> _options)
-    :input_file_path(_input_file_path),
-      output_folder(_output_folder),
+    :input_file_path(_input_file_path.toStdString()),
+      output_folder(normalize_folder_path(_output_folder.toStdString())),
       formats(_formats),
       options(_options)
 {}
@@ -39,10 +40,10 @@ std::vector<std::string> read_titles_from_file(std::string file_path)
 
 void CrawlerThread::run()
 {
-    auto titles = read_titles_from_file(input_file_path.toStdString());
+    auto titles = read_titles_from_file(input_file_path);
 
     TalkPageFetcher fetcher(titles);
-    ParsedTalkPageArchiver archiver(formats, output_folder.toStdString());
+    ParsedTalkPageArchiver archiver(formats, output_folder);
 
 	connect(&archiver, SIGNAL(write_status(std::string)), this, SIGNAL(write_status(std::string))); // forward write_status signal from archiver to CrawlerThread
 
@@ -57,6 +58,7 @@ void CrawlerThread::run()
     }
 
     fetcher.run();
+	write_status("Finished crawling and parsing provided articles");
 }
 
 void CrawlerThread::start_raw_talk_page_file(std::string normalized_title, std::string, std::string content)
@@ -65,7 +67,7 @@ void CrawlerThread::start_raw_talk_page_file(std::string normalized_title, std::
 	if(it == raw_talk_page_files.end())
 	{
 		std::string title_filename = Grawitas::safeEncodeTitleToFilename(normalized_title);
-		raw_talk_page_files.insert({ normalized_title, new std::ofstream(output_folder.toStdString() + "/" + title_filename + "_raw.wikimd") });
+		raw_talk_page_files.insert({ normalized_title, new std::ofstream(output_folder + "/" + title_filename + "_raw.wikimd") });
 	}
 	*raw_talk_page_files[normalized_title] << content << std::endl;
 }

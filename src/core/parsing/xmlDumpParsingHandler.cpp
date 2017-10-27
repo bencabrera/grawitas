@@ -30,7 +30,7 @@ namespace Grawitas {
 
 		std::map<Format, std::string> formats_with_paths;
 		for (auto format : _formats) 
-			formats_with_paths.insert({ format, _output_folder + (title_filename + FormatFileExtensions.at(format)) });
+			formats_with_paths.insert({ format, _output_folder + "/" + (title_filename + FormatFileExtensions.at(format)) });
 
 		output_in_formats_to_files(formats_with_paths, parsed_talk_page);
 	}

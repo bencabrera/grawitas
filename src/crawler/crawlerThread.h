@@ -22,8 +22,8 @@ public:
     void run();
 
 private:
-    QString input_file_path;
-    QString output_folder;
+	std::string input_file_path;
+	std::string output_folder;
     std::set<Grawitas::Format> formats;
     std::set<CrawlerOptions> options;
     std::map<std::string, std::ofstream*> raw_talk_page_files;

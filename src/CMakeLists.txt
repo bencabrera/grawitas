@@ -35,6 +35,7 @@ set(OUTPUT_SOURCE_FILES
 	core/helpers/stepTimer.cpp
 	core/output/dateOutput.cpp
 	core/output/formats.cpp
+	core/output/outputHelpers.cpp
 )
 
 set(MODELS_SOURCE_FILES

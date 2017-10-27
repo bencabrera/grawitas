@@ -8,6 +8,7 @@
 #include "../core/output/formats.h"
 
 #include "../core/parsing/xmlDumpParserWrapper.h"
+#include "../core/output/outputHelpers.h"
 
 using namespace Grawitas;
 using namespace std;
@@ -61,7 +62,7 @@ int main(int argc, char** argv)
 	}
 
 	const std::string input_file = options["input-xml-file"].as<std::string>();
-	const std::string output_folder = options["output-folder"].as<std::string>();
+	const std::string output_folder = normalize_folder_path(options["output-folder"].as<std::string>());
 
 	std::set<Format> formats;
 	for (auto form_parameter : FormatParameterStrings) 
@@ -69,21 +70,6 @@ int main(int argc, char** argv)
 			formats.insert(parameter_to_format(form_parameter));
 
 	xml_dump_parsing(input_file, output_folder, formats);
-
-	// std::cout << "-----------------------------------------------------------------------" << std::endl;
-	// std::cout << "Status: " << std::endl;
-	// std::cout << std::left << std::setw(40) << "Total number of articles: " << totalArticleNumber << std::endl;
-	// std::cout << std::left << std::setw(40) << "Articles with extractable dates: " << articlesWithDates.size() << std::endl;
-	// std::cout << std::left << std::setw(40) << "Categories extracted: " << categories.size() << std::endl;
-	// std::cout << std::left << std::setw(40) << "Redirects extracted: " << redirects.size() << std::endl;
-
-	// // output timings
-	// std::cout << "-----------------------------------------------------------------------" << std::endl;
-	// std::cout << "Timings: " << std::endl << std::endl;
-	// for(auto timing : timings)
-	// std::cout << std::left << std::setw(50) << timing.first + ": " << timingToReadable(timing.second) << std::endl;
-
-	// std::cout << "-----------------------------------------------------------------------" << std::endl;
 
 	return 0;
 }

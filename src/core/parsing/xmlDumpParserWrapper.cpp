@@ -22,6 +22,9 @@ namespace Grawitas {
 		WikiXmlDumpXerces::SingleCoreParser parser(handler, parser_properties);
 		parser.Run(input_xml_file);
 
+		for(auto& f : report_status_callbacks)
+			f("Finished parsing all talk pages in XML file");
+
 		xercesc::XMLPlatformUtils::Terminate();
 	}
 }

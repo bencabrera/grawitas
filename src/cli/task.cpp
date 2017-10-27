@@ -4,6 +4,7 @@
 #include <set>
 #include <chrono>
 #include <iomanip>
+#include "../core/output/outputHelpers.h"
 
 Task::Task(QObject *parent, const cxxopts::Options& arguments)
         : QObject(parent),
@@ -47,7 +48,7 @@ void Task::run()
 	}
 
 	QString input_file = QString::fromStdString(arguments["talk-page-list-file"].as<std::string>());
-	QString output_folder = QString::fromStdString(arguments["output-folder"].as<std::string>());
+	QString output_folder = QString::fromStdString(normalize_folder_path(arguments["output-folder"].as<std::string>()));
 
 	CrawlerThread crawler(input_file, output_folder, formats, options);
 	connect(&crawler, SIGNAL(write_status(std::string)), this, SLOT(print_status(std::string)));

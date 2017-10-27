@@ -16,8 +16,8 @@ public:
 
     void run();
 
-    QString input_xml_path;
-    QString output_folder;
+	std::string input_xml_path;
+	std::string output_folder;
     std::set<Grawitas::Format> formats;
 
 signals:

@@ -212,8 +212,6 @@ Item {
 				anchors.centerIn: parent
 			}
 			onClicked: {
-				//grawitas_wrapper.request();
-
 				var format_checkboxes = [
 					comment_list_json_checkbox,
 					comment_list_human_checkbox,
