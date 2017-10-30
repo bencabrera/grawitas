@@ -1,7 +1,0 @@
-#!/bin/sh
-
-here="${0%/*}"  # or you can use `dirname "$0"`
-
-LD_LIBRARY_PATH="$here"/libs:"$LD_LIBRARY_PATH"
-export LD_LIBRARY_PATH
-exec bin/"$0" "$@"
