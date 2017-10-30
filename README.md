@@ -77,7 +77,7 @@ In the following section we will go through the compilation process assuming you
 	```
 	mkdir bin
 	cd bin 
-	cmake -DCMAKE_RELEASE_TYPE=Release ../src/
+	cmake -DCMAKE_BUILD_TYPE=Release ../src/
 	```
 
 

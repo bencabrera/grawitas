@@ -115,5 +115,5 @@ target_link_libraries(grawitas_gui Qt5::Widgets)
 target_link_libraries(grawitas_gui Qt5::Qml)
 target_link_libraries(grawitas_gui ${XercesC_LIBRARY})
 
-add_executable(core_tests core/tests/main_tests.cpp ${CORE_TEST_FILES})
-target_link_libraries(core_tests grawitas_core_lib)
+# add_executable(core_tests core/tests/main_tests.cpp ${CORE_TEST_FILES})
+# target_link_libraries(core_tests grawitas_core_lib)
