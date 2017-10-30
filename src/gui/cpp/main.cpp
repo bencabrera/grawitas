@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QDebug>
 #include <QQmlApplicationEngine>
+#include <QtQml>
 #include <QQmlContext>
 #include <QMetaType>
 #include "grawitasWrapper.h"

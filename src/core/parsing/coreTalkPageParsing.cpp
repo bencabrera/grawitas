@@ -44,7 +44,7 @@ namespace Grawitas {
 		{}
 
 		for(auto& outdent : outdents)
-			rtn.push_back({ std::get<0>(sec), std::get<0>(outdent), std::get<1>(outdent) });
+			rtn.push_back(std::tuple<std::string, std::string, int>{ std::get<0>(sec), std::get<0>(outdent), std::get<1>(outdent) });
 
 		return rtn;
 	}

@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(Grawitas)
 
+# set c++ standard to c++11
+set (CMAKE_CXX_STANDARD 11)
+
 # look for boost library
 find_package(Boost)
 include_directories(${Boost_INCLUDE_DIRS})
