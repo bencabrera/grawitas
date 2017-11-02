@@ -36,6 +36,8 @@ The are two types of releases: *CLI only* and *CLI and GUI*. The former is much 
 
 After downloading a release unzip the packed folder. In it you will find the mentioned .exe - binaries. To start the GUI double-click the grawitas_gui.exe. The CLI programs can be used by starting a terminal, switching to the extracted folder and starting the programs from there.
 
+**NOTE:** If you get any errors of a missing `vcruntime140.dll` you might need to install the [Microsoft Visual C++ Redistributable for Visual Studio 2017](https://go.microsoft.com/fwlink/?LinkId=746572).
+
 For more information on how to use the programs see the Usage section.
 
 ## Linux - Compiling the source code yourself
