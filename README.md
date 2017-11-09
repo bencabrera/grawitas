@@ -40,6 +40,25 @@ After downloading a release unzip the packed folder. In it you will find the men
 
 For more information on how to use the programs see the Usage section.
 
+## Windows - Compiling the source code yourself
+
+**WARNING:** We do not provide support for the compilation process under Windows. 
+The following notes might not be complete and there are serveral sources of error. 
+It is merely provided as a rough guide on what to do.
+
+For all the following steps consider the different versions of libraries and architectures (Debug vs. Release & x86 (32-bit) vs x64 (64-bit)).
+
+1. *Install Qt*. It is recommended to install prebuild binaries for the used compiler. This can be done using for example the Qt online installer.
+2. *Compile the Xerces-C*. Get the Xerces Source from the website and build it using CMake. For installing the library the compiler (e.g. Visual Studio 2017) can be started using admin rights and the Install target can be run. 
+3. *Install boost* Install boost libraries. Build libraries are not necessary. All used libraries are header only.
+4. *CMake the source*. Obtain the source (with submodules) and run an initial CMake on it. It should detect the boost installation. However, it will probably not find the Xerces installation. To help CMake out set the variables `XERCESC_Include_Dir` and `XERCESC_LIBRARY_RELEASE` to `[Xerces_Folder]\include` and `[Xerces_Folder]\lib\xerces-c_3.lib`, where `[Xerces_Folder]` is e.g. `C:\Program Files (x86)\xerces-c\lib`. After running Configure again CMake might not find the Qt libraries. To this end, add the `CMAKE_PREFIX_PATH` variable to point to the build Qt instance, e.g `C:\Qt\5.9.1\msvc2017_64`. Now everything should configure. 
+5. *Build everything.*
+6. *Deployment of CLI*. To deploy the CLI binaries gather them in a separate folder and add the `Qt5Core.dll`, `Qt5Network.dll` and `xerces-c_3_2.dll` to it.
+7. *Deployment of GUI*. Again copy the grawitas_gui.exe to a separate folder and add the `xerces-c_3_2.dll`. Now run the `windeployqt.exe` binary to help with deployment. A command could look like the following
+```
+.\windeployqt.exe --qmldir 'C:\Users\[Username]\Documents\grawitas\src\gui\qml' 'C:\Users\[Username]\Desktop\grawitas_cli_and_gui_x86\grawitas_gui.exe'
+```
+
 ## Linux - Compiling the source code yourself
 
 The different parser components require different dependencies to be installed on the system. 
