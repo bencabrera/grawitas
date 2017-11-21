@@ -57,8 +57,16 @@ void CrawlerThread::run()
 		connect(&fetcher, SIGNAL(finish_last_archive(std::string)), this, SLOT(finish_raw_talk_page_file(std::string)));
     }
 
-    fetcher.run();
-	write_status("Finished crawling and parsing provided articles");
+	try {
+    	fetcher.run();
+		write_status("Finished crawling and parsing provided articles");
+	}
+	catch(const std::exception& exception) {
+		write_status("--------------------------------------------------");
+		write_status("FATAL ERROR: The application terminated with an exception:");
+		write_status(exception.what());
+		write_status("--------------------------------------------------\n");
+	}
 }
 
 void CrawlerThread::start_raw_talk_page_file(std::string normalized_title, std::string, std::string content)
@@ -74,7 +82,6 @@ void CrawlerThread::start_raw_talk_page_file(std::string normalized_title, std::
 
 void CrawlerThread::finish_raw_talk_page_file(std::string normalized_title)
 {
-
 	delete raw_talk_page_files[normalized_title];
 	raw_talk_page_files.erase(normalized_title);
 }

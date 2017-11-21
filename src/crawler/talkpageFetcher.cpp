@@ -27,6 +27,8 @@ TalkPageFetcher::TalkPageFetcher(std::vector<std::string> titles)
 
 void TalkPageFetcher::run()
 {
+	throw std::logic_error("test error");
+
 	while(!_next_titles.empty())
 	{
 		// get the next n titles

@@ -69,7 +69,15 @@ int main(int argc, char** argv)
 		if(options[form_parameter].as<bool>())
 			formats.insert(parameter_to_format(form_parameter));
 
-	xml_dump_parsing(input_file, output_folder, formats);
+	try {
+		xml_dump_parsing(input_file, output_folder, formats);
+	}
+	catch(const std::exception& exception) {
+		std::cerr << "--------------------------------------------------" << std::endl;
+		std::cerr << "FATAL ERROR: The application terminated with an exception:" << std::endl;
+		std::cerr << exception.what() << std::endl;
+		std::cerr << "--------------------------------------------------" << std::endl;
+	}
 
 	return 0;
 }

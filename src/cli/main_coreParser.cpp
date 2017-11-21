@@ -58,25 +58,34 @@ int main(int argc, char** argv)
 		return 1;
 	} 
 
-	// the actual parsing part of the program; starts by reading from a file
-	timings.startTiming("parsing", "Splitting talk page into comments");
-	ParsedTalkPage parsedTalkPage;
-	if(options.count("input-talk-page-file"))
-	{
-		std::ifstream wiki_input_file(options["input-talk-page-file"].as<string>());
-		parsedTalkPage = parse_talk_page(wiki_input_file);	
-	}
-	timings.stopTiming("parsing");
 
-	// generate the output in the different specified formats
-	timings.startTiming("output", "Generation of output");
-	std::map<Format, std::string> formats;
-	for (auto form_parameter : FormatParameterStrings) {
-		if(options.count(form_parameter))
-			formats.insert({ parameter_to_format(form_parameter), options[form_parameter].as<std::string>() });
+	try {
+		// the actual parsing part of the program; starts by reading from a file
+		timings.startTiming("parsing", "Splitting talk page into comments");
+		ParsedTalkPage parsedTalkPage;
+		if(options.count("input-talk-page-file"))
+		{
+			std::ifstream wiki_input_file(options["input-talk-page-file"].as<string>());
+			parsedTalkPage = parse_talk_page(wiki_input_file);	
+		}
+		timings.stopTiming("parsing");
+
+		// generate the output in the different specified formats
+		timings.startTiming("output", "Generation of output");
+		std::map<Format, std::string> formats;
+		for (auto form_parameter : FormatParameterStrings) {
+			if(options.count(form_parameter))
+				formats.insert({ parameter_to_format(form_parameter), options[form_parameter].as<std::string>() });
+		}
+		output_in_formats_to_files(formats, parsedTalkPage);
+		timings.stopTiming("output");
 	}
-	output_in_formats_to_files(formats, parsedTalkPage);
-	timings.stopTiming("output");
+	catch(const std::exception& exception) {
+		std::cerr << "--------------------------------------------------" << std::endl;
+		std::cerr << "FATAL ERROR: The application terminated with an exception:" << std::endl;
+		std::cerr << exception.what() << std::endl;
+		std::cerr << "--------------------------------------------------" << std::endl;
+	}
 
 	timings.stopTiming("global");
 
