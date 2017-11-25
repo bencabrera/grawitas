@@ -8,12 +8,43 @@
 #include "../core/output/outputWrapper.h"
 #include "../core/output/formats.h"
 #include "../core/parsing/coreTalkPageParsing.h"
-#include "task.h"
+#include "../crawler/models.h"
+#include "../crawler/crawling.h"
+#include "crawler_task.h"
+
+#include "../core/output/outputHelpers.h"
+#include <boost/algorithm/string/trim.hpp>
 
 Q_DECLARE_METATYPE(std::string)
 
 using namespace Grawitas;
 using namespace std;
+
+std::set<Grawitas::Format> formats_from_parameters(const cxxopts::Options& arguments)
+{
+	std::set<Grawitas::Format> formats;
+
+	for (auto form_parameter : Grawitas::FormatParameterStrings) 
+		if(arguments.count(form_parameter) > 0 && arguments[form_parameter].as<bool>())
+			formats.insert(Grawitas::parameter_to_format(form_parameter));
+
+	return formats;
+}
+
+std::vector<std::string> read_titles_from_file(std::string file_path)
+{
+    std::vector<std::string> titles;
+    std::ifstream input_file(file_path);
+    std::string line;
+    while(std::getline(input_file,line))
+    {
+        boost::trim(line);
+        titles.push_back(line);
+    }
+
+	return titles;
+}
+
 
 int main(int argc, char** argv)
 {
@@ -57,16 +88,20 @@ int main(int argc, char** argv)
 
     qRegisterMetaType<std::string>();
 
-    QCoreApplication a(argc, argv);
 
-    auto task = new Task(&a,options);
+	const auto formats = formats_from_parameters(options);
+	const auto input_file = options["talk-page-list-file"].as<std::string>();
+	const auto output_folder = normalize_folder_path(options["output-folder"].as<std::string>());
+	const auto titles = read_titles_from_file(input_file);
 
-    QObject::connect(task, SIGNAL(finished()), &a, SLOT(quit()));
+	QCoreApplication a(argc, argv);
 
-    // This will run the task from the application event loop.
-    QTimer::singleShot(0, task, SLOT(run()));
+	CrawlerTask task(&a,titles, output_folder, formats);
 
-    return a.exec();
+	QObject::connect(&task, &CrawlerTask::finished, &QCoreApplication::quit);
 
-    return 0;
+	// This will run the task from the application event loop.
+	QTimer::singleShot(0, &task, &CrawlerTask::run);
+
+	return a.exec();
 }

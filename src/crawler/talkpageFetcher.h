@@ -33,7 +33,7 @@ public:
     void run();
 
 protected:
-    static TalkPageTitle split_title(std::string title);
+    // static TalkPageTitle split_title(std::string title);
     const std::vector<std::string> _titles;
     std::stack<std::string> _next_titles;
 

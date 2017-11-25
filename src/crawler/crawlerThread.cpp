@@ -24,18 +24,20 @@ CrawlerThread::CrawlerThread(QString _input_file_path, QString _output_folder, s
       options(_options)
 {}
 
-std::vector<std::string> read_titles_from_file(std::string file_path)
-{
-    std::vector<std::string> titles;
-    std::ifstream input_file(file_path);
-    std::string line;
-    while(std::getline(input_file,line))
-    {
-        boost::trim(line);
-        titles.push_back(line);
-    }
+namespace {
+	std::vector<std::string> read_titles_from_file(std::string file_path)
+	{
+		std::vector<std::string> titles;
+		std::ifstream input_file(file_path);
+		std::string line;
+		while(std::getline(input_file,line))
+		{
+			boost::trim(line);
+			titles.push_back(line);
+		}
 
-	return titles;
+		return titles;
+	}
 }
 
 void CrawlerThread::run()
@@ -45,16 +47,15 @@ void CrawlerThread::run()
     TalkPageFetcher fetcher(titles);
     ParsedTalkPageArchiver archiver(formats, output_folder);
 
-	connect(&archiver, SIGNAL(write_status(std::string)), this, SIGNAL(write_status(std::string))); // forward write_status signal from archiver to CrawlerThread
+	connect(&archiver, &ParsedTalkPageArchiver::write_status, this, &CrawlerThread::write_status); // forward write_status signal from archiver to CrawlerThread
 
-	connect(&fetcher, SIGNAL(start_new_article(std::string,std::string,std::string)), &archiver, SLOT(parse_talk_page(std::string,std::string,std::string)));
-	connect(&fetcher, SIGNAL(finish_last_archive(std::string)), &archiver, SLOT(finish_and_export_talk_page(std::string)));
-	connect(&fetcher, SIGNAL(write_status(std::string)), this, SIGNAL(write_status(std::string)));
+	connect(&fetcher, &TalkPageFetcher::start_new_article, &archiver, &ParsedTalkPageArchiver::parse_talk_page);
+	connect(&fetcher, &TalkPageFetcher::finish_last_archive, &archiver, &ParsedTalkPageArchiver::finish_and_export_talk_page);
+	connect(&fetcher, &TalkPageFetcher::write_status, this, &CrawlerThread::write_status);
 	
     if(options.count(KEEP_TALK_PAGE_FILES) > 0)
     {
-		connect(&fetcher, SIGNAL(start_new_article(std::string,std::string,std::string)), this, SLOT(start_raw_talk_page_file(std::string,std::string,std::string)));
-		connect(&fetcher, SIGNAL(finish_last_archive(std::string)), this, SLOT(finish_raw_talk_page_file(std::string)));
+		connect(&fetcher, &TalkPageFetcher::start_new_article, this, &CrawlerThread::start_raw_talk_page_file);
     }
 
 	try {
@@ -71,17 +72,7 @@ void CrawlerThread::run()
 
 void CrawlerThread::start_raw_talk_page_file(std::string normalized_title, std::string, std::string content)
 {
-	auto it = raw_talk_page_files.find(normalized_title);
-	if(it == raw_talk_page_files.end())
-	{
-		std::string title_filename = Grawitas::safeEncodeTitleToFilename(normalized_title);
-		raw_talk_page_files.insert({ normalized_title, new std::ofstream(output_folder + "/" + title_filename + "_raw.wikimd") });
-	}
-	*raw_talk_page_files[normalized_title] << content << std::endl;
-}
-
-void CrawlerThread::finish_raw_talk_page_file(std::string normalized_title)
-{
-	delete raw_talk_page_files[normalized_title];
-	raw_talk_page_files.erase(normalized_title);
+	std::string title_filename = Grawitas::safeEncodeTitleToFilename(normalized_title);
+	std::ofstream raw_file(output_folder + "/" + title_filename + "_raw.wikimd", std::ios::app);
+	raw_file << content << std::endl;
 }

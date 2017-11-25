@@ -75,6 +75,9 @@ set(CRAWLER_FILES
 	crawler/crawlerThread.cpp
 	crawler/parsedTalkPageArchiver.cpp
 	crawler/talkpageFetcher.cpp
+
+	crawler/crawling.cpp
+	crawler/requestRawPagesFromWikipedia.cpp
 )
 
 set(GUI_FILES
@@ -102,10 +105,14 @@ add_executable(grawitas_cli_xml cli/main_xmlDumpParser.cpp)
 target_link_libraries(grawitas_cli_xml grawitas_core_lib)
 target_link_libraries (grawitas_cli_xml ${XercesC_LIBRARY})
 
-add_executable(grawitas_cli_crawler cli/main_crawlerParser.cpp cli/task.cpp ${CRAWLER_FILES})
+add_executable(grawitas_cli_crawler cli/main_crawlerParser.cpp cli/crawler_task.cpp ${CRAWLER_FILES})
 target_link_libraries(grawitas_cli_crawler grawitas_core_lib)
 target_link_libraries(grawitas_cli_crawler Qt5::Core)
 target_link_libraries(grawitas_cli_crawler Qt5::Network)
+
+add_executable(network_test cli/main_networkTest.cpp)
+target_link_libraries(network_test Qt5::Core)
+target_link_libraries(network_test Qt5::Network)
 
 add_executable(grawitas_gui gui/cpp/main.cpp ${GUI_FILES} ${CRAWLER_FILES} gui/qml/qml.qrc)
 target_link_libraries(grawitas_gui grawitas_core_lib)

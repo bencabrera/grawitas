@@ -30,7 +30,6 @@ private:
 
 public slots:
 	void start_raw_talk_page_file(std::string normalized_title, std::string, std::string content);
-	void finish_raw_talk_page_file(std::string normalized_title);
 
 signals:
     void write_status(std::string status_message);

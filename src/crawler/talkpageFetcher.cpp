@@ -15,6 +15,30 @@
 
 const std::string TalkPageFetcher::WIKIPEDIA_API_URL = "https://en.wikipedia.org/w/api.php";
 
+TalkPageFetcher::TalkPageTitle split_title(std::string title)
+{
+	TalkPageFetcher::TalkPageTitle tmp;
+
+	if(title.substr(0,5) == "Talk:")
+		title = title.substr(5);
+
+	auto pos = title.find("/Archive");
+	tmp.is_archive = (pos != std::string::npos);
+
+	if(tmp.is_archive)
+	{
+		tmp.title = title.substr(0,pos);
+		std::string archive_str = title.substr(pos+9);
+		tmp.i_archive = std::stol(archive_str);
+	}
+	else
+	{
+		tmp.title = title;
+	}
+
+	return tmp;
+}
+
 TalkPageFetcher::TalkPageFetcher(std::vector<std::string> titles)
 {
 	for(auto& title : titles)
@@ -27,8 +51,6 @@ TalkPageFetcher::TalkPageFetcher(std::vector<std::string> titles)
 
 void TalkPageFetcher::run()
 {
-	throw std::logic_error("test error");
-
 	while(!_next_titles.empty())
 	{
 		// get the next n titles
@@ -85,7 +107,7 @@ std::vector<TalkPageFetcher::TalkPageResult> TalkPageFetcher::request(const std:
 
 	// "quit()" the event-loop, when the network request "finished()"
 	QNetworkAccessManager mgr;
-	QObject::connect(&mgr, SIGNAL(finished(QNetworkReply*)), &eventLoop, SLOT(quit()));
+	QObject::connect(&mgr, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
 
 	// the HTTP request
 	QNetworkRequest req(url);
@@ -111,15 +133,14 @@ std::vector<TalkPageFetcher::TalkPageResult> TalkPageFetcher::request(const std:
 
 			rtn.push_back(tmp);
 		}
-
-		delete reply;
 	}
 	else
 	{
 		//failure
 		qDebug() << "Failure" << reply->errorString();
-		delete reply;
 	}
+
+	delete reply;
 
 	return rtn;
 }
@@ -157,27 +178,4 @@ void TalkPageFetcher::generate_next_titles_to_get(const std::vector<TalkPageFetc
 	}
 }
 
-TalkPageFetcher::TalkPageTitle TalkPageFetcher::split_title(std::string title)
-{
-	TalkPageTitle tmp;
-
-	if(title.substr(0,5) == "Talk:")
-		title = title.substr(5);
-
-	auto pos = title.find("/Archive");
-	tmp.is_archive = (pos != std::string::npos);
-
-	if(tmp.is_archive)
-	{
-		tmp.title = title.substr(0,pos);
-		std::string archive_str = title.substr(pos+9);
-		tmp.i_archive = std::stol(archive_str);
-	}
-	else
-	{
-		tmp.title = title;
-	}
-
-	return tmp;
-}
 
