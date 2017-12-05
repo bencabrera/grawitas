@@ -10,6 +10,7 @@ namespace Grawitas {
 		TalkPageGrammar<Iterator, Skipper>::TalkPageGrammar() : TalkPageGrammar::base_type(comments, "TalkPageGrammar") {
 			using namespace boost::spirit::qi;
 			using boost::phoenix::push_back;
+			using boost::spirit::qi::iso8859_1::char_;
 
 			comments = (comment_grammar [push_back(_val, boost::spirit::_1)] ) % comment_ending;
 

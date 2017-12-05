@@ -11,6 +11,7 @@ namespace Grawitas {
 			using namespace boost::spirit::qi;
 			using namespace boost::phoenix;
 			using boost::phoenix::push_back;
+			using boost::spirit::qi::iso8859_1::char_;
 
 			heading = repeat(2,3)['='] >> *blank >> heading_text [_val = boost::spirit::qi::_1] >> heading_end;
 			heading_text = *(!heading_end >> !eol >> char_);

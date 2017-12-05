@@ -58,9 +58,9 @@ namespace Grawitas {
 
 		// first split wikisyntax into sections
 		auto content_it = content.cbegin();
-		Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> sectionGrammar;
+		Grawitas::SectionGrammar<std::string::const_iterator, boost::spirit::qi::iso8859_1::blank_type> sectionGrammar;
 		try {
-			boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::blank, sections);
+			boost::spirit::qi::phrase_parse(content_it, content.cend(), sectionGrammar, boost::spirit::qi::iso8859_1::blank, sections);
 		}
 		catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
 		{}
@@ -83,11 +83,11 @@ namespace Grawitas {
 	std::list<Comment> parse_one_section(const std::string& section_content, const int outdent, std::size_t& current_section_outdent, const std::size_t last_comment_level)
 	{
 		// for each section apply now the comment parsing
-		static Grawitas::TalkPageGrammar<std::string::const_iterator, boost::spirit::qi::blank_type> talkPageGrammar;
+		static Grawitas::TalkPageGrammar<std::string::const_iterator, boost::spirit::qi::iso8859_1::blank_type> talkPageGrammar;
 
 		std::list<Comment> parsed_section;
 		try {
-			boost::spirit::qi::phrase_parse(section_content.cbegin(), section_content.cend(), talkPageGrammar, boost::spirit::qi::blank, parsed_section);
+			boost::spirit::qi::phrase_parse(section_content.cbegin(), section_content.cend(), talkPageGrammar, boost::spirit::qi::iso8859_1::blank, parsed_section);
 		}
 		catch(boost::spirit::qi::expectation_failure<std::string::const_iterator> exp)
 		{}

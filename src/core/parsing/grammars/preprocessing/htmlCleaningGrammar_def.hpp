@@ -9,6 +9,7 @@ namespace Grawitas {
 	template<typename Iterator>
 		HtmlCleaningGrammar<Iterator>::HtmlCleaningGrammar() : HtmlCleaningGrammar::base_type(html_cleaning, "HtmlCleaningGrammar") {
 			using namespace boost::spirit::qi;
+			using boost::spirit::qi::iso8859_1::char_;
 
 			html_element = lit('<') >> -char_('/') >> html_element_name >> *(char_ - '>' - '\n') >> '>';
 			html_comment_text = *(char_ - '-' ) >> -(!lit("-->") >> lit('-') >> html_comment_text);

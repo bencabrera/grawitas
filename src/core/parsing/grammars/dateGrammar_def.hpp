@@ -8,6 +8,7 @@ namespace Grawitas {
 		DateGrammar<Iterator, Skipper>::DateGrammar() : DateGrammar::base_type(start, "DateGrammar") {
 			using namespace boost::spirit::qi;
 			using namespace boost::phoenix;
+			using boost::spirit::qi::iso8859_1::char_;
 
 
 			using boost::phoenix::val;
