@@ -66,6 +66,11 @@ int main(int argc, char** argv)
 		if(options.count("input-talk-page-file"))
 		{
 			std::ifstream wiki_input_file(options["input-talk-page-file"].as<string>());
+			if (!wiki_input_file.is_open())
+			{
+				std::cerr << "Input talk page file could not be opened. Aborting." << std::endl;
+				return 1;
+			}
 			parsedTalkPage = parse_talk_page(wiki_input_file);	
 		}
 		timings.stopTiming("parsing");

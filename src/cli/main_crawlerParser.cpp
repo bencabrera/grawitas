@@ -31,10 +31,9 @@ std::set<Grawitas::Format> formats_from_parameters(const cxxopts::Options& argum
 	return formats;
 }
 
-std::vector<std::string> read_titles_from_file(std::string file_path)
+std::vector<std::string> read_titles_from_file(std::ifstream& input_file)
 {
     std::vector<std::string> titles;
-    std::ifstream input_file(file_path);
     std::string line;
     while(std::getline(input_file,line))
     {
@@ -90,8 +89,14 @@ int main(int argc, char** argv)
 
 
 	const auto formats = formats_from_parameters(options);
-	const auto input_file = options["talk-page-list-file"].as<std::string>();
+	const auto input_file_path = options["talk-page-list-file"].as<std::string>();
 	const auto output_folder = normalize_folder_path(options["output-folder"].as<std::string>());
+	std::ifstream input_file(input_file_path);
+	if (!input_file.is_open())
+	{
+		std::cerr << "Input talk page file could not be opened. Aborting." << std::endl;
+		return 1;
+	}
 	const auto titles = read_titles_from_file(input_file);
 
 	QCoreApplication a(argc, argv);

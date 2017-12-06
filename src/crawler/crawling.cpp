@@ -106,6 +106,9 @@ void crawling(const std::vector<std::string>& article_titles, const std::string&
 			current_titles.push_back(next_pages_to_crawl.top());
 			next_pages_to_crawl.pop();
 		}
+		for (const auto& title : current_titles)
+			std::cout << "Downloading 'Talk:" << title << "'." << std::endl;
+		
 
 		// request the talk pages from wikipedia
 		const auto results = request_raw_pages_from_wikipedia(current_titles);
@@ -118,6 +121,7 @@ void crawling(const std::vector<std::string>& article_titles, const std::string&
 		// parse every talk page and add it to partially_parsed_articles
 		for(const auto& result : results) 
 		{
+			std::cout << "Parsing '" << result.title << "'." << std::endl;
 			const auto split = parse_page_title(result.title);
 			auto parsed = Grawitas::parse_talk_page(result.content);
 			auto& list = partially_parsed_articles_map[split.title];
@@ -129,6 +133,7 @@ void crawling(const std::vector<std::string>& article_titles, const std::string&
 		{
 			const auto split = parse_page_title(result.title);
 			if(result.missing && partially_parsed_articles_map.count(split.title)) {
+				std::cout << "Finished all archives of '" << split.title << "'. Exporting results." << std::endl;
 				auto& parsed_talk_page = partially_parsed_articles_map[split.title];
 
 				std::size_t cur_id = 1;
