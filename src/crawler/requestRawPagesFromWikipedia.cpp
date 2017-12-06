@@ -34,7 +34,7 @@ std::vector<TalkPageResult> request_raw_pages_from_wikipedia(std::vector<std::st
 		else
 			parameters << "|";
 
-		parameters << "Talk:" << QUrl::toPercentEncoding(QString::fromStdString(title)).toStdString();
+		parameters << QUrl::toPercentEncoding(QString::fromStdString(title)).toStdString();
 	}
 	query.addQueryItem("titles",QString::fromStdString(parameters.str()));
 	url.setQuery(query);

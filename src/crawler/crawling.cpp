@@ -92,9 +92,9 @@ void crawling(const std::vector<std::string>& article_titles, const std::string&
 	// initialization of data structures
 	std::map<std::string, Grawitas::ParsedTalkPage> partially_parsed_articles_map;
 
-	std::stack<std::string> next_pages_to_crawl;
+	std::vector<std::string> next_pages_to_crawl;
 	for(auto title : article_titles)
-		next_pages_to_crawl.push(title);
+		next_pages_to_crawl.push_back(title);
 
 	while(!next_pages_to_crawl.empty())
 	{
@@ -103,11 +103,11 @@ void crawling(const std::vector<std::string>& article_titles, const std::string&
 		std::size_t n_next_pages = std::min(next_pages_to_crawl.size(),static_cast<std::size_t>(N_PAGES_PER_REQUEST)+1);
 		for(std::size_t i = 0; i < n_next_pages; i++)
 		{
-			current_titles.push_back(next_pages_to_crawl.top());
-			next_pages_to_crawl.pop();
+			current_titles.push_back(next_pages_to_crawl.back());
+			next_pages_to_crawl.pop_back();
 		}
 		for (const auto& title : current_titles)
-			std::cout << "Downloading 'Talk:" << title << "'." << std::endl;
+			std::cout << "Downloading '" << title << "'." << std::endl;
 		
 
 		// request the talk pages from wikipedia
@@ -116,7 +116,7 @@ void crawling(const std::vector<std::string>& article_titles, const std::string&
 		// add page titles to crawl next
 		const auto to_add = generate_next_titles_to_get(results);
 		for(auto it = to_add.rbegin(); it != to_add.rend(); it++)
-			next_pages_to_crawl.push(*it);
+			next_pages_to_crawl.push_back(*it);
 
 		// parse every talk page and add it to partially_parsed_articles
 		for(const auto& result : results) 
@@ -134,6 +134,13 @@ void crawling(const std::vector<std::string>& article_titles, const std::string&
 			const auto split = parse_page_title(result.title);
 			if(result.missing && partially_parsed_articles_map.count(split.title)) {
 				std::cout << "Finished all archives of '" << split.title << "'. Exporting results." << std::endl;
+
+				// remove all remaining once from next_pages_to_crawl
+				next_pages_to_crawl.erase(std::remove_if(next_pages_to_crawl.begin(), next_pages_to_crawl.end(), [&split](const std::string& str) { 
+					auto tmp = parse_page_title(str);
+					return tmp.title == split.title;
+				}), next_pages_to_crawl.end());
+
 				auto& parsed_talk_page = partially_parsed_articles_map[split.title];
 
 				std::size_t cur_id = 1;
