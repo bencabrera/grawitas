@@ -141,9 +141,13 @@ namespace Grawitas {
 			// -> add current top element as often as necessary to get to correct current colon level
 			else if(comment.IndentLevel > refComments.size())
 			{
-				for(std::size_t i = 0; i < comment.IndentLevel-refComments.size(); i++)
-					refComments.push_front(refComments.front());
-				comment.ParentId = refComments.front();
+				if(refComments.size() == 0)
+					comment.ParentId = 0;
+				else {
+					for (std::size_t i = 0; i < comment.IndentLevel - refComments.size(); i++)
+						refComments.push_front(refComments.front());
+					comment.ParentId = refComments.front();
+				}
 			}
 
 			refComments.push_front(comment.Id);
