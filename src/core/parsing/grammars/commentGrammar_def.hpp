@@ -11,6 +11,8 @@ namespace Grawitas {
 			using namespace boost::spirit::qi;
 			using namespace boost::phoenix;
 			using boost::spirit::qi::iso8859_1::char_;
+			using boost::spirit::qi::iso8859_1::space;
+			using boost::spirit::qi::iso8859_1::blank;
 
 			text = *(!(signature >> comment_ending) >> no_skip[char_]);
 			

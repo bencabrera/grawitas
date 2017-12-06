@@ -12,6 +12,8 @@ namespace Grawitas {
 			using namespace boost::phoenix;
 			using boost::phoenix::push_back;
 			using boost::spirit::qi::iso8859_1::char_;
+			using boost::spirit::qi::iso8859_1::space;
+			using boost::spirit::qi::iso8859_1::blank;
 
 			section = eps [at_c<1>(_val) = -1] >> -outdent [at_c<1>(_val) = boost::spirit::_1] >> *(!outdent >> char_) [at_c<0>(_val) += boost::spirit::_1] ;
 
