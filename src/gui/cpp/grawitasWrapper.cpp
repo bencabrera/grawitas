@@ -1,13 +1,13 @@
 #include "grawitasWrapper.h"
 
-#include "../../core/helpers/stepTimer.h"
-#include "../../core/parsing/coreTalkPageParsing.h"
-#include "../../core/graphComputation/graphComputationCache.h"
-#include "../../core/models/parsedTalkPage.h"
-#include "../../core/output/outputWrapper.h"
-#include "../../core/parsing/xmlDumpParserWrapper.h"
-#include "../../core/parsing/xmlDumpParsingHandler.h"
-#include "../../core/output/formats.h"
+#include "../../misc/stepTimer.h"
+#include "../../talkPageParser/coreTalkPageParsing.h"
+#include "../../networks/graphComputationCache.h"
+#include "../../talkPageParser/models.h"
+#include "../../output/outputWrapper.h"
+#include "../../xmlDumpCrawler/xmlDumpParsing.h"
+#include "../../xmlDumpCrawler/xmlDumpParsingHandler.h"
+#include "../../output/formats.h"
 
 #include <QCoreApplication>
 #include <QDebug>

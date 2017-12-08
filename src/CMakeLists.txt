@@ -13,6 +13,10 @@ include_directories(${Boost_INCLUDE_DIRS})
 find_package(XercesC REQUIRED)
 include_directories( ${XercesC_INCLUDE_DIR} )
 
+# look for CURL library
+find_package(CURL)
+include_directories(${CURL_INCLUDE_DIR})
+
 # look for QT
 find_package(Qt5Core)
 find_package(Qt5Network)
@@ -26,58 +30,46 @@ set(CMAKE_AUTOMOC ON)
 # Instruct CMake to run rcc automatically when needed.
 set(CMAKE_AUTORCC ON)
 
-# --- GrawitasCoreLib files ---
-set(OUTPUT_SOURCE_FILES
-	core/output/graphGmlOutput.cpp
-	core/output/graphGraphmlOutput.cpp
-	core/output/graphGraphvizOutput.cpp
-	core/output/listCsvOutput.cpp
-	core/output/listHumanReadableOutput.cpp
-	core/output/listJsonOutput.cpp
-	core/output/outputWrapper.cpp
-	core/helpers/stepTimer.cpp
-	core/output/dateOutput.cpp
-	core/output/formats.cpp
-	core/output/outputHelpers.cpp
+# files
+set(TALK_PAGE_PARSER_FILES
+	talkPageParser/parsing.cpp
+	talkPageParser/grammars/commentGrammar.cpp
+	talkPageParser/grammars/userGrammar.cpp
+	talkPageParser/grammars/dateGrammar.cpp
+	talkPageParser/grammars/signatureGrammar.cpp
+	talkPageParser/grammars/talkPageGrammar.cpp
+	talkPageParser/grammars/commentEndingGrammar.cpp
+	talkPageParser/grammars/sections/sectionGrammar.cpp
+	talkPageParser/grammars/sections/outdentGrammar.cpp
+	talkPageParser/grammars/preprocessing/htmlCleaningGrammar.cpp
 )
 
-set(MODELS_SOURCE_FILES
-	core/models/comment.cpp
-	core/models/parsedTalkPage.cpp
+set(OUTPUT_FILES
+	output/commentSummary.cpp
+	output/graphGmlOutput.cpp
+	output/graphGraphmlOutput.cpp
+	output/graphGraphvizOutput.cpp
+	output/listCsvOutput.cpp
+	output/listHumanReadableOutput.cpp
+	output/listJsonOutput.cpp
+	output/outputWrapper.cpp
+	output/dateOutput.cpp
+	output/formats.cpp
+	output/outputHelpers.cpp
 )
 
-set(PARSERS_SOURCE_FILES
-	core/parsing/coreTalkPageParsing.cpp
+set(NETWORKS_FILES
+	networks/graphComputationCache.cpp
 )
 
-set(GRAPH_COMPUTATION_SOURCE_FILES
-	core/graphComputation/graphComputationCache.cpp
+set(XML_DUMP_CRAWLER_FILES
+	xmlDumpCrawler/xmlDumpParsingHandler.cpp
+	xmlDumpCrawler/xmlDumpParsing.cpp
 )
 
-set(GRAMMAR_SOURCE_FILES
-	core/parsing/grammars/commentGrammar.cpp
-	core/parsing/grammars/userGrammar.cpp
-	core/parsing/grammars/dateGrammar.cpp
-	core/parsing/grammars/signatureGrammar.cpp
-	core/parsing/grammars/talkPageGrammar.cpp
-	core/parsing/grammars/commentEndingGrammar.cpp
-	core/parsing/grammars/sections/sectionGrammar.cpp
-	core/parsing/grammars/sections/outdentGrammar.cpp
-	core/parsing/grammars/preprocessing/htmlCleaningGrammar.cpp
-)
-
-set(XML_DUMP_PARSING_FILES
-	core/parsing/xmlDumpParsingHandler.cpp
-	core/parsing/xmlDumpParserWrapper.cpp
-)
-
-set(CRAWLER_FILES
-	crawler/crawlerThread.cpp
-	crawler/parsedTalkPageArchiver.cpp
-	crawler/talkpageFetcher.cpp
-
-	crawler/crawling.cpp
-	crawler/requestRawPagesFromWikipedia.cpp
+set(HTTP_CRAWLER_FILES
+	httpCrawler/crawling.cpp
+	httpCrawler/getPagesFromWikipedia.cpp
 )
 
 set(GUI_FILES
@@ -85,42 +77,43 @@ set(GUI_FILES
 	gui/cpp/grawitasWrapper.cpp
 )
 
-set(CORE_TEST_FILES
-	core/tests/grammars/commentGrammarTests.cpp
-	core/tests/grammars/dateGrammarTests.cpp
-	core/tests/grammars/sectionGrammarTests.cpp
-	core/tests/grammars/signatureGrammarTests.cpp
-	core/tests/grammars/talkPageGrammarTests.cpp
-	core/tests/grammars/userGrammarTests.cpp
-	core/tests/helpers.cpp
+set(MISC_FILES
+	misc/stepTimer.cpp
 )
 
+set(TEST_FILES
+	tests/grammars/commentGrammarTests.cpp
+	tests/grammars/dateGrammarTests.cpp
+	tests/grammars/sectionGrammarTests.cpp
+	tests/grammars/signatureGrammarTests.cpp
+	tests/grammars/talkPageGrammarTests.cpp
+	tests/grammars/userGrammarTests.cpp
+	tests/helpers.cpp
+)
 
-add_library(grawitas_core_lib STATIC ${OUTPUT_SOURCE_FILES} ${MODELS_SOURCE_FILES} ${PARSERS_SOURCE_FILES} ${GRAPH_COMPUTATION_SOURCE_FILES} ${GRAMMAR_SOURCE_FILES} ${XML_DUMP_PARSING_FILES})
+add_library(grawitas_core_lib STATIC ${TALK_PAGE_PARSER_FILES} ${OUTPUT_FILES} ${NETWORKS_FILES} ${MISC_FILES})
 
 add_executable(grawitas_cli_core cli/main_coreParser.cpp)
-target_link_libraries(grawitas_cli_core grawitas_core_lib)
+target_link_libraries (grawitas_cli_core grawitas_core_lib)
 
-add_executable(grawitas_cli_xml cli/main_xmlDumpParser.cpp)
-target_link_libraries(grawitas_cli_xml grawitas_core_lib)
+add_executable(grawitas_cli_xml cli/main_xmlDumpParser.cpp ${XML_DUMP_CRAWLER_FILES})
+target_link_libraries (grawitas_cli_xml grawitas_core_lib)
 target_link_libraries (grawitas_cli_xml ${XercesC_LIBRARY})
 
-add_executable(grawitas_cli_crawler cli/main_crawlerParser.cpp cli/crawler_task.cpp ${CRAWLER_FILES})
+add_executable(grawitas_cli_crawler cli/main_crawlerParser.cpp ${HTTP_CRAWLER_FILES})
 target_link_libraries(grawitas_cli_crawler grawitas_core_lib)
-target_link_libraries(grawitas_cli_crawler Qt5::Core)
-target_link_libraries(grawitas_cli_crawler Qt5::Network)
+target_link_libraries(grawitas_cli_crawler ${CURL_LIBRARY})
 
-add_executable(network_test cli/main_networkTest.cpp)
-target_link_libraries(network_test Qt5::Core)
-target_link_libraries(network_test Qt5::Network)
+# add_executable(network_test cli/main_networkTest.cpp)
+# target_link_libraries(network_test Qt5::Core)
+# target_link_libraries(network_test Qt5::Network)
 
-add_executable(grawitas_gui gui/cpp/main.cpp ${GUI_FILES} ${CRAWLER_FILES} gui/qml/qml.qrc)
-target_link_libraries(grawitas_gui grawitas_core_lib)
-target_link_libraries(grawitas_gui Qt5::Core)
-target_link_libraries(grawitas_gui Qt5::Network)
-target_link_libraries(grawitas_gui Qt5::Widgets)
-target_link_libraries(grawitas_gui Qt5::Qml)
-target_link_libraries(grawitas_gui ${XercesC_LIBRARY})
+# add_executable(grawitas_gui gui/cpp/main.cpp ${GUI_FILES} ${CRAWLER_FILES} gui/qml/qml.qrc)
+# target_link_libraries(grawitas_gui grawitas_core_lib)
+# target_link_libraries(grawitas_gui Qt5::Core)
+# target_link_libraries(grawitas_gui Qt5::Network)
+# target_link_libraries(grawitas_gui Qt5::Widgets)
+# target_link_libraries(grawitas_gui Qt5::Qml)
+# target_link_libraries(grawitas_gui ${XercesC_LIBRARY})
 
-# add_executable(core_tests core/tests/main_tests.cpp ${CORE_TEST_FILES})
-# target_link_libraries(core_tests grawitas_core_lib)
+# add_executable(core_tests core/tests/main_tests.cpp ${TEST_FILES})

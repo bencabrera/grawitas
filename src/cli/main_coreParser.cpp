@@ -3,9 +3,9 @@
 
 #include "../../libs/cxxopts/include/cxxopts.hpp"
 
-#include "../core/output/outputWrapper.h"
-#include "../core/helpers/stepTimer.h"
-#include "../core/parsing/coreTalkPageParsing.h"
+#include "../output/outputWrapper.h"
+#include "../misc/stepTimer.h"
+#include "../talkPageParser/parsing.h"
 
 using namespace Grawitas;
 using namespace std;

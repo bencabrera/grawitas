@@ -1,21 +1,16 @@
 #include <iostream>
 #include <fstream>
-#include <QtCore>
-#include <QMetaType>
 
 #include "../../libs/cxxopts/include/cxxopts.hpp"
 
-#include "../core/output/outputWrapper.h"
-#include "../core/output/formats.h"
-#include "../core/parsing/coreTalkPageParsing.h"
-#include "../crawler/models.h"
-#include "../crawler/crawling.h"
-#include "crawler_task.h"
+#include "../output/outputWrapper.h"
+#include "../output/formats.h"
+#include "../talkPageParser/parsing.h"
+#include "../talkPageParser/models.h"
+#include "../httpCrawler/crawling.h"
 
-#include "../core/output/outputHelpers.h"
+#include "../output/outputHelpers.h"
 #include <boost/algorithm/string/trim.hpp>
-
-Q_DECLARE_METATYPE(std::string)
 
 using namespace Grawitas;
 using namespace std;
@@ -85,9 +80,6 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    qRegisterMetaType<std::string>();
-
-
 	const auto formats = formats_from_parameters(options);
 	const auto input_file_path = options["talk-page-list-file"].as<std::string>();
 	const auto output_folder = normalize_folder_path(options["output-folder"].as<std::string>());
@@ -99,14 +91,5 @@ int main(int argc, char** argv)
 	}
 	const auto titles = read_titles_from_file(input_file);
 
-	QCoreApplication a(argc, argv);
-
-	CrawlerTask task(&a,titles, output_folder, formats);
-
-	QObject::connect(&task, &CrawlerTask::finished, &QCoreApplication::quit);
-
-	// This will run the task from the application event loop.
-	QTimer::singleShot(0, &task, &CrawlerTask::run);
-
-	return a.exec();
+	crawling(titles, output_folder, formats, [](const std::string& msg) { std::cout << msg << std::endl; });
 }
