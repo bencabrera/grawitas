@@ -5,6 +5,10 @@
 
 struct TalkPageResult {
 	bool missing;
+	bool is_archive;
+	int i_archive;
+
+	std::string full_title;
 	std::string title;
 	std::string content;
 };

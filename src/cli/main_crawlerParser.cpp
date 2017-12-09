@@ -83,6 +83,7 @@ int main(int argc, char** argv)
 	const auto formats = formats_from_parameters(options);
 	const auto input_file_path = options["talk-page-list-file"].as<std::string>();
 	const auto output_folder = normalize_folder_path(options["output-folder"].as<std::string>());
+
 	std::ifstream input_file(input_file_path);
 	if (!input_file.is_open())
 	{
@@ -91,5 +92,8 @@ int main(int argc, char** argv)
 	}
 	const auto titles = read_titles_from_file(input_file);
 
-	crawling(titles, output_folder, formats, [](const std::string& msg) { std::cout << msg << std::endl; });
+	AdditionalCrawlerOptions crawler_options;
+	crawler_options.keep_raw_talk_pages = options.count("keep-raw-talk-pages");
+	crawler_options.status_callback = [](const std::string& msg) { std::cout << msg << std::endl; };
+	crawling(titles, output_folder, formats, crawler_options);
 }

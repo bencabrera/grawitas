@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main_crawler.qml</file>
+        <file>trim.js</file>
+    </qresource>
+</RCC>

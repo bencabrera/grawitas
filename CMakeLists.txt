@@ -26,9 +26,9 @@ include_directories(${SQLite3_INCLUDE_DIR})
 
 # look for QT
 find_package(Qt5Core)
-find_package(Qt5Network)
 find_package(Qt5Widgets)
 find_package(Qt5Qml)
+find_package(Qt5Concurrent)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -79,8 +79,10 @@ set(HTTP_CRAWLER_FILES
 )
 
 set(GUI_FILES
-	src/gui/cpp/dumpParserThread.cpp
-	src/gui/cpp/grawitasWrapper.cpp
+	# src/gui/cpp/dumpParserThread.cpp
+	# src/gui/cpp/grawitasWrapper.cpp
+	
+	
 )
 
 set(MISC_FILES
@@ -111,16 +113,23 @@ target_link_libraries (grawitas_cli_xml_to_db grawitas_core_lib)
 target_link_libraries(grawitas_cli_xml_to_db ${XercesC_LIBRARY})
 target_link_libraries(grawitas_cli_xml_to_db ${SQLITE3_LIBRARIES})
 
+add_executable(grawitas_gui_core_parser src/gui/cpp/main_coreParserDemo.cpp src/gui/cpp/coreWrapper.cpp src/gui/qml/coreParserDemo.qrc)
+target_link_libraries(grawitas_gui_core_parser grawitas_core_lib)
+target_link_libraries(grawitas_gui_core_parser Qt5::Core)
+target_link_libraries(grawitas_gui_core_parser Qt5::Widgets)
+target_link_libraries(grawitas_gui_core_parser Qt5::Qml)
+
+add_executable(grawitas_gui_crawler src/gui/cpp/main_crawler.cpp ${GUI_FILES} ${HTTP_CRAWLER_FILES} src/gui/cpp/crawlerWrapper.cpp src/gui/qml/crawler.qrc)
+target_link_libraries(grawitas_gui_crawler grawitas_core_lib)
+target_link_libraries(grawitas_gui_crawler Qt5::Core)
+target_link_libraries(grawitas_gui_crawler Qt5::Widgets)
+target_link_libraries(grawitas_gui_crawler Qt5::Concurrent)
+target_link_libraries(grawitas_gui_crawler Qt5::Qml)
+target_link_libraries(grawitas_gui_crawler ${CURL_LIBRARY})
+
 # add_executable(network_test cli/main_networkTest.cpp)
 # target_link_libraries(network_test Qt5::Core)
 # target_link_libraries(network_test Qt5::Network)
 
-# add_executable(grawitas_gui gui/cpp/main.cpp ${GUI_FILES} ${CRAWLER_FILES} gui/qml/qml.qrc)
-# target_link_libraries(grawitas_gui grawitas_core_lib)
-# target_link_libraries(grawitas_gui Qt5::Core)
-# target_link_libraries(grawitas_gui Qt5::Network)
-# target_link_libraries(grawitas_gui Qt5::Widgets)
-# target_link_libraries(grawitas_gui Qt5::Qml)
-# target_link_libraries(grawitas_gui ${XercesC_LIBRARY})
 
 # add_executable(core_tests core/tests/main_tests.cpp ${TEST_FILES})

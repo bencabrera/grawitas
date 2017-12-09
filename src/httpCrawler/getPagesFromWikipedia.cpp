@@ -2,30 +2,58 @@
 
 #include <sstream>
 #include <array>
+#include <algorithm>
 #include <curl/curl.h>
 
 #include <boost/property_tree/ptree.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-std::string uri_encode(const std::string &str)
-{
-	std::stringstream ss;
-	for(unsigned char c : str)
-		if((48 <= c && c <= 57) || (65 <= c && c <= 90) || (97 <= c && c <= 122) || c == '-' || c=='_' || c == '.' || c== '~')	
-			ss << c;
-		else
-			ss << '%' << std::hex << static_cast<unsigned int>(c);
+namespace {
+	std::string uri_encode(const std::string &str)
+	{
+		std::stringstream ss;
+		for(unsigned char c : str)
+			if((48 <= c && c <= 57) || (65 <= c && c <= 90) || (97 <= c && c <= 122) || c == '-' || c=='_' || c == '.' || c== '~')	
+				ss << c;
+			else
+				ss << '%' << std::hex << static_cast<unsigned int>(c);
 
-	return ss.str();
+		return ss.str();
+	}
+
+	size_t curl_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
+	{
+		std::string* p = static_cast<std::string*>(userdata);
+		p->append(ptr,size*nmemb);	
+
+		return size*nmemb;
+	};
+
+	std::tuple<std::string,bool, int> parse_page_title(std::string title)
+	{
+		std::tuple<std::string,bool, int> t{"", false, 0};
+
+		if(title.substr(0,5) == "Talk:")
+			title = title.substr(5);
+
+		auto pos = title.find("/Archive");
+		std::get<1>(t) = (pos != std::string::npos);
+
+		if(std::get<1>(t))
+		{
+			std::get<0>(t) = title.substr(0,pos);
+			boost::trim(std::get<0>(t));
+			std::string archive_str = title.substr(pos+9);
+			std::get<2>(t) = std::stol(archive_str);
+		}
+		else
+			std::get<0>(t) = title;
+
+		return t;
+	}
 }
 
-size_t curl_callback(char *ptr, size_t size, size_t nmemb, void *userdata)
-{
-	std::string* p = static_cast<std::string*>(userdata);
-	p->append(ptr,size*nmemb);	
-
-	return size*nmemb;
-};
 
 std::vector<TalkPageResult> get_pages_from_wikipedia(std::vector<std::string> page_titles)
 {
@@ -91,13 +119,22 @@ std::vector<TalkPageResult> get_pages_from_wikipedia(std::vector<std::string> pa
 		TalkPageResult result;
 		auto t = page.second;			
 		result.missing = t.count("missing");
-		result.title = t.get<std::string>("title");
+		result.full_title = t.get<std::string>("title");
+
+		auto tmp = parse_page_title(result.full_title);
+		result.title = std::get<0>(tmp);
+		result.is_archive = std::get<1>(tmp);
+		result.i_archive = std::get<2>(tmp);
 
 		if(!result.missing)
 			result.content = t.get_child("revisions").front().second.get<std::string>("*");
 
-		results.emplace_back(result);
+		results.push_back(result);
 	}
+
+	std::stable_sort(results.begin(), results.end(), [](const TalkPageResult& r1, const TalkPageResult& r2) {
+		return r1.i_archive < r2.i_archive;
+	});
 
 	return results;
 }

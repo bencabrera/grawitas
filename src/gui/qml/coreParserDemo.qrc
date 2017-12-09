@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main_coreParserDemo.qml</file>
+    </qresource>
+</RCC>
