@@ -14,7 +14,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 
 # look for xerces library
-find_package(XercesC REQUIRED)
+find_package(XercesC)
 if(XercesC_FOUND)
 	include_directories(${XercesC_INCLUDE_DIR})
 endif()

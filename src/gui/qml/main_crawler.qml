@@ -32,7 +32,6 @@ ApplicationWindow {
 				Layout.fillWidth: true
 				width: parent.width
 				id: input_file_field
-				text: '/home/ace7k3/Desktop/grawitas_test/crawler/input/talk_pages.txt'
 			}
 			Button{
 				Label{
@@ -65,7 +64,6 @@ ApplicationWindow {
 				Layout.fillWidth: true
 				width: parent.width
 				id: output_folder_field
-				text: '/home/ace7k3/Desktop/grawitas_test/crawler/output'
 			}
 			Button{
 				Label{
