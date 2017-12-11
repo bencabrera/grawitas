@@ -90,6 +90,7 @@ set(HTTP_CRAWLER_FILES
 
 set(MISC_FILES
 	src/misc/stepTimer.cpp
+	src/misc/readLinesFromFile.cpp
 )
 
 set(TEST_FILES

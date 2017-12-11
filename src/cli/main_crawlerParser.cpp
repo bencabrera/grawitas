@@ -10,6 +10,7 @@
 #include "../httpCrawler/crawling.h"
 
 #include "../output/outputHelpers.h"
+#include "../misc/readLinesFromFile.h"
 #include <boost/algorithm/string/trim.hpp>
 
 using namespace Grawitas;
@@ -25,20 +26,6 @@ std::set<Grawitas::Format> formats_from_parameters(const cxxopts::Options& argum
 
 	return formats;
 }
-
-std::vector<std::string> read_titles_from_file(std::ifstream& input_file)
-{
-    std::vector<std::string> titles;
-    std::string line;
-    while(std::getline(input_file,line))
-    {
-        boost::trim(line);
-        titles.push_back(line);
-    }
-
-	return titles;
-}
-
 
 int main(int argc, char** argv)
 {
@@ -90,7 +77,12 @@ int main(int argc, char** argv)
 		std::cerr << "Input talk page file could not be opened. Aborting." << std::endl;
 		return 1;
 	}
-	const auto titles = read_titles_from_file(input_file);
+	const auto titles = read_lines_from_file(input_file);
+	if (titles.empty())
+	{
+		std::cerr << "Input talk page file does not contain any uncommented, non-empty lines. Aborting." << std::endl;
+		return 1;
+	}
 
 	AdditionalCrawlerOptions crawler_options;
 	crawler_options.keep_raw_talk_pages = options.count("keep-raw-talk-pages");

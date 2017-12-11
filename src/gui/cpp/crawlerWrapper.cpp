@@ -3,6 +3,7 @@
 #include "../../talkPageParser/models.h"
 #include "../../output/outputWrapper.h"
 #include "../../httpCrawler/crawling.h"
+#include "../../misc/readLinesFromFile.h"
 
 #include <QDateTime>
 #include <iostream>
@@ -24,19 +25,6 @@ namespace {
 		}
 
 		return formats;
-	}
-
-	std::vector<std::string> read_titles_from_file(std::ifstream& input_file)
-	{
-		std::vector<std::string> titles;
-		std::string line;
-		while(std::getline(input_file,line))
-		{
-			boost::trim(line);
-			titles.push_back(line);
-		}
-
-		return titles;
 	}
 }
 
@@ -63,7 +51,9 @@ void CrawlerWrapper::crawling(QString input_file_path, QString output_folder, QV
 
 	// TODO: error handling
 	std::ifstream input_file(input_file_path.toStdString());
-	auto titles = read_titles_from_file(input_file);
+	auto titles = read_lines_from_file(input_file);
+	if(titles.empty() && _crawler_text_area != nullptr)
+		QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(QString("Input talk page file does not contain any uncommented, non-empty lines. Aborting."))));
 
 	Grawitas::AdditionalCrawlerOptions crawler_options;
 	crawler_options.keep_raw_talk_pages = keep_raw_talk_pages;

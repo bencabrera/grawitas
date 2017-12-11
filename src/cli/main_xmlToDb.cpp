@@ -5,6 +5,7 @@
 #include <boost/algorithm/string/trim.hpp>
 
 #include "../misc/stepTimer.h"
+#include "../misc/readLinesFromFile.h"
 #include "../output/formats.h"
 
 #include "../xmlDumpCrawler/xmlDumpParsing.h"
@@ -83,16 +84,7 @@ int main(int argc, char** argv)
 	const std::string input_paths_filepath = options["input-paths-file"].as<std::string>();
 	const std::string output_sqlite_filepath = options["output-sqlite-file"].as<std::string>();
 
-	std::vector<std::string> paths;
-	std::ifstream paths_file(input_paths_filepath);
-	std::string filepath;
-	do {
-		std::getline(paths_file, filepath);
-		boost::trim(filepath);
-		if(!filepath.empty() && filepath.front() != '#')
-			paths.push_back(filepath);
-	}
-	while(!std::cin.eof() && !filepath.empty());
+	std::vector<std::string> paths = read_lines_from_file(std::cin);
 
 	try {
 
