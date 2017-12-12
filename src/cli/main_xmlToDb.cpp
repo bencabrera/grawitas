@@ -3,6 +3,7 @@
 
 #include "../../libs/cxxopts/include/cxxopts.hpp"
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/replace.hpp>
 
 #include "../misc/stepTimer.h"
 #include "../misc/readLinesFromFile.h"
@@ -19,36 +20,29 @@ using namespace Grawitas;
 using namespace std;
 
 namespace {
-	int callback(void* /*NotUsed*/, int /*argc*/, char ** /*argv*/, char ** /*azColName*/) {
-		return 0;
-	}
-
-	void clear_sqlite_db(const std::string& output_sqlite_filepath)
+	void run_sql_query_without_result(sqlite3* sqlite_db, const std::string query)
 	{
-		// Open database
-		sqlite3* sqlite_db;
-		char* zErrMsg = 0;
-		auto rc = sqlite3_open(output_sqlite_filepath.c_str(), &sqlite_db);
-
-		if(rc) 
-		{
-			std::string msg = sqlite3_errmsg(sqlite_db);
-			sqlite3_close(sqlite_db);
-			throw std::logic_error("Can't open database: %s\n" + msg);
-		}
-
-		std::string query = "DROP TABLE IF EXISTS talk_page;";
-
 		// Execute SQL statement
-		rc = sqlite3_exec(sqlite_db, query.c_str(), callback, 0, &zErrMsg);
+		char* zErrMsg;
+		auto rc = sqlite3_exec(sqlite_db, query.c_str(), nullptr, 0, &zErrMsg);
 
 		if(rc != SQLITE_OK){
 			std::string msg = zErrMsg;
 			sqlite3_free(zErrMsg);
 			sqlite3_close(sqlite_db);
-			throw std::logic_error("SQL error: %s\n" + msg);
+			throw std::logic_error("SQL error: " + msg);
 		} 
-		sqlite3_close(sqlite_db);
+	}
+
+	void reset_db(sqlite3* sqlite_db)
+	{
+		run_sql_query_without_result(sqlite_db, "DROP TABLE IF EXISTS comment;");
+		run_sql_query_without_result(sqlite_db, "DROP TABLE IF EXISTS user;");
+		run_sql_query_without_result(sqlite_db, "DROP TABLE IF EXISTS article;");
+
+		run_sql_query_without_result(sqlite_db, "CREATE TABLE comment(id INTEGER PRIMARY KEY, parent_id INTEGER NULL, user_id INTEGER, article_id INTEGER, date TEXT, text TEXT);");
+		run_sql_query_without_result(sqlite_db, "CREATE TABLE user(id INTEGER PRIMARY KEY, name TEXT);");
+		run_sql_query_without_result(sqlite_db, "CREATE TABLE article(id INTEGER PRIMARY KEY, title TEXT);");
 	}
 }
 
@@ -84,12 +78,23 @@ int main(int argc, char** argv)
 	const std::string input_paths_filepath = options["input-paths-file"].as<std::string>();
 	const std::string output_sqlite_filepath = options["output-sqlite-file"].as<std::string>();
 
-	std::vector<std::string> paths = read_lines_from_file(std::cin);
+	std::ifstream input_paths_file(input_paths_filepath);
+	std::vector<std::string> paths = read_lines_from_file(input_paths_file);
 
 	try {
+		// Open database
+		sqlite3* sqlite_db;
+		auto rc = sqlite3_open(output_sqlite_filepath.c_str(), &sqlite_db);
+
+		if(rc) 
+		{
+			std::string msg = sqlite3_errmsg(sqlite_db);
+			sqlite3_close(sqlite_db);
+			throw std::logic_error("Can't open database: %s\n" + msg);
+		}
 
 		// reset sqlite db
-		clear_sqlite_db(output_sqlite_filepath);
+		reset_db(sqlite_db);
 
 		// init xerces
 		xercesc::XMLPlatformUtils::Initialize();
@@ -99,14 +104,30 @@ int main(int argc, char** argv)
 			return title.substr(0,5) == "Talk:";
 		};
 
-		XmlToSqliteHandler handler(output_sqlite_filepath);
+		run_sql_query_without_result(sqlite_db, "BEGIN TRANSACTION;");
+		XmlToSqliteHandler handler(sqlite_db);
 		handler.status_callbacks = [](const std::string& msg) { std::cout << msg << std::endl; };
 		WikiXmlDumpXerces::SingleCoreParser parser(handler, parser_properties);
 		parser.Run(paths.begin(),paths.end());
+		run_sql_query_without_result(sqlite_db, "END TRANSACTION;");
 
-		std::cout << "Finished parsing all talk pages in XML file" << std::endl;
+		// add all users to db
+		run_sql_query_without_result(sqlite_db, "BEGIN TRANSACTION;");
+		for(const auto& p : handler.user_map)
+		{
+			run_sql_query_without_result(sqlite_db, "INSERT INTO user(id,name) VALUES(" + std::to_string(p.second) + ", \"" + boost::replace_all_copy(p.first, "\"", "\"\"") + "\");");
+		}
+		run_sql_query_without_result(sqlite_db, "END TRANSACTION;");
+
+		// add all articles to db
+		run_sql_query_without_result(sqlite_db, "BEGIN TRANSACTION;");
+		for(const auto& p : handler.article_map)
+			run_sql_query_without_result(sqlite_db, "INSERT INTO article(id,title) VALUES(" + std::to_string(p.second) + ", \"" + boost::replace_all_copy(p.first, "\"", "\"\"") + "\");");
+		run_sql_query_without_result(sqlite_db, "END TRANSACTION;");
 
 		xercesc::XMLPlatformUtils::Terminate();
+
+		sqlite3_close(sqlite_db);
 	}
 	catch(const std::exception& exception) {
 		std::cerr << "--------------------------------------------------" << std::endl;

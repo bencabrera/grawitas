@@ -11,33 +11,6 @@
 #include "../output/outputWrapper.h"
 
 namespace {
-	int callback(void* /*NotUsed*/, int argc, char **argv, char **azColName) {
-		int i;
-		for(i = 0; i<argc; i++) {
-			printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-		}
-		printf("\n");
-		return 0;
-	}
-
-	void add_talk_page_to_db(sqlite3* db, const std::string& title, int archive, std::string content) 
-	{
-		char* zErrMsg = 0;
-		int rc;
-
-		boost::replace_all(content, "\"", "\"\"");
-
-		std::string query = "INSERT INTO talk_page(title, archive, content) VALUES(\""+title+"\", "+std::to_string(archive)+", \""+content+"\");"; 
-
-		/* Execute SQL statement */
-		rc = sqlite3_exec(db, query.c_str(), callback, 0, &zErrMsg);
-
-		if(rc != SQLITE_OK){
-			std::string msg = zErrMsg;
-			sqlite3_free(zErrMsg);
-			throw std::logic_error("SQL error: %s\n" + msg);
-		} 
-	}
 
 	struct TalkPageTitle {
 		std::string title;
@@ -78,55 +51,89 @@ namespace {
 
 		return tmp;
 	}
+
+	void run_sql_query_without_result(sqlite3* sqlite_db, std::string query)
+	{
+		// Execute SQL statement
+		char* zErrMsg = nullptr;
+		int rc = sqlite3_exec(sqlite_db, query.c_str(), nullptr, 0, &zErrMsg);
+		if(rc != SQLITE_OK){
+			if(zErrMsg != nullptr)
+			{
+				std::string msg = zErrMsg;
+				sqlite3_free(zErrMsg);
+				throw std::logic_error("SQL error: " + msg);
+			}
+			else
+				throw std::logic_error("SQL error without error message.");
+		} 
+	}
+
+	std::string to_sqlite_date(const std::tm& t)
+	{
+		std::stringstream ss;
+
+		ss << std::setfill('0') << std::setw(4) << (t.tm_year+1900) << "-" << std::setfill('0') << std::setw(2)<< (t.tm_mon+1) << "-" << std::setfill('0') << std::setw(2) << t.tm_mday;
+		ss << " ";
+		ss << std::setfill('0') << std::setw(2) << t.tm_hour << ":" << std::setfill('0') << std::setw(2) << t.tm_min << ":" << std::setfill('0') << std::setw(2) << t.tm_sec;
+
+		return ss.str();
+	}
 }
 
 namespace Grawitas {
 
-
-	XmlToSqliteHandler::XmlToSqliteHandler(const std::string& sqlite_filepath)
-	{
-		char* zErrMsg = 0;
-		int rc;
-
-		// Open database
-		rc = sqlite3_open(sqlite_filepath.c_str(), &sqlite_db);
-
-		if(rc) 
-		{
-			std::string msg = sqlite3_errmsg(sqlite_db);
-			sqlite3_close(sqlite_db);
-			throw std::logic_error("Can't open database: %s\n" + msg);
-		}
-
-		std::string query = "CREATE TABLE IF NOT EXISTS talk_page(id ROWID, archive INTEGER, title VARCHAR(512), content TEXT);";
-
-		// Execute SQL statement
-		rc = sqlite3_exec(sqlite_db, query.c_str(), callback, 0, &zErrMsg);
-
-		if(rc != SQLITE_OK){
-			std::string msg = zErrMsg;
-			sqlite3_free(zErrMsg);
-			sqlite3_close(sqlite_db);
-			throw std::logic_error("SQL error: %s\n" + msg);
-		} 
-
-		sqlite3_exec(sqlite_db, "BEGIN TRANSACTION", callback, 0, &zErrMsg);
-	}
-
-	XmlToSqliteHandler::~XmlToSqliteHandler()
-	{
-		char* zErrMsg = 0;
-		sqlite3_exec(sqlite_db, "END TRANSACTION", callback, 0, &zErrMsg);
-		sqlite3_close(sqlite_db);
-	}
+	XmlToSqliteHandler::XmlToSqliteHandler(sqlite3* db)
+	:sqlite_db(db), i_user(1), i_article(1), i_comment(1)
+	{}
 
 	void XmlToSqliteHandler::HandleArticle(const WikiXmlDumpXerces::WikiPageData& data)
 	{
 		std::string title = data.MetaData.at("title");
-		std::cout << title << std::endl;
+		std::cout << title << " " << i_comment << std::endl;
 		auto split = parse_page_title(title);
-		auto i_archive = split.is_archive ? split.i_archive : 0;
-		add_talk_page_to_db(sqlite_db, split.title, i_archive, data.Content);
+		auto comments = parse_talk_page(data.Content);
+		std::size_t n_article_comments=0;
+		for(auto& sec : comments)
+			for(auto& c : sec.second) 
+			{
+				insert_comment(c, split.title);
+				n_article_comments++;
+			}
+		i_comment += n_article_comments;
 	}
 
+	void XmlToSqliteHandler::insert_comment(const Grawitas::Comment& comment, const std::string& article_title)
+	{
+		// get or add user to map
+		auto user_it = user_map.find(comment.User);
+		if(user_it == user_map.end())
+			user_it = user_map.insert({ comment.User, i_user++ }).first;
+
+		// get or add article to map
+		auto article_it = article_map.find(article_title);
+		if(article_it == article_map.end())
+			article_it = article_map.insert({ article_title, i_article++ }).first;
+
+		auto text = comment.Text;
+		boost::replace_all(text, "\"", "\"\"");
+
+		std::stringstream ss;
+		ss << "INSERT INTO comment(id, parent_id, user_id, article_id, date, text) VALUES(";
+		ss << i_comment+comment.Id << ",";
+		ss << ((i_comment == 0) ? 0 :  i_comment+comment.ParentId) << ",";
+		ss << user_it->second << ",";
+		ss << article_it->second << ",";
+		ss << "\"" << to_sqlite_date(comment.Date) << "\",";
+		ss << "\"" << text << "\");";
+
+		std::string query = ss.str();
+		run_sql_query_without_result(sqlite_db, query);
+
+		if(i_comment % 10000 == 0)
+		{
+			run_sql_query_without_result(sqlite_db, "END TRANSACTION");
+			run_sql_query_without_result(sqlite_db, "BEGIN TRANSACTION");
+		}
+	}
 }

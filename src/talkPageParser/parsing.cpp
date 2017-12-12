@@ -193,7 +193,10 @@ namespace Grawitas {
 		// calculate ids for each parsed section
 		std::size_t cur_id = 1;
 		for (auto& sec : parsed_talk_page) 
+		{
 			calculate_ids(sec.second, cur_id);	
+			std::for_each(sec.second.begin(), sec.second.end(), [](Comment& comment) { boost::trim(comment.User); }); // trim comment.User
+		}
 
 		return parsed_talk_page;
 	}
