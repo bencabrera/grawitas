@@ -132,8 +132,8 @@ namespace Grawitas {
 
 				// remove all remaining once from next_pages_to_crawl
 				page_progress.erase(std::remove_if(page_progress.begin(), page_progress.end(), [&result](const std::pair<std::string,int>& page) { 
-							return page.first == result.title;
-							}), page_progress.end());
+					return page.first == result.title;
+				}), page_progress.end());
 			}
 
 			// export those articles that are finished and remove them

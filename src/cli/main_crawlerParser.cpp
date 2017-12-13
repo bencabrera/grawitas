@@ -29,63 +29,76 @@ std::set<Grawitas::Format> formats_from_parameters(const cxxopts::Options& argum
 
 int main(int argc, char** argv)
 {
-    cxxopts::Options options("grawitas_cli_crawler", "Grawitas CLI crawler parser.");
-    options.add_options()
-                    ("h,help", "Produces this help message.")
+	cxxopts::Options options("grawitas_cli_crawler", "Downloads talk pages from Wikipedia and parses them. It also automatically retrieves archived talk pages.");
+	options.add_options()
+		("h,help", "Produces this help message.")
 
-                    ("i,talk-page-list-file", "Path to an input file containing titles of Wikipedia articles.", cxxopts::value<string>())
-                    ("o,output-folder", "Path to an input file containing a talk page in the Wikipedia syntax.", cxxopts::value<string>())
+		("i,talk-page-list-file", "Path to an input file containing titles of Wikipedia articles.", cxxopts::value<string>())
+		("o,output-folder", "Path to an input file containing a talk page in the Wikipedia syntax.", cxxopts::value<string>())
 
-                    // network output
-                    ("user-network-gml", "Set this flag for exporting the user network in GML format.")
-                    ("user-network-graphml", "Set this flag for exporting the user network in GraphML format.")
-                    ("user-network-graphviz", "Set this flag for exporting the user network in GraphViz format.")
+		// network output
+		("user-network-gml", "Flag for exporting as user network (GML).")
+		("user-network-graphml", "Flag for exporting the user network (GraphML).")
+		("user-network-graphviz", "Flag for exporting the user network (GraphViz).")
 
-                    ("comment-network-gml", "Set this flag for exporting the comment network in GML format.")
-                    ("comment-network-graphml", "Set this flag for exporting the comment network in GraphML format.")
-                    ("comment-network-graphviz", "Set this flag for exporting the comment network in GraphViz format.")
+		("comment-network-gml", "Flag for exporting the comment network (GML).")
+		("comment-network-graphml", "Flag for exporting the comment network (GraphML).")
+		("comment-network-graphviz", "Flag for exporting the comment network (GraphViz).")
 
-                    ("two-mode-network-gml", "Set this flag for exporting the two-mode network in GML format.")
-                    ("two-mode-network-graphml", "Set this flag for exporting the two-mode network in GraphML format.")
-                    ("two-mode-network-graphviz", "Set this flag for exporting the two-mode network in GraphViz format.")
+		("two-mode-network-gml", "Flag for exporting the two-mode network (GML).")
+		("two-mode-network-graphml", "Flag for exporting the two-mode network (GraphML).")
+		("two-mode-network-graphviz", "Flag for exporting the two-mode network (GraphViz).")
 
-                    // list output
-                    ("comment-list-csv", "Set this flag for exporting the list of comments as a CSV format.")
-                    ("comment-list-human-readable", "Set this flag for exporting the list of comments as a human readable format.")
-                    ("comment-list-json", "Set this flag for exporting the list of comments as a JSON format (recommended).")
+		// list output
+		("comment-list-csv", "Flag for exporting the list of comments (csv).")
+		("comment-list-human-readable", "Flag for exporting the list of comments (human readable).")
+		("comment-list-json", "Flag for exporting the list of comments (json).")
 
-                    ("keep-raw-talk-pages", "Set this flag if you want to keep the raw crawled talk pages.")
-                    // misc
-                    ("show-timings", "Show the timings for the different steps.")
-                    ;
+		("keep-raw-talk-pages", "Flag for keeping the raw crawled talk pages.")
+		// misc
+		("show-timings", "Show the timings for the different steps.")
+		;
+	options.positional_help("<talk-page-list-file> <output-folder>");
 
-	options.parse(argc, argv);
+	try {
+		options.parse_positional(std::vector<std::string>{"talk-page-list-file","output-folder"});
+		options.parse(argc, argv);
 
-    // show help and exit program if --help is set
-    if (options.count("help")) {
-		cout << options.help() << endl;
-        return 0;
-    }
+		// show help and exit program if --help is set
+		if (options.count("help")) {
+			cout << options.help() << endl;
+			return 0;
+		}
 
-	const auto formats = formats_from_parameters(options);
-	const auto input_file_path = options["talk-page-list-file"].as<std::string>();
-	const auto output_folder = normalize_folder_path(options["output-folder"].as<std::string>());
+		const auto formats = formats_from_parameters(options);
+		if(!options.count("talk-page-list-file") || !options.count("output-folder")) 
+			throw std::invalid_argument("Talk page list file or output folder not specified.");
 
-	std::ifstream input_file(input_file_path);
-	if (!input_file.is_open())
-	{
-		std::cerr << "Input talk page file could not be opened. Aborting." << std::endl;
+		const auto input_file_path = options["talk-page-list-file"].as<std::string>();
+		const auto output_folder = normalize_folder_path(options["output-folder"].as<std::string>());
+
+		std::ifstream input_file(input_file_path);
+		if (!input_file.is_open())
+			throw std::invalid_argument("File containing article titles could not be opened.");
+
+		const auto titles = read_lines_from_file(input_file);
+		if (titles.empty())
+			throw std::invalid_argument("File containing article titles does not contain any uncommented, non-empty lines.");
+
+		AdditionalCrawlerOptions crawler_options;
+		crawler_options.keep_raw_talk_pages = options.count("keep-raw-talk-pages");
+		crawler_options.status_callback = [](const std::string& msg) { std::cout << msg << std::endl; };
+		crawling(titles, output_folder, formats, crawler_options);
+	}
+	catch(const std::invalid_argument& e) {
+		std::cerr << "ABORTING. An argument error appeared: " << e.what() << std::endl << std::endl;
+		std::cerr << "Try -h or --help for more information" << std::endl;
 		return 1;
 	}
-	const auto titles = read_lines_from_file(input_file);
-	if (titles.empty())
-	{
-		std::cerr << "Input talk page file does not contain any uncommented, non-empty lines. Aborting." << std::endl;
+	catch(const std::exception& e) {
+		std::cerr << "ABORTING. The application terminated with an exception: " << std::endl << e.what() << std::endl << std::endl;
 		return 1;
 	}
 
-	AdditionalCrawlerOptions crawler_options;
-	crawler_options.keep_raw_talk_pages = options.count("keep-raw-talk-pages");
-	crawler_options.status_callback = [](const std::string& msg) { std::cout << msg << std::endl; };
-	crawling(titles, output_folder, formats, crawler_options);
+	return 0;
 }

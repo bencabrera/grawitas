@@ -8,8 +8,6 @@
 #include "../misc/stepTimer.h"
 #include "../misc/readLinesFromFile.h"
 #include "../output/formats.h"
-
-#include "../xmlDumpCrawler/xmlDumpParsing.h"
 #include "../output/outputHelpers.h"
 
 #include "../xmlDumpCrawler/xmlToSqliteHandler.h"
@@ -51,37 +49,34 @@ int main(int argc, char** argv)
 	StepTimer timings;
 	timings.startTiming("global", "Total");
 
-    cxxopts::Options options("grawitas_cli_xml", "Grawitas CLI xml parser.");
+    cxxopts::Options options("grawitas_cli_xml", "Parses talk pages in Wikipedia xml dumps to a sqlite file containing the structured comments.");
 	options.add_options()
-		("h,help", "Produce help message.")
-		("i,input-paths-file", "The XML file that is part of a dump of Wikipedia.", cxxopts::value<string>())
-		("o,output-sqlite-file", "The folder in which the results should be stored. WARNING: always has to end with / or \\.", cxxopts::value<string>())
-
-		// misc
-		("t,show-timings", "Show the timings for the different parsing steps.")
+		("h,help", "Produces this help message.")
+		("i,input-paths-file", "File of which each line is absolute path to an xml file that is part of a Wikipedia dump.", cxxopts::value<string>())
+		("o,output-sqlite-file", "Output sqlite file.", cxxopts::value<string>())
+		("t,show-timings", "Flag to show timings.")
 		;
-
-	options.parse(argc, argv);
-
-	// display help if --help was specified
-	if (options.count("help")) {
-		cout << options.help() << endl;
-		return 0;
-	}
-
-	if(!options.count("input-paths-file") || !options.count("output-sqlite-file"))
-	{
-		std::cerr << "Please specify the parameters --input-xml-file and --output-sqlite-file." << std::endl;
-		return 1;
-	}
-
-	const std::string input_paths_filepath = options["input-paths-file"].as<std::string>();
-	const std::string output_sqlite_filepath = options["output-sqlite-file"].as<std::string>();
-
-	std::ifstream input_paths_file(input_paths_filepath);
-	std::vector<std::string> paths = read_lines_from_file(input_paths_file);
+	options.positional_help("<input-paths-file> <output-sqlite-file>");
 
 	try {
+		options.parse_positional(std::vector<std::string>{"input-paths-file","output-sqlite-file"});
+		options.parse(argc, argv);
+
+		// display help if --help was specified
+		if (options.count("help")) {
+			cout << options.help() << endl;
+			return 0;
+		}
+
+		if(!options.count("input-paths-file") || !options.count("output-sqlite-file"))
+			throw std::invalid_argument("Input paths file or output file not specified.");
+
+		const std::string input_paths_filepath = options["input-paths-file"].as<std::string>();
+		const std::string output_sqlite_filepath = options["output-sqlite-file"].as<std::string>();
+
+		std::ifstream input_paths_file(input_paths_filepath);
+		std::vector<std::string> paths = read_lines_from_file(input_paths_file);
+
 		// Open database
 		sqlite3* sqlite_db;
 		auto rc = sqlite3_open(output_sqlite_filepath.c_str(), &sqlite_db);
@@ -128,21 +123,23 @@ int main(int argc, char** argv)
 		xercesc::XMLPlatformUtils::Terminate();
 
 		sqlite3_close(sqlite_db);
-	}
-	catch(const std::exception& exception) {
-		std::cerr << "--------------------------------------------------" << std::endl;
-		std::cerr << "FATAL ERROR: The application terminated with an exception:" << std::endl;
-		std::cerr << exception.what() << std::endl;
-		std::cerr << "--------------------------------------------------" << std::endl;
-	}
+		timings.stopTiming("global");
 
-	timings.stopTiming("global");
-
-	if(options.count("show-timings") && options["show-timings"].as<bool>())
-	{
-		std::cout << std::endl << "--- Timings ---" << std::endl;
-		timings.printTimings(std::cout);
-		std::cout << std::endl;
+		if(options.count("show-timings") && options["show-timings"].as<bool>())
+		{
+			std::cout << std::endl << "--- Timings ---" << std::endl;
+			timings.printTimings(std::cout);
+			std::cout << std::endl;
+		}
+	}
+	catch(const std::invalid_argument& e) {
+		std::cerr << "ABORTING. An argument error appeared: " << e.what() << std::endl << std::endl;
+		std::cerr << "Try -h or --help for more information" << std::endl;
+		return 1;
+	}
+	catch(const std::exception& e) {
+		std::cerr << "ABORTING. The application terminated with an exception: " << std::endl << e.what() << std::endl << std::endl;
+		return 1;
 	}
 
 	return 0;

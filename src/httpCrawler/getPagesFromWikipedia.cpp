@@ -94,7 +94,7 @@ std::vector<TalkPageResult> get_pages_from_wikipedia(std::vector<std::string> pa
 
 		res = curl_easy_perform(curl);
 		if(res != CURLE_OK)
-			throw std::runtime_error(std::string("Could not perform HTTP GET request:") + curl_easy_strerror(res));
+			throw std::runtime_error(std::string("Could not perform HTTP GET request: ") + curl_easy_strerror(res));
 
 		curl_easy_cleanup(curl);
 	}
