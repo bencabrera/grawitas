@@ -100,7 +100,6 @@ set(TEST_FILES
 	src/tests/grammars/signatureGrammarTests.cpp
 	src/tests/grammars/talkPageGrammarTests.cpp
 	src/tests/grammars/userGrammarTests.cpp
-	src/tests/helpers.cpp
 )
 
 add_library(grawitas_core_lib STATIC ${TALK_PAGE_PARSER_FILES} ${OUTPUT_FILES} ${NETWORKS_FILES} ${MISC_FILES})
@@ -139,4 +138,5 @@ if(Qt5_FOUND AND CURL_FOUND)
 	target_link_libraries(grawitas_gui_crawler ${CURL_LIBRARY})
 endif()
 
-# add_executable(core_tests core/tests/main_tests.cpp ${TEST_FILES})
+add_executable(tests src/tests/main_tests.cpp ${TEST_FILES})
+target_link_libraries(tests grawitas_core_lib)

@@ -1,2 +1,2 @@
-#define BOOST_TEST_MODULE "Grawitas Tests"
-#include <boost/test/included/unit_test.hpp>
+#define CATCH_CONFIG_MAIN  
+#include "../../libs/catch/catch.hpp"

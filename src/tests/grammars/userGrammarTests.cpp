@@ -1,64 +1,40 @@
-#include <boost/test/unit_test.hpp>
-#include <boost/test/data/test_case.hpp>
-#include <boost/test/data/monomorphic.hpp>
+#include "../../../libs/catch/catch.hpp"
 
-#include <fstream>
-#include <streambuf>
-#include <string>
-
-#include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/qi_repeat.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_fusion.hpp>
-#include <boost/spirit/include/phoenix_stl.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/variant/recursive_variant.hpp>
 
-#include "../../parsing/grammars/userGrammar.hpp"
+#include "../../talkPageParser/grammars/userGrammar.hpp"
 
-BOOST_AUTO_TEST_SUITE(UserGrammarTests)
-
-	std::vector<std::string> user_examples = {
-		"[[User:Ianmckeachie|Ianmckeachie]]",
-		"[[User:Ianmckeachie]]",
-		"[[User:Ianmckeachie|Ianmckeachie]] ([[User talk:Ianmckeachie|talk]])",
-		"[[User:Ianmckeachie|Ianmckeachie]] [[User talk:Ianmckeachie|talk]]",
-		"[[Special:Contributions/128.227.41.144|128.227.41.144]]",
-		"[[Special:Contributions/128.227.41.144|128.227.41.144]] ([[User talk:128.227.41.144|talk]])",
-		"[[User:Lihaas|Lihaas]] ([[User talk:Lihaas|talk]])",
-		"[[user:thumperward|Chris Cunningham (user:thumperward: not at work)]] - [[user talk:thumperward|talk]]"
-	};
-
-	std::vector<std::string> expected_values = {
-		"Ianmckeachie",
-		"Ianmckeachie",
-		"Ianmckeachie",
-		"Ianmckeachie",
-		"128.227.41.144",
-		"128.227.41.144",
-		"Lihaas",
-		"thumperward"
-	};
-
-	BOOST_DATA_TEST_CASE(ShouldBeAbleToParse,boost::unit_test::data::make(user_examples),user_str)
-	{
-		std::string str = user_str;
+namespace {
+	std::string parse_user(std::string str) {
 		auto it = str.cbegin();
-		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::UserGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank);
-		BOOST_CHECK(it == str.cend());
+		std::string user;
+		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::UserGrammar<std::string::const_iterator, boost::spirit::qi::iso8859_1::blank_type>(), boost::spirit::qi::iso8859_1::blank, user);
+
+		return user;
 	}
+}
 
-
-	BOOST_DATA_TEST_CASE(ExtractedUsernameShouldBeCorrect,boost::unit_test::data::make(user_examples) ^ boost::unit_test::data::make(expected_values),user_str,expected)
-	{
-		std::string str = user_str;
-		auto it = str.cbegin();
-		std::string parsedUsername;
-		boost::spirit::qi::phrase_parse(it, str.cend(), Grawitas::UserGrammar<std::string::const_iterator, boost::spirit::qi::blank_type>(), boost::spirit::qi::blank, parsedUsername);
-		BOOST_CHECK(it == str.cend());
-		BOOST_CHECK_EQUAL(expected, parsedUsername);
-	}
-
-BOOST_AUTO_TEST_SUITE_END()
+TEST_CASE("[[User:Ianmckeachie|Ianmckeachie]]") {
+	REQUIRE(parse_user("[[User:Ianmckeachie|Ianmckeachie]]") == "Ianmckeachie");
+}
+TEST_CASE("[[User:Ianmckeachie]]") {
+	REQUIRE(parse_user("[[User:Ianmckeachie]]") == "Ianmckeachie");
+}
+TEST_CASE("[[User:Ianmckeachie|Ianmckeachie]] ([[User talk:Ianmckeachie|talk]])") {
+	REQUIRE(parse_user("[[User:Ianmckeachie|Ianmckeachie]] ([[User talk:Ianmckeachie|talk]])") == "Ianmckeachie");
+}
+TEST_CASE("[[User:Ianmckeachie|Ianmckeachie]] [[User talk:Ianmckeachie|talk]]") {
+	REQUIRE(parse_user("[[User:Ianmckeachie|Ianmckeachie]] [[User talk:Ianmckeachie|talk]]") == "Ianmckeachie");
+}
+TEST_CASE("[[Special:Contributions/128.227.41.144|128.227.41.144]]") {
+	REQUIRE(parse_user("[[Special:Contributions/128.227.41.144|128.227.41.144]]") == "128.227.41.144");
+}
+TEST_CASE("[[Special:Contributions/128.227.41.144|128.227.41.144]] ([[User talk:128.227.41.144|talk]])") {
+	REQUIRE(parse_user("[[Special:Contributions/128.227.41.144|128.227.41.144]] ([[User talk:128.227.41.144|talk]])") == "128.227.41.144");
+}
+TEST_CASE("[[User:Lihaas|Lihaas]] ([[User talk:Lihaas|talk]])") {
+	REQUIRE(parse_user("[[User:Lihaas|Lihaas]] ([[User talk:Lihaas|talk]])") == "Lihaas");
+}
+TEST_CASE("[[user:thumperward|Chris Cunningham (user:thumperward: not at work)]] - [[user talk:thumperward|talk]]") {
+	REQUIRE(parse_user("[[user:thumperward|Chris Cunningham (user:thumperward: not at work)]] - [[user talk:thumperward|talk]]") == "thumperward");
+}
