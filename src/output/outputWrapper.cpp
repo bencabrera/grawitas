@@ -16,7 +16,7 @@
 
 namespace Grawitas {
 
-	void output_in_format_to_stream(std::ostream& ostr, Format format, const ParsedTalkPage& parsedTalkPage)
+	void output_in_format_to_stream(std::ostream& ostr, Format format, const ParsedTalkPage& parsedTalkPage, bool beautify)
 	{
 		auto cache = GraphComputationCache(parsedTalkPage);
 
@@ -39,7 +39,7 @@ namespace Grawitas {
 		if(format == COMMENT_LIST_HUMAN_READABLE)
 			listToHumanReadable(ostr, parsedTalkPage);
 		if(format == COMMENT_LIST_JSON)
-			listToJson(ostr, parsedTalkPage);
+			listToJson(ostr, parsedTalkPage, {"id", "parent_id", "user", "date", "text"}, beautify);
 
 		if(format == TWO_MODE_NETWORK_GML)
 			graphToGml(ostr, cache.GetTwoModeGraph());
@@ -100,7 +100,7 @@ namespace Grawitas {
 		if(formats.count(COMMENT_LIST_JSON))
 		{
 			std::ofstream file(formats.at(COMMENT_LIST_JSON));
-			listToJson(file, parsedTalkPage);
+			listToJson(file, parsedTalkPage,{"id", "parent_id", "user", "date", "text"});
 		}
 
 		if(formats.count(TWO_MODE_NETWORK_GML))

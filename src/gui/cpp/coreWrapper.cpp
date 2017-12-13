@@ -26,7 +26,7 @@ QString CoreWrapper::core(QString q_talk_page_syntax, QString format_str)
 
     std::stringstream ss;
 
-    output_in_format_to_stream(ss,format,parsedTalkPage);
+    output_in_format_to_stream(ss,format,parsedTalkPage,true);
 
     return QString::fromStdString(ss.str());
 }

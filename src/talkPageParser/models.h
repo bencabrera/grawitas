@@ -20,6 +20,8 @@ namespace Grawitas {
 		std::size_t ParentId;
 
 		std::size_t IndentLevel;
+
+		std::string Article;
 	};
 
 	using ParsedTalkPage = std::list<std::pair<std::string, std::list<Comment>>>;
