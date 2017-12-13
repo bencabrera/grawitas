@@ -120,6 +120,12 @@ if(XercesC_FOUND AND SQLITE3_FOUND)
 	target_link_libraries(grawitas_cli_xml_to_db ${SQLITE3_LIBRARIES})
 endif()
 
+if(SQLITE3_FOUND)
+	add_executable(grawitas_cli_db_export src/cli/main_dbExport.cpp)
+	target_link_libraries (grawitas_cli_db_export grawitas_core_lib)
+	target_link_libraries(grawitas_cli_db_export ${SQLITE3_LIBRARIES})
+endif()
+
 if(Qt5_FOUND)
 	add_executable(grawitas_gui_core_parser src/gui/cpp/main_coreParserDemo.cpp src/gui/cpp/coreWrapper.cpp src/gui/qml/coreParserDemo.qrc)
 	target_link_libraries(grawitas_gui_core_parser grawitas_core_lib)
