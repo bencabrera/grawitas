@@ -16,7 +16,7 @@
 
 namespace Grawitas {
 
-	void output_in_format_to_stream(std::ostream& ostr, Format format, const ParsedTalkPage& parsedTalkPage, bool beautify)
+	void output_in_format_to_stream(std::ostream& ostr, Format format, const std::vector<Comment>& parsedTalkPage, bool beautify, const std::set<std::string> included_fields)
 	{
 		auto cache = GraphComputationCache(parsedTalkPage);
 
@@ -35,11 +35,11 @@ namespace Grawitas {
 			graphToGraphviz(ostr, cache.GetCommentGraph());
 
 		if(format == COMMENT_LIST_CSV)
-			listToCsv(ostr, parsedTalkPage);
+			listToCsv(ostr, parsedTalkPage, included_fields);
 		if(format == COMMENT_LIST_HUMAN_READABLE)
 			listToHumanReadable(ostr, parsedTalkPage);
 		if(format == COMMENT_LIST_JSON)
-			listToJson(ostr, parsedTalkPage, {"id", "parent_id", "user", "date", "text"}, beautify);
+			listToJson(ostr, parsedTalkPage, included_fields, beautify);
 
 		if(format == TWO_MODE_NETWORK_GML)
 			graphToGml(ostr, cache.GetTwoModeGraph());
@@ -49,7 +49,7 @@ namespace Grawitas {
 			graphToGraphviz(ostr, cache.GetTwoModeGraph());
 	}
 
-	void output_in_formats_to_files(const std::map<Format, std::string>& formats, const ParsedTalkPage& parsedTalkPage)
+	void output_in_formats_to_files(const std::map<Format, std::string>& formats, const std::vector<Comment>& parsedTalkPage, const std::set<std::string> included_fields)
 	{
 		auto cache = GraphComputationCache(parsedTalkPage);
 
@@ -88,7 +88,7 @@ namespace Grawitas {
 		if(formats.count(COMMENT_LIST_CSV))
 		{
 			std::ofstream file(formats.at(COMMENT_LIST_CSV));
-			listToCsv(file, parsedTalkPage);
+			listToCsv(file, parsedTalkPage,included_fields);
 		}
 
 		if(formats.count(COMMENT_LIST_HUMAN_READABLE))
@@ -100,7 +100,7 @@ namespace Grawitas {
 		if(formats.count(COMMENT_LIST_JSON))
 		{
 			std::ofstream file(formats.at(COMMENT_LIST_JSON));
-			listToJson(file, parsedTalkPage,{"id", "parent_id", "user", "date", "text"});
+			listToJson(file, parsedTalkPage,included_fields);
 		}
 
 		if(formats.count(TWO_MODE_NETWORK_GML))
@@ -119,5 +119,4 @@ namespace Grawitas {
 			graphToGraphviz(file, cache.GetTwoModeGraph());
 		}
 	}
-
 }

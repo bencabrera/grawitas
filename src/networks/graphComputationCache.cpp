@@ -1,7 +1,7 @@
 #include "graphComputationCache.h"
 
 namespace Grawitas {
-	GraphComputationCache::GraphComputationCache(const ParsedTalkPage& parsedTalkPage)
+	GraphComputationCache::GraphComputationCache(const std::vector<Comment>& parsedTalkPage)
 		:_parsedTalkPage(parsedTalkPage),
 		_hasUserGraph(false),
 		_hasCommentGraph(false),
@@ -62,65 +62,59 @@ namespace Grawitas {
 		auto& g = *_userGraph;
 		std::map<std::string, VertexDescriptor> nameToVertexMapper;
 
-		for(auto& paragraph : _parsedTalkPage)
+		std::map<std::size_t, Comment> idToCommentMap;
+		for(const auto& c : _parsedTalkPage)
+			idToCommentMap.insert({ c.Id, c });
+
+		auto edge_weight_map = boost::get(boost::edge_weight, g);
+		auto vertex_name_map = boost::get(boost::vertex_name, g);
+		for(const auto& curComment : _parsedTalkPage)
 		{
-			auto allComments = paragraph.second;
-			std::map<std::size_t, Comment> idToCommentMap;
-			for(auto c : allComments)
+			VertexDescriptor vFrom = 0;
+			VertexDescriptor vTo = 0;
+
+			auto nameFrom = curComment.User;
+			if(nameFrom != "")
 			{
-				idToCommentMap.insert({ c.Id, c });
+				auto mapIt = nameToVertexMapper.find(nameFrom);
+				if(mapIt == nameToVertexMapper.end())
+				{
+					auto v = boost::add_vertex(g);
+					nameToVertexMapper.insert({ nameFrom, v });
+					vFrom = v;
+					boost::put(vertex_name_map, v, nameFrom);
+				}
+				else
+					vFrom = mapIt->second;
 			}
 
-			auto edge_weight_map = boost::get(boost::edge_weight, g);
-			auto vertex_name_map = boost::get(boost::vertex_name, g);
-			for(auto& curComment : allComments)
-			{
-				VertexDescriptor vFrom = 0;
-				VertexDescriptor vTo = 0;
 
-				auto nameFrom = curComment.User;
-				if(nameFrom != "")
+			// TODO: can the be further optimized
+
+			if(curComment.ParentId != 0)
+			{
+				auto nameTo = idToCommentMap.at(curComment.ParentId).User;
+				if(nameTo != "")
 				{
-					auto mapIt = nameToVertexMapper.find(nameFrom);
+					auto mapIt = nameToVertexMapper.find(nameTo);
 					if(mapIt == nameToVertexMapper.end())
 					{
 						auto v = boost::add_vertex(g);
-						nameToVertexMapper.insert({ nameFrom, v });
-						vFrom = v;
-						boost::put(vertex_name_map, v, nameFrom);
+						nameToVertexMapper.insert({ nameTo, v });
+						vTo = v;
+						boost::put(vertex_name_map, v, nameTo);
 					}
 					else
-						vFrom = mapIt->second;
+						vTo = mapIt->second;
 				}
 
-
-				// TODO: can the be further optimized
-
-				if(curComment.ParentId != 0)
+				if(nameFrom != "" && nameTo != "")
 				{
-					auto nameTo = idToCommentMap.at(curComment.ParentId).User;
-					if(nameTo != "")
-					{
-						auto mapIt = nameToVertexMapper.find(nameTo);
-						if(mapIt == nameToVertexMapper.end())
-						{
-							auto v = boost::add_vertex(g);
-							nameToVertexMapper.insert({ nameTo, v });
-							vTo = v;
-							boost::put(vertex_name_map, v, nameTo);
-						}
-						else
-							vTo = mapIt->second;
-					}
-
-					if(nameFrom != "" && nameTo != "")
-					{
-						auto res = boost::add_edge(vFrom, vTo, g);
-						if(res.second)
-							boost::put(edge_weight_map, res.first, 1);
-						else
-							boost::put(edge_weight_map, res.first, boost::get(edge_weight_map, res.first) + 1);
-					}
+					auto res = boost::add_edge(vFrom, vTo, g);
+					if(res.second)
+						boost::put(edge_weight_map, res.first, 1);
+					else
+						boost::put(edge_weight_map, res.first, boost::get(edge_weight_map, res.first) + 1);
 				}
 			}
 		}
@@ -134,29 +128,23 @@ namespace Grawitas {
 		auto& g = *_commentGraph;
 		std::map<std::size_t, VertexDescriptor> commentIdToVertexMapper;
 
-		for(auto& paragraph : _parsedTalkPage)
+		auto vertex_name_map = boost::get(boost::vertex_name, g);
+
+		for(const auto& curComment : _parsedTalkPage)
 		{
-			auto allComments = paragraph.second;
+			// add comment as node in the graph
+			auto idFrom = curComment.Id;
+			VertexDescriptor vFrom = boost::add_vertex(g);
+			commentIdToVertexMapper.insert({ idFrom, vFrom });
+			boost::put(vertex_name_map, vFrom, curComment);
 
-			auto vertex_name_map = boost::get(boost::vertex_name, g);
-
-			for(auto& curComment : allComments)
+			// if ParentId != 0 add edge to graph
+			if(curComment.ParentId != 0)
 			{
-				// add comment as node in the graph
-				auto idFrom = curComment.Id;
-				VertexDescriptor vFrom = boost::add_vertex(g);
-				commentIdToVertexMapper.insert({ idFrom, vFrom });
-				boost::put(vertex_name_map, vFrom, curComment);
+				auto idTo = curComment.ParentId;
+				VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
 
-				// if ParentId != 0 add edge to graph
-				if(curComment.ParentId != 0)
-				{
-					auto idTo = curComment.ParentId;
-					VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
-
-					boost::add_edge(vFrom, vTo, g);
-				}
-
+				boost::add_edge(vFrom, vTo, g);
 			}
 		}
 	}
@@ -171,41 +159,36 @@ namespace Grawitas {
 		std::map<std::size_t, VertexDescriptor> commentIdToVertexMapper;
 		auto vertex_name_map = boost::get(boost::vertex_name, g);
 
-		for(auto& section : _parsedTalkPage)
+		for(const auto& curComment : _parsedTalkPage)
 		{
-			auto allComments = section.second;
+			// add comment as node in the graph
+			auto idFrom = curComment.Id;
+			VertexDescriptor vFrom = boost::add_vertex(g);
+			commentIdToVertexMapper.insert({ idFrom, vFrom });
+			boost::put(vertex_name_map, vFrom, UserOrCommentNode{ false, "", curComment });
 
-			for(auto& curComment : allComments)
+			// if ParentId != 0 add edge to graph
+			if(curComment.ParentId != 0)
 			{
-				// add comment as node in the graph
-				auto idFrom = curComment.Id;
-				VertexDescriptor vFrom = boost::add_vertex(g);
-				commentIdToVertexMapper.insert({ idFrom, vFrom });
-				boost::put(vertex_name_map, vFrom, UserOrCommentNode{ false, "", curComment });
+				auto idTo = curComment.ParentId;
+				VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
 
-				// if ParentId != 0 add edge to graph
-				if(curComment.ParentId != 0)
-				{
-					auto idTo = curComment.ParentId;
-					VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
-
-					boost::add_edge(vFrom, vTo, g);
-				}
-
-				// add connection to user node
-				VertexDescriptor user_vertex;
-				auto user_it = nameToVertexMapper.find(curComment.User);	
-				if(user_it == nameToVertexMapper.end())
-				{
-					user_vertex = boost::add_vertex(g);
-					boost::put(vertex_name_map, user_vertex, UserOrCommentNode{ true, curComment.User, Comment() });
-					nameToVertexMapper.insert({ curComment.User, user_vertex });
-				} else {
-					user_vertex = user_it->second;
-				}
-
-				boost::add_edge(user_vertex, vFrom, g);
+				boost::add_edge(vFrom, vTo, g);
 			}
+
+			// add connection to user node
+			VertexDescriptor user_vertex;
+			auto user_it = nameToVertexMapper.find(curComment.User);	
+			if(user_it == nameToVertexMapper.end())
+			{
+				user_vertex = boost::add_vertex(g);
+				boost::put(vertex_name_map, user_vertex, UserOrCommentNode{ true, curComment.User, Comment() });
+				nameToVertexMapper.insert({ curComment.User, user_vertex });
+			} else {
+				user_vertex = user_it->second;
+			}
+
+			boost::add_edge(user_vertex, vFrom, g);
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace Grawitas {
 
 	class GraphComputationCache {
 		public: 
-			GraphComputationCache(const ParsedTalkPage& parsedTalkPage);
+			GraphComputationCache(const std::vector<Comment>& parsedTalkPage);
 			~GraphComputationCache();
 
 			UserGraph& GetUserGraph();
@@ -13,7 +13,7 @@ namespace Grawitas {
 			TwoModeGraph& GetTwoModeGraph();
 
 		private:
-			const ParsedTalkPage& _parsedTalkPage;
+			const std::vector<Comment>& _parsedTalkPage;
 
 			bool _hasUserGraph;
 			bool _hasCommentGraph;

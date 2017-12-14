@@ -60,14 +60,10 @@ int main(int argc, char** argv)
 
 		// the actual parsing part of the program; starts by reading from a file
 		timings.startTiming("parsing", "Splitting talk page into comments");
-		ParsedTalkPage parsedTalkPage;
-		if(options.count("input-talk-page-file"))
-		{
-			std::ifstream wiki_input_file(options["input-talk-page-file"].as<std::string>());
-			if (!wiki_input_file.is_open())
-				throw std::invalid_argument("Could not open input talk page file.");
-			parsedTalkPage = parse_talk_page(wiki_input_file);	
-		}
+		std::ifstream wiki_input_file(options["input-talk-page-file"].as<std::string>());
+		if (!wiki_input_file.is_open())
+			throw std::invalid_argument("Could not open input talk page file.");
+		auto parsedTalkPage = parse_talk_page(wiki_input_file);	
 		timings.stopTiming("parsing");
 
 		// generate the output in the different specified formats
@@ -77,7 +73,7 @@ int main(int argc, char** argv)
 			if(options.count(form_parameter))
 				formats.insert({ parameter_to_format(form_parameter), options[form_parameter].as<std::string>() });
 		}
-		output_in_formats_to_files(formats, parsedTalkPage);
+		output_in_formats_to_files(formats, parsedTalkPage,{"id", "parent_id", "user", "date", "section", "text"});
 		timings.stopTiming("output");
 		timings.stopTiming("global");
 

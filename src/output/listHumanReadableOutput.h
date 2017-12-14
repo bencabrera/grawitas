@@ -5,5 +5,5 @@
 #include <algorithm>
 
 namespace Grawitas {
-	void listToHumanReadable(std::ostream& ostr, const ParsedTalkPage& parsedTalkPage);
+	void listToHumanReadable(std::ostream& ostr, const std::vector<Comment>& parsedTalkPage);
 }

@@ -94,12 +94,11 @@ namespace Grawitas {
 		auto split = parse_page_title(title);
 		auto comments = parse_talk_page(data.Content);
 		std::size_t n_article_comments=0;
-		for(auto& sec : comments)
-			for(auto& c : sec.second) 
-			{
-				insert_comment(c, split.title);
-				n_article_comments++;
-			}
+		for(const auto& c : comments) 
+		{
+			insert_comment(c, split.title);
+			n_article_comments++;
+		}
 		i_comment += n_article_comments;
 	}
 

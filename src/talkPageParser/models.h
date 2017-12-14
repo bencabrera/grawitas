@@ -2,7 +2,7 @@
 
 #include <string>
 #include <ctime>
-#include <list>
+#include <vector>
 
 namespace Grawitas {
 	struct Comment {
@@ -22,7 +22,6 @@ namespace Grawitas {
 		std::size_t IndentLevel;
 
 		std::string Article;
+		std::string Section;
 	};
-
-	using ParsedTalkPage = std::list<std::pair<std::string, std::list<Comment>>>;
 }

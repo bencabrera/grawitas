@@ -67,8 +67,8 @@ namespace Grawitas {
 
 		// remove empty sections
 		sections.erase(std::remove_if(sections.begin(), sections.end(), [](const std::tuple<std::string, std::string>& t) {
-					return std::get<1>(t).empty();
-					}), sections.end());
+			return std::get<1>(t).empty();
+		}), sections.end());
 
 		std::vector<std::tuple<std::string, std::string, int>> rtn;
 		for(auto& sec : sections)
@@ -80,12 +80,12 @@ namespace Grawitas {
 		return rtn;
 	}
 
-	std::list<Comment> parse_one_section(const std::string& section_content, const int outdent, std::size_t& current_section_outdent, const std::size_t last_comment_level)
+	std::vector<Comment> parse_one_section(const std::string& section_content, const int outdent, std::size_t& current_section_outdent, const std::size_t last_comment_level)
 	{
 		// for each section apply now the comment parsing
 		static Grawitas::TalkPageGrammar<std::string::const_iterator, boost::spirit::qi::iso8859_1::blank_type> talkPageGrammar;
 
-		std::list<Comment> parsed_section;
+		std::vector<Comment> parsed_section;
 		try {
 			boost::spirit::qi::phrase_parse(section_content.cbegin(), section_content.cend(), talkPageGrammar, boost::spirit::qi::iso8859_1::blank, parsed_section);
 		}
@@ -109,9 +109,9 @@ namespace Grawitas {
 		return parsed_section;
 	}
 
-	void calculate_ids(std::list<Comment>& comments, std::size_t& startId)
+	void calculate_ids(std::vector<Comment>& comments, std::size_t& startId)
 	{
-		std::list<std::size_t> refComments;
+		std::vector<std::size_t> refComments;
 		for(auto& comment : comments)
 		{
 			comment.Id = startId;
@@ -126,15 +126,15 @@ namespace Grawitas {
 			// if the colon count is equal to the number of elements on the stack -> the top-most element on the stack is parent of current comment 
 			else if(comment.IndentLevel == refComments.size())
 			{
-				comment.ParentId = refComments.front();
+				comment.ParentId = refComments.back();
 			}
 
 			// if the colon count is smaller than size of stack we have to remove elements until we are at the correct level
 			else if(comment.IndentLevel < refComments.size())
 			{
 				for(std::size_t i = 0; i < refComments.size()-comment.IndentLevel; i++)
-					refComments.pop_front();
-				comment.ParentId = refComments.front();
+					refComments.pop_back();
+				comment.ParentId = refComments.back();
 			}
 
 			// if the colon count is larger than the size of the stack -> people did not indent correctly
@@ -145,20 +145,20 @@ namespace Grawitas {
 					comment.ParentId = 0;
 				else {
 					for (std::size_t i = 0; i < comment.IndentLevel - refComments.size(); i++)
-						refComments.push_front(refComments.front());
-					comment.ParentId = refComments.front();
+						refComments.push_back(refComments.back());
+					comment.ParentId = refComments.back();
 				}
 			}
 
-			refComments.push_front(comment.Id);
+			refComments.push_back(comment.Id);
 			startId++;
 		}
 	}
 
 
-	ParsedTalkPage parse_talk_page(const std::string& content)
+	std::vector<Comment> parse_talk_page(const std::string& content)
 	{
-		ParsedTalkPage parsed_talk_page;
+		std::vector<Comment> parsed_talk_page;
 
 		// split everything into sections
 		auto sections = split_into_sections(content);
@@ -176,13 +176,18 @@ namespace Grawitas {
 			if(parsed_section.size() == 0)
 				continue;
 
-			if(section_outdent == -1 || parsed_talk_page.size() == 0)
-				parsed_talk_page.push_back({ std::get<0>(sec), std::move(parsed_section) });
+			// if section is outdent -> set .Section of comments to the same as previous section; otherwise set title of sec
+			if(section_outdent != -1 && parsed_talk_page.size() != 0)
+			{
+				auto& last_section_title = parsed_talk_page.back().Section;
+				std::for_each(parsed_section.begin(), parsed_section.end(), [&last_section_title](Comment& comment) { comment.Section = last_section_title; }); 
+			}
 			else
 			{
-				auto& last = parsed_talk_page.back();
-				last.second.splice(last.second.end(), std::move(parsed_section));
+				auto& section_title = std::get<0>(sec);
+				std::for_each(parsed_section.begin(), parsed_section.end(), [&section_title](Comment& comment) { comment.Section = section_title; }); 
 			}
+			parsed_talk_page.insert(parsed_talk_page.end(), parsed_section.begin(), parsed_section.end());
 
 			if(parsed_section.size() > 0)
 				last_comment_level = parsed_section.back().IndentLevel;
@@ -192,17 +197,17 @@ namespace Grawitas {
 
 		// calculate ids for each parsed section
 		std::size_t cur_id = 1;
-		for (auto& sec : parsed_talk_page) 
-		{
-			calculate_ids(sec.second, cur_id);	
-			std::for_each(sec.second.begin(), sec.second.end(), [](Comment& comment) { boost::trim(comment.User); }); // trim comment.User
-		}
+		calculate_ids(parsed_talk_page, cur_id);	
+		std::for_each(parsed_talk_page.begin(), parsed_talk_page.end(), [](Comment& comment) { 
+			boost::trim(comment.User); 
+			boost::trim(comment.Section);
+		}); // trim comment.User and comment.Section
 
 		return parsed_talk_page;
 	}
 
 
-	ParsedTalkPage parse_talk_page(std::istream& ostr)
+	std::vector<Comment> parse_talk_page(std::istream& ostr)
 	{
 		// we read the file into a string first. 
 		// because boost.spirit needs backtracking it will not be able to completely read from stream without keeping copies. Since our files should be relatively small (< 10MB) this should not be a limitation

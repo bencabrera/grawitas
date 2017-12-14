@@ -52,14 +52,14 @@ namespace {
 
 
 
-	void export_finished_talk_page(const std::string& output_folder, const std::set<Grawitas::Format> formats, const std::string& title, const Grawitas::ParsedTalkPage& parsed_talk_page)
+	void export_finished_talk_page(const std::string& output_folder, const std::set<Grawitas::Format> formats, const std::string& title, const std::vector<Grawitas::Comment>& parsed_talk_page)
 	{
 		std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
 		std::map<Grawitas::Format, std::string> formats_with_paths;
 		for (const auto& format : formats)
 			formats_with_paths.insert({ format, output_folder + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
 
-		Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page);
+		Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page, {"id", "parent_id", "user", "date", "section", "text"});
 	}
 }
 
@@ -67,7 +67,7 @@ namespace Grawitas {
 	void crawling(const std::vector<std::string>& article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options) 
 	{
 		// initialization of data structures
-		std::map<std::string, Grawitas::ParsedTalkPage> partially_parsed_articles_map;
+		std::map<std::string, std::vector<Grawitas::Comment>> partially_parsed_articles_map;
 		std::deque<std::pair<std::string, int>> page_progress;
 
 		for(auto title : article_titles)
@@ -120,8 +120,8 @@ namespace Grawitas {
 					options.status_callback("Parsing '" + result.full_title + "'.");
 
 				auto parsed = Grawitas::parse_talk_page(result.content);
-				auto& list = partially_parsed_articles_map[result.title];
-				list.splice(list.end(), parsed);
+				auto& vec = partially_parsed_articles_map[result.title];
+				vec.insert(vec.end(), parsed.begin(), parsed.end());
 			}
 
 			// remove pages that returned missing from page_progress
@@ -146,8 +146,7 @@ namespace Grawitas {
 					auto& parsed_talk_page = partially_parsed_articles_map[result.title];
 
 					std::size_t cur_id = 1;
-					for (auto& sec : parsed_talk_page) 
-						calculate_ids(sec.second, cur_id);
+					calculate_ids(parsed_talk_page, cur_id);
 
 					export_finished_talk_page(output_folder, formats, result.title, parsed_talk_page);
 					partially_parsed_articles_map.erase(result.title);

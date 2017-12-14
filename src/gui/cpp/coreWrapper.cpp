@@ -20,13 +20,11 @@ QString CoreWrapper::core(QString q_talk_page_syntax, QString format_str)
 
     std::string talk_page_syntax = q_talk_page_syntax.toStdString();
 
-    ParsedTalkPage parsedTalkPage;
-
-    parsedTalkPage = parse_talk_page(talk_page_syntax);
+    auto parsedTalkPage = parse_talk_page(talk_page_syntax);
 
     std::stringstream ss;
 
-    output_in_format_to_stream(ss,format,parsedTalkPage,true);
+    output_in_format_to_stream(ss,format,parsedTalkPage,true,{"id", "parent_id", "user", "date", "section", "text"});
 
     return QString::fromStdString(ss.str());
 }
