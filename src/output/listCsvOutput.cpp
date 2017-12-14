@@ -19,7 +19,10 @@ namespace {
 
 		bool first = true;
 		for(const auto& col : row)
+		{
 			ostr << ((first) ? "" : CSV_DELIMITER) << col;
+			first = false;
+		}
 	}
 }
 
