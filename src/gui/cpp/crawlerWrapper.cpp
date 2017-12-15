@@ -47,25 +47,41 @@ void CrawlerWrapper::crawl(QString input_file_path, QString output_folder, QVari
 
 void CrawlerWrapper::crawling(QString input_file_path, QString output_folder, QVariantList readable_format_strs, bool keep_raw_talk_pages)
 {
-    auto formats = formats_from_variant_list(readable_format_strs);
+	try {
+		auto formats = formats_from_variant_list(readable_format_strs);
 
-	// TODO: error handling
-	std::ifstream input_file(input_file_path.toStdString());
-	auto titles = read_lines_from_file(input_file);
-	if(titles.empty() && _crawler_text_area != nullptr)
-		QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(QString("Input talk page file does not contain any uncommented, non-empty lines. Aborting."))));
+		// TODO: error handling
+		std::ifstream input_file(input_file_path.toStdString());
+		auto titles = read_lines_from_file(input_file);
 
-	Grawitas::AdditionalCrawlerOptions crawler_options;
-	crawler_options.keep_raw_talk_pages = keep_raw_talk_pages;
-	crawler_options.status_callback = [this](const std::string& msg) { 
-		QString status_message = QString::fromStdString(msg);
+		Grawitas::AdditionalCrawlerOptions crawler_options;
+		crawler_options.keep_raw_talk_pages = keep_raw_talk_pages;
+		crawler_options.status_callback = [this](const std::string& msg) { 
+			QString status_message = QString::fromStdString(msg);
+			if(_crawler_text_area != nullptr)
+			{
+				auto current_time = QDateTime::currentDateTime();
+				status_message = QString("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")) + QString("] ") + status_message;
+				QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(status_message)));
+			}
+		};
+		crawler_options.abort = &_abort;
+		Grawitas::crawling(titles, output_folder.toStdString(), formats, crawler_options);
+	}
+	catch(const std::invalid_argument& e) {
 		if(_crawler_text_area != nullptr)
 		{
-			auto current_time = QDateTime::currentDateTime();
-			status_message = QString("[") + current_time.toString(QString("yyyy-MM-dd HH:mm:ss")) + QString("] ") + status_message;
-			QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(status_message)));
+			QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(QString("ABORTING. An argument error appeared: "))));
+			QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(QString(e.what()))));
 		}
-	};
-	crawler_options.abort = &_abort;
-	Grawitas::crawling(titles, output_folder.toStdString(), formats, crawler_options);
+		return;
+	}
+	catch(const std::exception& e) {
+		if(_crawler_text_area != nullptr)
+		{
+			QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(QString("ABORTING. The application terminated with an exception: "))));
+			QMetaObject::invokeMethod(_crawler_text_area,"append",Qt::QueuedConnection,Q_ARG(QVariant, QVariant(QString(e.what()))));
+		}
+		return;
+	}
 }

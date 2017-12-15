@@ -8,6 +8,7 @@
 #include <stack>
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "getPagesFromWikipedia.h"
 #include "../talkPageParser/parsing.h"
@@ -61,11 +62,28 @@ namespace {
 
 		Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page, {"id", "parent_id", "user", "date", "section", "text"});
 	}
+
+	void sanitize_titles(std::vector<std::string>& titles) 
+	{
+		if(titles.empty())
+			throw std::invalid_argument("Input talk page file does not contain any uncommented, non-empty lines. Aborting.");
+
+		for(auto& title : titles)
+		{
+			if(title.substr(0,7) == "http://")
+				throw std::invalid_argument("It seems like the provided articles are URLs. In newer versions of Grawitas you should simply provide the titles of the articles in the input file.");
+
+			if(boost::to_lower_copy(title.substr(0,5)) == "talk:")
+				title = title.substr(5);
+		}
+	}	
 }
 
 namespace Grawitas {
-	void crawling(const std::vector<std::string>& article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options) 
+	void crawling(std::vector<std::string> article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options) 
 	{
+		::sanitize_titles(article_titles);
+
 		// initialization of data structures
 		std::map<std::string, std::vector<Grawitas::Comment>> partially_parsed_articles_map;
 		std::deque<std::pair<std::string, int>> page_progress;

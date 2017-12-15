@@ -25,5 +25,5 @@ namespace Grawitas {
 		std::function<void(const std::string&)> status_callback;
 	};
 
-	void crawling(const std::vector<std::string>& article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options = AdditionalCrawlerOptions());
+	void crawling(std::vector<std::string> article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options = AdditionalCrawlerOptions());
 }

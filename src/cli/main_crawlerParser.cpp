@@ -82,8 +82,6 @@ int main(int argc, char** argv)
 			throw std::invalid_argument("File containing article titles could not be opened.");
 
 		const auto titles = read_lines_from_file(input_file);
-		if (titles.empty())
-			throw std::invalid_argument("File containing article titles does not contain any uncommented, non-empty lines.");
 
 		AdditionalCrawlerOptions crawler_options;
 		crawler_options.keep_raw_talk_pages = options.count("keep-raw-talk-pages");
