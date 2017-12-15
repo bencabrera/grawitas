@@ -30,9 +30,9 @@ int main(int argc, char** argv)
 	cxxopts::Options options("grawitas_cli_xml", "Parses talk pages in Wikipedia xml dumps to a sqlite file containing the structured comments.");
 	options.add_options()
 		("h,help", "Produces this help message.")
-		("i,sqlite-file", "", cxxopts::value<std::string>())
-		("a,article-filter-file", "", cxxopts::value<std::string>())
-		("u,user-filter-file", "", cxxopts::value<std::string>())
+		("i,sqlite-file", "Sqlite file created by grawitas_cli_xml_to_db.", cxxopts::value<std::string>())
+		("a,article-filter-file", "File containing articles for which to extract comments.", cxxopts::value<std::string>())
+		("u,user-filter-file", "File containing users for which to extract comments.", cxxopts::value<std::string>())
 
 		// network output
 		("user-network-gml", "Output file for user network (GML).", cxxopts::value<std::string>())
