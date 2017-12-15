@@ -200,6 +200,10 @@ namespace Grawitas {
 		calculate_ids(parsed_talk_page, cur_id);	
 		std::for_each(parsed_talk_page.begin(), parsed_talk_page.end(), [](Comment& comment) { 
 			boost::trim(comment.User); 
+			if(!comment.User.empty())
+				comment.User[0] = std::toupper(comment.User[0]);
+
+			boost::replace_all(comment.User, "_", " ");
 			boost::trim(comment.Section);
 		}); // trim comment.User and comment.Section
 
