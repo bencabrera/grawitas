@@ -38,7 +38,7 @@ namespace {
 		run_sql_query_without_result(sqlite_db, "DROP TABLE IF EXISTS user;");
 		run_sql_query_without_result(sqlite_db, "DROP TABLE IF EXISTS article;");
 
-		run_sql_query_without_result(sqlite_db, "CREATE TABLE comment(id INTEGER PRIMARY KEY, parent_id INTEGER NULL, user_id INTEGER, article_id INTEGER, date TEXT, text TEXT);");
+		run_sql_query_without_result(sqlite_db, "CREATE TABLE comment(id INTEGER PRIMARY KEY, parent_id INTEGER NULL, user_id INTEGER, article_id INTEGER, date TEXT, section TEXT, text TEXT);");
 		run_sql_query_without_result(sqlite_db, "CREATE TABLE user(id INTEGER PRIMARY KEY, name TEXT);");
 		run_sql_query_without_result(sqlite_db, "CREATE TABLE article(id INTEGER PRIMARY KEY, title TEXT);");
 	}

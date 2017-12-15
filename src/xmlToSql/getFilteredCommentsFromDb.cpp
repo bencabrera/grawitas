@@ -43,7 +43,8 @@ namespace {
 		comment.User = (*p_users)[std::strtol(row_data[2],str_end,10)];
 		comment.Article = (*p_articles)[std::strtol(row_data[3],str_end,10)];
 		comment.Date = from_sqlite_date(row_data[4]);
-		comment.Text = row_data[5];
+		comment.Section = row_data[5];
+		comment.Text = row_data[6];
 
 		p_comments->push_back(comment);
 
@@ -54,7 +55,7 @@ namespace {
 std::vector<Grawitas::Comment> get_filtered_comments(sqlite3* sqlite_db, const std::vector<std::size_t>& user_ids, const std::vector<std::size_t>& article_ids, const std::vector<std::string>* p_users, std::vector<std::string>* p_articles)
 {
 	std::stringstream ss;
-	ss << "SELECT id, parent_id, user_id, article_id, date, text  FROM comment";
+	ss << "SELECT id, parent_id, user_id, article_id, date, section, text  FROM comment";
 
 	if(user_ids.size() > 0)
 	{

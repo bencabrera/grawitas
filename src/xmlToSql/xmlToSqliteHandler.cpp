@@ -116,14 +116,17 @@ namespace Grawitas {
 
 		auto text = comment.Text;
 		boost::replace_all(text, "\"", "\"\"");
+		auto section = comment.Section;
+		boost::replace_all(section, "\"", "\"\"");
 
 		std::stringstream ss;
-		ss << "INSERT INTO comment(id, parent_id, user_id, article_id, date, text) VALUES(";
+		ss << "INSERT INTO comment(id, parent_id, user_id, article_id, date, section, text) VALUES(";
 		ss << i_comment+comment.Id << ",";
 		ss << ((i_comment == 0) ? 0 :  i_comment+comment.ParentId) << ",";
 		ss << user_it->second << ",";
 		ss << article_it->second << ",";
 		ss << "\"" << to_sqlite_date(comment.Date) << "\",";
+		ss << "\"" << section << "\",";
 		ss << "\"" << text << "\");";
 
 		std::string query = ss.str();
