@@ -14,82 +14,13 @@
 #include "../xmlToSql/getArticlesFromDb.h"
 #include "../xmlToSql/getUsersFromDb.h"
 #include "../xmlToSql/getFilteredCommentsFromDb.h"
+#include "../xmlToSql/getIdsFromDb.h"
 
 #include <cstdlib>
 #include <sqlite3.h>
 
 using namespace Grawitas;
 
-namespace {
-	int get_ids_callback(void* userdata, int /*col_count*/, char** row_data, char** /*col_names*/)
-	{
-		std::vector<std::size_t>* p_article_ids = static_cast<std::vector<std::size_t>*>(userdata);
-
-		char** str_end = nullptr;
-		p_article_ids->push_back(std::strtol(row_data[0], str_end, 10));
-
-		return 0;
-	}
-
-	std::vector<std::size_t> retrieve_article_ids(sqlite3* sqlite_db, const std::vector<std::string>& titles)
-	{
-		std::stringstream ss;
-		ss << "SELECT id FROM article WHERE title IN (";
-		bool first = true;
-		for(const auto& title : titles) 
-		{
-			ss << ((first) ? "" : ",") << "'" << title << "'";
-			first = false;
-		}
-		ss << ");";
-
-		auto query = ss.str();
-
-		// Execute SQL statement
-		std::vector<std::size_t> article_ids;
-		char* zErrMsg;
-		auto rc = sqlite3_exec(sqlite_db, query.c_str(), get_ids_callback, &article_ids, &zErrMsg);
-
-		if(rc != SQLITE_OK){
-			std::string msg = zErrMsg;
-			sqlite3_free(zErrMsg);
-			sqlite3_close(sqlite_db);
-			throw std::logic_error("SQL error: " + msg);
-		} 
-
-		return article_ids;
-	}
-
-	std::vector<std::size_t> retrieve_user_ids(sqlite3* sqlite_db, const std::vector<std::string>& usernames)
-	{
-		std::stringstream ss;
-		ss << "SELECT id FROM user WHERE name IN (";
-		bool first = true;
-		for(const auto& username : usernames) 
-		{
-			ss << ((first) ? "" : ",") << "'" << username << "'";
-			first = false;
-		}
-		ss << ");";
-
-		auto query = ss.str();
-
-		// Execute SQL statement
-		std::vector<std::size_t> user_ids;
-		char* zErrMsg;
-		auto rc = sqlite3_exec(sqlite_db, query.c_str(), get_ids_callback, &user_ids, &zErrMsg);
-
-		if(rc != SQLITE_OK){
-			std::string msg = zErrMsg;
-			sqlite3_free(zErrMsg);
-			sqlite3_close(sqlite_db);
-			throw std::logic_error("SQL error: " + msg);
-		} 
-
-		return user_ids;
-	}
-
-}
 
 int main(int argc, char** argv) 
 {
@@ -158,7 +89,7 @@ int main(int argc, char** argv)
 		std::ifstream article_filter_file(article_filter_file_path);
 		std::vector<std::string> article_titles = read_lines_from_file(article_filter_file);
 
-		article_ids = retrieve_article_ids(sqlite_db, article_titles);
+		article_ids = get_article_ids_from_db(sqlite_db, article_titles);
 	}
 
 	if(options.count("user-filter-file"))
@@ -168,7 +99,7 @@ int main(int argc, char** argv)
 		std::ifstream user_filter_file(user_filter_file_path);
 		std::vector<std::string> usernames = read_lines_from_file(user_filter_file);
 
-		user_ids = retrieve_user_ids(sqlite_db, usernames);
+		user_ids = get_user_ids_from_db(sqlite_db, usernames);
 	}
 
 	auto users = get_users_from_db(sqlite_db);

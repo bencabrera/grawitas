@@ -84,6 +84,7 @@ set(XML_TO_SQL_FILES
 	src/xmlToSql/getArticlesFromDb.cpp
 	src/xmlToSql/getUsersFromDb.cpp
 	src/xmlToSql/getFilteredCommentsFromDb.cpp
+	src/xmlToSql/getIdsFromDb.cpp
 )
 
 set(HTTP_CRAWLER_FILES
