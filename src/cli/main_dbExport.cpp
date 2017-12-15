@@ -11,6 +11,9 @@
 #include "../output/outputHelpers.h"
 #include "../talkPageParser/models.h"
 #include "../output/outputWrapper.h"
+#include "../xmlToSql/getArticlesFromDb.h"
+#include "../xmlToSql/getUsersFromDb.h"
+#include "../xmlToSql/getFilteredCommentsFromDb.h"
 
 #include <cstdlib>
 #include <sqlite3.h>
@@ -18,26 +21,6 @@
 using namespace Grawitas;
 
 namespace {
-	int get_comments_callback(void* userdata, int /*col_count*/, char** row_data, char** /*col_names*/)
-	{
-		std::vector<Grawitas::Comment>* p_comments = static_cast<std::vector<Grawitas::Comment>*>(userdata);
-
-		//id, parent_id, user_id, article_id, date, text
-		
-		char** str_end = nullptr;
-
-		Grawitas::Comment comment;
-		comment.Id = std::strtol(row_data[0], str_end, 10);
-		comment.ParentId = std::strtol(row_data[1], str_end, 10);
-		comment.User = row_data[2];
-		comment.Article = row_data[3];
-		comment.Text = row_data[5];
-			
-		p_comments->push_back(comment);
-
-		return 0;
-	};
-
 	int get_ids_callback(void* userdata, int /*col_count*/, char** row_data, char** /*col_names*/)
 	{
 		std::vector<std::size_t>* p_article_ids = static_cast<std::vector<std::size_t>*>(userdata);
@@ -46,7 +29,7 @@ namespace {
 		p_article_ids->push_back(std::strtol(row_data[0], str_end, 10));
 
 		return 0;
-	};
+	}
 
 	std::vector<std::size_t> retrieve_article_ids(sqlite3* sqlite_db, const std::vector<std::string>& titles)
 	{
@@ -106,55 +89,6 @@ namespace {
 		return user_ids;
 	}
 
-	std::vector<Grawitas::Comment> retrieve_comments(sqlite3* sqlite_db, const std::vector<std::size_t>& user_ids, const std::vector<std::size_t>& article_ids)
-	{
-		std::stringstream ss;
-		ss << "SELECT id, parent_id, user_id, article_id, date, text  FROM comment";
-
-		if(user_ids.size() > 0)
-		{
-	   		ss << " WHERE user_id IN (";
-			bool first = true;
-			for(const auto& user_id : user_ids) 
-			{
-				ss << ((first) ? "" : ",") << user_id;
-				first = false;
-			}
-			ss << ")";
-		}
-
-		if(user_ids.size() > 0 && article_ids.size() > 0)
-	   		ss << " AND article_id IN (";
-		if(user_ids.size() == 0 && article_ids.size() > 0)
-	   		ss << " WHERE article_id IN (";
-		if(article_ids.size() > 0)
-		{
-			bool first = true;
-			for(const auto& article_id : article_ids) 
-			{
-				ss << ((first) ? "" : ",") << article_id;
-				first = false;
-			}
-			ss << ")";
-		}
-		ss << ";";
-
-		auto query = ss.str();
-
-		// Execute SQL statement
-		std::vector<Grawitas::Comment> comments;
-		char* zErrMsg;
-		auto rc = sqlite3_exec(sqlite_db, query.c_str(), get_comments_callback, &comments, &zErrMsg);
-
-		if(rc != SQLITE_OK){
-			std::string msg = zErrMsg;
-			sqlite3_free(zErrMsg);
-			sqlite3_close(sqlite_db);
-			throw std::logic_error("SQL error: " + msg);
-		} 
-
-		return comments;
-	}
 }
 
 int main(int argc, char** argv) 
@@ -162,7 +96,7 @@ int main(int argc, char** argv)
 	StepTimer timings;
 	timings.startTiming("global", "Total");
 
-    cxxopts::Options options("grawitas_cli_xml", "Parses talk pages in Wikipedia xml dumps to a sqlite file containing the structured comments.");
+	cxxopts::Options options("grawitas_cli_xml", "Parses talk pages in Wikipedia xml dumps to a sqlite file containing the structured comments.");
 	options.add_options()
 		("h,help", "Produces this help message.")
 		("i,sqlite-file", "", cxxopts::value<std::string>())
@@ -237,13 +171,16 @@ int main(int argc, char** argv)
 		user_ids = retrieve_user_ids(sqlite_db, usernames);
 	}
 
-	auto comments = retrieve_comments(sqlite_db, user_ids, article_ids);
+	auto users = get_users_from_db(sqlite_db);
+	auto articles = get_articles_from_db(sqlite_db);
+	auto comments = get_filtered_comments(sqlite_db, user_ids, article_ids, &users, &articles);
 
 	std::map<Format, std::string> formats;
 	for (auto form_parameter : FormatParameterStrings) {
 		if(options.count(form_parameter))
 			formats.insert({ parameter_to_format(form_parameter), options[form_parameter].as<std::string>() });
 	}
+
 	output_in_formats_to_files(formats, comments, {"id", "parent_id", "user", "date", "section", "article", "text"});
 
 

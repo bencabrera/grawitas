@@ -79,8 +79,11 @@ set(NETWORKS_FILES
 	src/networks/graphComputationCache.cpp
 )
 
-set(XML_DUMP_CRAWLER_FILES
-	src/xmlDumpCrawler/xmlToSqliteHandler.cpp
+set(XML_TO_SQL_FILES
+	src/xmlToSql/xmlToSqliteHandler.cpp
+	src/xmlToSql/getArticlesFromDb.cpp
+	src/xmlToSql/getUsersFromDb.cpp
+	src/xmlToSql/getFilteredCommentsFromDb.cpp
 )
 
 set(HTTP_CRAWLER_FILES
@@ -114,14 +117,14 @@ if(CURL_FOUND)
 endif()
 
 if(XercesC_FOUND AND SQLITE3_FOUND)
-	add_executable(grawitas_cli_xml_to_db src/cli/main_xmlToDb.cpp ${XML_DUMP_CRAWLER_FILES})
+	add_executable(grawitas_cli_xml_to_db src/cli/main_xmlToDb.cpp ${XML_TO_SQL_FILES})
 	target_link_libraries (grawitas_cli_xml_to_db grawitas_core_lib)
 	target_link_libraries(grawitas_cli_xml_to_db ${XercesC_LIBRARY})
 	target_link_libraries(grawitas_cli_xml_to_db ${SQLITE3_LIBRARIES})
 endif()
 
 if(SQLITE3_FOUND)
-	add_executable(grawitas_cli_db_export src/cli/main_dbExport.cpp)
+	add_executable(grawitas_cli_db_export src/cli/main_dbExport.cpp ${XML_TO_SQL_FILES})
 	target_link_libraries (grawitas_cli_db_export grawitas_core_lib)
 	target_link_libraries(grawitas_cli_db_export ${SQLITE3_LIBRARIES})
 endif()

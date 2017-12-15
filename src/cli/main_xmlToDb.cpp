@@ -10,7 +10,7 @@
 #include "../output/formats.h"
 #include "../output/outputHelpers.h"
 
-#include "../xmlDumpCrawler/xmlToSqliteHandler.h"
+#include "../xmlToSql/xmlToSqliteHandler.h"
 #include "../../libs/wiki_xml_dump_xerces/src/parsers/singleCoreParser.hpp"
 #include "../../libs/wiki_xml_dump_xerces/src/handlers/wikiDumpHandlerProperties.hpp"
 
