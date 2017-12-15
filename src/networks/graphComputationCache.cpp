@@ -93,28 +93,33 @@ namespace Grawitas {
 
 			if(curComment.ParentId != 0)
 			{
-				auto nameTo = idToCommentMap.at(curComment.ParentId).User;
-				if(nameTo != "")
+				// auto nameTo = idToCommentMap.at(curComment.ParentId).User;
+				auto parent_comment_it = idToCommentMap.find(curComment.ParentId);
+				if(parent_comment_it != idToCommentMap.end())
 				{
-					auto mapIt = nameToVertexMapper.find(nameTo);
-					if(mapIt == nameToVertexMapper.end())
+					const auto& nameTo = parent_comment_it->second.User;
+					if(nameTo != "")
 					{
-						auto v = boost::add_vertex(g);
-						nameToVertexMapper.insert({ nameTo, v });
-						vTo = v;
-						boost::put(vertex_name_map, v, nameTo);
+						auto mapIt = nameToVertexMapper.find(nameTo);
+						if(mapIt == nameToVertexMapper.end())
+						{
+							auto v = boost::add_vertex(g);
+							nameToVertexMapper.insert({ nameTo, v });
+							vTo = v;
+							boost::put(vertex_name_map, v, nameTo);
+						}
+						else
+							vTo = mapIt->second;
 					}
-					else
-						vTo = mapIt->second;
-				}
 
-				if(nameFrom != "" && nameTo != "")
-				{
-					auto res = boost::add_edge(vFrom, vTo, g);
-					if(res.second)
-						boost::put(edge_weight_map, res.first, 1);
-					else
-						boost::put(edge_weight_map, res.first, boost::get(edge_weight_map, res.first) + 1);
+					if(nameFrom != "" && nameTo != "")
+					{
+						auto res = boost::add_edge(vFrom, vTo, g);
+						if(res.second)
+							boost::put(edge_weight_map, res.first, 1);
+						else
+							boost::put(edge_weight_map, res.first, boost::get(edge_weight_map, res.first) + 1);
+					}
 				}
 			}
 		}
@@ -142,9 +147,13 @@ namespace Grawitas {
 			if(curComment.ParentId != 0)
 			{
 				auto idTo = curComment.ParentId;
-				VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
 
-				boost::add_edge(vFrom, vTo, g);
+				auto v_to_it = commentIdToVertexMapper.find(idTo);
+				if(v_to_it != commentIdToVertexMapper.end())
+				{
+					VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
+					boost::add_edge(vFrom, vTo, g);
+				}
 			}
 		}
 	}
@@ -171,9 +180,13 @@ namespace Grawitas {
 			if(curComment.ParentId != 0)
 			{
 				auto idTo = curComment.ParentId;
-				VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
 
-				boost::add_edge(vFrom, vTo, g);
+				auto v_to_it = commentIdToVertexMapper.find(idTo);
+				if(v_to_it != commentIdToVertexMapper.end())
+				{
+					VertexDescriptor vTo = commentIdToVertexMapper.find(idTo)->second;
+					boost::add_edge(vFrom, vTo, g);
+				}
 			}
 
 			// add connection to user node
@@ -184,9 +197,8 @@ namespace Grawitas {
 				user_vertex = boost::add_vertex(g);
 				boost::put(vertex_name_map, user_vertex, UserOrCommentNode{ true, curComment.User, Comment() });
 				nameToVertexMapper.insert({ curComment.User, user_vertex });
-			} else {
+			} else 
 				user_vertex = user_it->second;
-			}
 
 			boost::add_edge(user_vertex, vFrom, g);
 		}
