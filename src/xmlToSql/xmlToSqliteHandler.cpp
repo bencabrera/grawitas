@@ -122,7 +122,7 @@ namespace Grawitas {
 		std::stringstream ss;
 		ss << "INSERT INTO comment(id, parent_id, user_id, article_id, date, section, text) VALUES(";
 		ss << i_comment+comment.Id << ",";
-		ss << ((i_comment == 0) ? 0 :  i_comment+comment.ParentId) << ",";
+		ss << ((comment.ParentId == 0) ? 0 :  i_comment+comment.ParentId) << ",";
 		ss << user_it->second << ",";
 		ss << article_it->second << ",";
 		ss << "\"" << to_sqlite_date(comment.Date) << "\",";
