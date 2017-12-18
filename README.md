@@ -32,38 +32,17 @@ The compilation process can be a bit tricky on Windows. As a result, we provide 
 
 The packaged binaries for Windows can be found if you go to [the release tab of the repository](https://github.com/Ace7k3/grawitas/releases). 
 
-The are two types of releases: *CLI only* and *CLI and GUI*. The former is much smaller and contains only the programs which can be run through the command-line interface. If you want the graphical user interface as well download the CLI and GUI latter release.
+The are two types of releases: *CLI only* and *CLI and GUI*. The former is much smaller and contains only the programs which can be run through the command-line interface. If you want the graphical user interface as well download the *CLI and GUI* release.
 
-After downloading a release unzip the packed folder. In it you will find the mentioned .exe - binaries. To start the GUI double-click the grawitas_gui.exe. The CLI programs can be used by starting a terminal, switching to the extracted folder and starting the programs from there.
+After downloading a release unzip the packed folder. In it you will find the mentioned .exe - binaries. To start the GUI double-click the grawitas_gui.exe. The CLI programs can be used by starting a console, switching to the extracted folder and starting the programs from there.
 
 **NOTE:** If you get any errors of a missing `vcruntime140.dll` you might need to install the [Microsoft Visual C++ Redistributable for Visual Studio 2017](https://go.microsoft.com/fwlink/?LinkId=746572).
 
 For more information on how to use the programs see the Usage section.
 
-## Windows - Compiling the source code yourself
-
-**WARNING:** We do not provide support for the compilation process under Windows. 
-The following notes might not be complete and there are serveral sources of error. 
-It is merely provided as a rough guide on what to do.
-
-For all the following steps consider the different versions of libraries and architectures (Debug vs. Release & x86 (32-bit) vs x64 (64-bit)).
-
-1. *Install Qt*. It is recommended to install prebuild binaries for the used compiler. This can be done using for example the Qt online installer.
-2. *Compile the Xerces-C*. Get the Xerces Source from the website and build it using CMake. For installing the library the compiler (e.g. Visual Studio 2017) can be started using admin rights and the Install target can be run. 
-3. *Install boost* Install boost libraries. Build libraries are not necessary. All used libraries are header only.
-4. *CMake the source*. Obtain the source (with submodules) and run an initial CMake on it. It should detect the boost installation. However, it will probably not find the Xerces installation. To help CMake out set the variables `XERCESC_Include_Dir` and `XERCESC_LIBRARY_RELEASE` to `[Xerces_Folder]\include` and `[Xerces_Folder]\lib\xerces-c_3.lib`, where `[Xerces_Folder]` is e.g. `C:\Program Files (x86)\xerces-c\lib`. After running Configure again CMake might not find the Qt libraries. To this end, add the `CMAKE_PREFIX_PATH` variable to point to the build Qt instance, e.g `C:\Qt\5.9.1\msvc2017_64`. Now everything should configure. 
-5. *Build everything.*
-6. *Deployment of CLI*. To deploy the CLI binaries gather them in a separate folder and add the `Qt5Core.dll`, `Qt5Network.dll` and `xerces-c_3_2.dll` to it.
-7. *Deployment of GUI*. Again copy the grawitas_gui.exe to a separate folder and add the `xerces-c_3_2.dll`. Now run the `windeployqt.exe` binary to help with deployment. A command could look like the following
-```
-.\windeployqt.exe --qmldir 'C:\Users\[Username]\Documents\grawitas\src\gui\qml' 'C:\Users\[Username]\Desktop\grawitas_cli_and_gui_x86\grawitas_gui.exe'
-```
-
 ## Linux - Compiling the source code yourself
 
 The different parser components require different dependencies to be installed on the system. 
-
-In general, the *core parser component* mainly depends on the [boost.spirit](http://www.boost.org/) parser framework, as well as on [boost.graph](http://www.boost.org/). The *xml-dump parser component* additionally depends on the [*Xerces-C*](https://xerces.apache.org/) library for parsing XML-files. The crawler component uses components of QT5::Network. The GUI, containing all functionalities of the above, depends on all the libraries.
 
 ### Exemplary compilation process (for a fresh Ubuntu 16.04 install)
 
@@ -71,14 +50,16 @@ In the following section we will go through the compilation process assuming you
 
 1. *Install the dependencies through packages*. First we will have to install the mentioned dependencies. On Ubuntu 16.04 this can easily be done by installing some packages:
 
-- `libboost-all-dev` - Boost packages, including the needed boost.spirit and boost.graph
-- `libxerces-c-dev` - Xerces XML parser that is used in the XML parsing parts of the program
 - `cmake` - CMake build tool used for generating the Makefiles
-- `qtdeclarative5-dev`, `qml-module-qtquick-controls`, `qml-module-qtquick-layouts`, `qml-module-qtquick-dialogs` - QT 5 dependencies
+- `libboost-all-dev` - Boost packages, including the needed boost.spirit and boost.graph
+- `libcurl3` - *(optional, required by grawitas_cli_crawler)* CURL library used for Http requests.
+- `libxerces-c-dev` - *(optional, required by grawitas_cli_xml_to_db)* Xerces XML parser that is used in the XML parsing parts of the program.
+- `libsqlite3-dev` - *(optional, required by grawitas_cli_xml_to_db & grawitas_cli_db_export)* Sqlite3 library used for storing parsed data from full Wikipedia dumps
+- `qtdeclarative5-dev`, `qml-module-qtquick-controls`, `qml-module-qtquick-layouts`, `qml-module-qtquick-dialogs` - *(optional, required by grawitas_gui_\*)* QT 5 dependencies used for GUIs
 
 	In total to install all these packages simply run
 	```
-	sudo apt-get install libboost-all-dev libxerces-c-dev cmake qtdeclarative5-dev qml-module-qtquick-controls qml-module-qtquick-layouts qml-module-qtquick-dialogs
+	sudo apt-get install cmake libboost-all-dev libcurl3 libxerces-c-dev libsqlite3-dev qtdeclarative5-dev qml-module-qtquick-controls qml-module-qtquick-layouts qml-module-qtquick-dialogs
 	```
 	
 	*Explanation:* 
@@ -100,6 +81,10 @@ In the following section we will go through the compilation process assuming you
 	cd bin 
 	cmake -DCMAKE_BUILD_TYPE=Release ../src/
 	```
+	**Note:** It might be needed to specify the library path for the sqlite3 library. Instead of the above run e.g.
+	```
+	cmake -DCMAKE_BUILD_TYPE=Release -DSQLITE3_LIBRARY=/usr/lib/x86_64-linux-gnu/libsqlite3.so ../
+	```
 
 
 4. *Build the source*. Now we can run make to compile everything
@@ -112,30 +97,43 @@ In the following section we will go through the compilation process assuming you
 
 
 # Usage
-The full Grawitas toolset consists of four binaries. Three of those are cli (command line interface) programs and one is the GUI (graphical user interface). For the cli tools there is always a ```--help``` argument that can be passed to the program that leads to displaying a help message which should be mostly self-explanatory.
-- **grawitas_cli_core** provides only the basic parsing functionality. It can be fed a raw talk page in [WikiMarkup](https://en.wikipedia.org/wiki/Help:Wiki_markup) and outputs the parsed talk page structure in various output formats (see Formats). 
-Exemplary command:
-```
-./grawitas_cli_core --input-talk-page-file talk_page_file.wikimd --comment-list-json comment_list_file.json --user-network-gml user_network_file.gml
-```
+The full Grawitas toolset consists of multiple binaries. Their names all start with `grawitas_` followed by either `cli` or `gui` indicating if the program has a GUI or is command-line based. Finally the name ends with a descriptive label. The GUIs should be pretty much self-explanatory variants of the CLI versions which is why we only discuss the CLIs. 
+
+For the CLI tools there is always a ```--help``` argument that can be passed to the program that leads to displaying a help message .
+
+**Note:** All input files used the programs should be UTF-8 encoded [without BOM](https://en.wikipedia.org/wiki/Byte_order_mark).
+
+- **grawitas_cli_core** provides only the basic parsing functionality. It can be fed a raw talk page in [WikiMarkup](https://en.wikipedia.org/wiki/Help:Wiki_markup) and outputs the parsed talk page structure in various output formats. 
+
+	*Example:*
+	```
+	./grawitas_cli_core --input-talk-page-file talk_page_file.wikimd --comment-list-json comment_list_file.json --user-network-gml 	user_network_file.gml
+	```
 
 - **grawitas_cli_crawler** provides a crawler on top of the core parsing functionality. The user can specify a list of articles for which the talk page should be downloaded from en.wikipedia.org, parsed, and then stored in a file using various formats. 
-Exemplary command:
-```
-./grawitas_cli_crawler -i list_of_article_names.txt -o output_folder/ --comment-list-json --user-network-gml --keep-raw-talk-pages
-```
 
-- **grawitas_cli_xml** works on [full xml dumps of wikipedia](https://en.wikipedia.org/wiki/Wikipedia:Database_download). This allows for a large scale analysis of all talk pages in Wikipedia.
-Exemplary command:
-```
-./grawitas_cli_xml --input-xml-folder folder_with_dump_files/ --output-folder output_folder/ --comment-list-json
-```
+	*Example:*
+	```
+	./grawitas_cli_crawler -i list_of_article_names.txt -o output_folder/ --comment-list-json --user-network-gml --keep-raw-talk-pages
+	```
 
-- **grawitas_gui** is the GUI containing mostly the same features as the cli programs. For a quick overview have a look at the video above.
-Start the GUI from the main folder running the following command from a terminal.
-```
-./grawitas_gui
-```
+- **grawitas_cli_xml_to_db** works on [full xml dumps of wikipedia](https://en.wikipedia.org/wiki/Wikipedia:Database_download). This allows for a large scale analysis of all talk pages in Wikipedia. It extracts all talk pages in the dump and parses each of them into a comments. These are then stored in a sqlite3 SQL database. 
 
+	The database's tables are:
+	```
+	CREATE TABLE comment(id INTEGER PRIMARY KEY, parent_id INTEGER NULL, user_id INTEGER, article_id INTEGER, date TEXT, section TEXT, text TEXT);
+	CREATE TABLE user(id INTEGER PRIMARY KEY, name TEXT);
+	CREATE TABLE article(id INTEGER PRIMARY KEY, title TEXT);
+	```
 
+	*Example:*
+	```
+	./grawitas_cli_xml_to_db -i file_with_absoulte_paths_to_xml_files.txt -o out_sqlite3.db
+	```
+- **grawitas_cli_db_export** takes a sqlite3 database created by *grawitas_cli_xml_to_db* and extracts all comments by certain users and in certain articles to all formats available in *grawitas_cli_core* and *grawitas_cli_crawler*.
+	
+	*Example:*
+	```
+	./grawitas_cli_db_export --sqlite-file out_sqlite3.db --article-filter-file article_filter.txt --user-filter-file user_filter.txt
+	```
 
