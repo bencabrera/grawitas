@@ -5,8 +5,10 @@
 #include <boost/algorithm/string.hpp>
 
 namespace {
-	std::tm from_sqlite_date(const std::string str)
+	Grawitas::Date from_sqlite_date(const std::string str)
 	{
+		using namespace Grawitas;
+
 		std::vector<std::string> date_time_split;
 		boost::split(date_time_split,str,boost::is_any_of(" "));
 
@@ -15,13 +17,14 @@ namespace {
 		std::vector<std::string> time_split;
 		boost::split(time_split,date_time_split[1],boost::is_any_of(":"));
 
-		std::tm rtn{};
-		rtn.tm_year = std::stoi(date_split[0]) - 1900;
-		rtn.tm_mon = std::stoi(date_split[1]) - 1;
-		rtn.tm_mday = std::stoi(date_split[2]);
-		rtn.tm_hour = std::stoi(time_split[0]);
-		rtn.tm_min = std::stoi(time_split[1]);
-		rtn.tm_sec = std::stoi(time_split[2]);
+		Date rtn;
+
+		set<YEAR>(rtn, std::stoi(date_split[0]));
+		set<MONTH>(rtn, std::stoi(date_split[1]));
+		set<DAY>(rtn, std::stoi(date_split[2]));
+		set<HOUR>(rtn, std::stoi(time_split[0]));
+		set<HOUR>(rtn, std::stoi(time_split[1]));
+		set<HOUR>(rtn, std::stoi(time_split[2]));
 
 		return rtn;
 	}

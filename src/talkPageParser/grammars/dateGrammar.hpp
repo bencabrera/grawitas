@@ -18,9 +18,10 @@
 
 #include <boost/fusion/adapted/std_pair.hpp>
 #include <boost/fusion/adapted/std_tuple.hpp>
+#include "../date.h"
 
 BOOST_FUSION_ADAPT_STRUCT(
-	std::tm,
+	Grawitas::Date,
 	(int, tm_year)
 	(int, tm_mon)
 	(int, tm_mday)
@@ -31,11 +32,11 @@ BOOST_FUSION_ADAPT_STRUCT(
 namespace Grawitas {
 
 	template<typename Iterator, typename Skipper>
-		struct DateGrammar : boost::spirit::qi::grammar<Iterator, std::tm(), Skipper> {
+		struct DateGrammar : boost::spirit::qi::grammar<Iterator, Date(), Skipper> {
 
 			DateGrammar();
 
-			boost::spirit::qi::rule<Iterator, std::tm(), Skipper> start;
+			boost::spirit::qi::rule<Iterator, Date(), Skipper> start;
 			boost::spirit::qi::rule<Iterator, std::pair<int, int>()> hour_and_second;
 			boost::spirit::qi::rule<Iterator, std::tuple<int, int, int>(), Skipper> day_month_year;
 			boost::spirit::qi::rule<Iterator, std::tuple<int, int, int>(), Skipper> month_day_year;

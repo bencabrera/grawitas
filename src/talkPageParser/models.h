@@ -4,6 +4,8 @@
 #include <ctime>
 #include <vector>
 
+#include "date.h"
+
 namespace Grawitas {
 	struct Comment {
 		inline Comment()
@@ -13,7 +15,7 @@ namespace Grawitas {
 
 		std::string User;
 		std::string Text;
-		std::tm Date;
+		::Grawitas::Date Date;
 		std::string DateString;
 
 		std::size_t Id;

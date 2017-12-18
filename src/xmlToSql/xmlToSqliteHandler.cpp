@@ -69,7 +69,7 @@ namespace {
 		} 
 	}
 
-	std::string to_sqlite_date(const std::tm& t)
+	std::string to_sqlite_date(const Grawitas::Date& t)
 	{
 		std::stringstream ss;
 

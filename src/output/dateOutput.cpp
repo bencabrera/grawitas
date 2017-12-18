@@ -5,7 +5,7 @@
 
 namespace Grawitas {
 
-	std::string to_iso_8601(const std::tm& t)
+	std::string to_iso_8601(const Date& t)
 	{
 		std::stringstream ss;
 		
@@ -17,7 +17,7 @@ namespace Grawitas {
 		return ss.str();
 	}
 
-	std::string to_human_readable(const std::tm& t)
+	std::string to_human_readable(const Date& t)
 	{
 		std::stringstream ss;
 

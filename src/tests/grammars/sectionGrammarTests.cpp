@@ -2,6 +2,8 @@
 
 #include "../../talkPageParser/parsing.h"
 
+#include <tuple>
+
 TEST_CASE("SectionGrammarTest1") {
 	std::string talk_page_str = "==Title== \n : This is just a test --[[User:Lihaas|Lihaas]] 09:37, 29 January 2011 (UTC)\n: This is just a test2 --[[User:Lihaas|Lihaas]]   09:37, 29 January 2011 (UTC)\n ==Title2== \n : This is just a test --[[User:Lihaas|Lihaas]] 09:37, 29 January 2011 (UTC)\n: This is just a test2 --[[User:Lihaas|Lihaas]]   09:37, 29 January 2011 (UTC)\n";
 

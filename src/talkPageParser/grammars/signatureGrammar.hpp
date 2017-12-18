@@ -12,14 +12,16 @@
 
 #include <iostream>
 
+#include "../date.h"
+
 namespace Grawitas {
 
 	template<typename Iterator, typename Skipper>
-		struct SignatureGrammar : boost::spirit::qi::grammar<Iterator, std::pair<std::string, std::tm>(), Skipper>	{
+		struct SignatureGrammar : boost::spirit::qi::grammar<Iterator, std::pair<std::string, Date>(), Skipper>	{
 
 			SignatureGrammar();
 
-			boost::spirit::qi::rule<Iterator, std::pair<std::string, std::tm>(), Skipper> signature;
+			boost::spirit::qi::rule<Iterator, std::pair<std::string, Date>(), Skipper> signature;
 
 			UserGrammar<Iterator, Skipper> user_grammar;
 			DateGrammar<Iterator, Skipper> date_grammar;

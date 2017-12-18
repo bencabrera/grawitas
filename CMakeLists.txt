@@ -49,6 +49,7 @@ endif()
 
 # files
 set(TALK_PAGE_PARSER_FILES
+	src/talkPageParser/date.cpp
 	src/talkPageParser/parsing.cpp
 	src/talkPageParser/grammars/commentGrammar.cpp
 	src/talkPageParser/grammars/userGrammar.cpp

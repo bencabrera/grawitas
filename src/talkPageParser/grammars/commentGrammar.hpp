@@ -11,13 +11,14 @@
 #include <boost/spirit/include/phoenix_object.hpp>
 
 #include <iostream>
+#include "../date.h"
 
 
 BOOST_FUSION_ADAPT_STRUCT(
 	Grawitas::Comment,
 	(std::string, Text)
 	(std::string, User)
-	(std::tm, Date)
+	(Grawitas::Date, Date)
 	(std::size_t, IndentLevel)
 )
 
