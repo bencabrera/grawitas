@@ -27,8 +27,8 @@ endif()
 
 # look for sqlite3
 find_package(SQLite3)
-if(SQLite3_FOUND)
-	include_directories(${SQLite3_INCLUDE_DIR})
+if(SQLITE3_FOUND)
+	include_directories(${SQLITE3_INCLUDE_DIR})
 endif()
 
 # look for QT
