@@ -14,6 +14,8 @@
 #include "../../libs/wiki_xml_dump_xerces/src/parsers/singleCoreParser.hpp"
 #include "../../libs/wiki_xml_dump_xerces/src/handlers/wikiDumpHandlerProperties.hpp"
 
+#include "../misc/cliProgressBar.hpp"
+
 using namespace Grawitas;
 using namespace std;
 
@@ -42,6 +44,26 @@ namespace {
 		run_sql_query_without_result(sqlite_db, "CREATE TABLE user(id INTEGER PRIMARY KEY, name TEXT);");
 		run_sql_query_without_result(sqlite_db, "CREATE TABLE article(id INTEGER PRIMARY KEY, title TEXT);");
 	}
+
+	std::map<std::string, std::size_t> read_page_counts_file(std::string path)
+	{
+		std::ifstream istr(path);
+		std::map<std::string, std::size_t> rtn;
+
+		while(!istr.eof())
+		{
+			std::string filename;
+			std::size_t count;
+			istr >> filename >> count;
+
+			boost::trim(filename);
+
+			if(!filename.empty())
+				rtn.insert({ filename, count });
+		}
+
+		return rtn;
+	}
 }
 
 int main(int argc, char** argv) 
@@ -49,11 +71,12 @@ int main(int argc, char** argv)
 	StepTimer timings;
 	timings.startTiming("global", "Total");
 
-    cxxopts::Options options("grawitas_cli_xml", "Parses talk pages in Wikipedia xml dumps to a sqlite file containing the structured comments.");
+	cxxopts::Options options("grawitas_cli_xml", "Parses talk pages in Wikipedia xml dumps to a sqlite file containing the structured comments.");
 	options.add_options()
 		("h,help", "Produces this help message.")
 		("i,input-paths-file", "File of which each line is absolute path to an xml file that is part of a Wikipedia dump.", cxxopts::value<string>())
 		("o,output-sqlite-file", "Output sqlite file.", cxxopts::value<string>())
+		("page-counts-file", "The file that contains counts of pages for each .xml file.", cxxopts::value<string>())
 		("t,show-timings", "Flag to show timings.")
 		;
 	options.positional_help("<input-paths-file> <output-sqlite-file>");
@@ -98,6 +121,24 @@ int main(int argc, char** argv)
 		parser_properties.TitleFilter = [](const std::string& title) {
 			return title.substr(0,5) == "Talk:";
 		};
+
+		// if page counts file specified then show progress bar
+		std::string last_file_path = "";
+		if(options.count("page-counts-file"))
+		{
+			auto page_counts = read_page_counts_file(options["page-counts-file"].as<std::string>());
+			parser_properties.ProgressReportInterval = 1000;	
+			parser_properties.ProgressCallback = [page_counts, &last_file_path] (std::size_t i_page, std::string file_path, std::string) {
+				auto it = page_counts.find(file_path);
+				if(last_file_path != file_path)
+				{
+					std::cout << std::endl << file_path << std::endl;
+					last_file_path = file_path;
+				}
+				if(it != page_counts.end())
+					Shared::cli_progress_bar(i_page, it->second);
+			};
+		}
 
 		run_sql_query_without_result(sqlite_db, "BEGIN TRANSACTION;");
 		XmlToSqliteHandler handler(sqlite_db);

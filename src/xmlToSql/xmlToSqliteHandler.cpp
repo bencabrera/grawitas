@@ -90,7 +90,6 @@ namespace Grawitas {
 	void XmlToSqliteHandler::HandleArticle(const WikiXmlDumpXerces::WikiPageData& data)
 	{
 		std::string title = data.MetaData.at("title");
-		std::cout << title << " " << i_comment << std::endl;
 		auto split = parse_page_title(title);
 		auto comments = parse_talk_page(data.Content);
 		std::size_t n_article_comments=0;
