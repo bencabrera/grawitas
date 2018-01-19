@@ -12,14 +12,14 @@ namespace {
 		return 0;
 	}
 
-	std::vector<std::size_t> get_ids_from_db(sqlite3* sqlite_db, const std::vector<std::string>& titles, const std::string table)
+	std::vector<std::size_t> get_ids_from_db(sqlite3* sqlite_db, const std::vector<std::string>& elements, const std::string table, const std::string column)
 	{
 		std::stringstream ss;
-		ss << "SELECT id FROM " << table << " WHERE title IN (";
+		ss << "SELECT id FROM " << table << " WHERE " << column << " IN (";
 		bool first = true;
-		for(const auto& title : titles) 
+		for(const auto& e : elements) 
 		{
-			ss << ((first) ? "" : ",") << "'" << title << "'";
+			ss << ((first) ? "" : ",") << "'" << e << "'";
 			first = false;
 		}
 		ss << ");";
@@ -44,10 +44,10 @@ namespace {
 
 std::vector<std::size_t> get_user_ids_from_db(sqlite3* sqlite_db, const std::vector<std::string>& usernames)
 {
-	return get_ids_from_db(sqlite_db, usernames, "user");
+	return get_ids_from_db(sqlite_db, usernames, "user", "name");
 }
 
 std::vector<std::size_t> get_article_ids_from_db(sqlite3* sqlite_db, const std::vector<std::string>& titles)
 {
-	return get_ids_from_db(sqlite_db, titles, "article");
+	return get_ids_from_db(sqlite_db, titles, "article", "title");
 }
