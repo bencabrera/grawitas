@@ -80,7 +80,7 @@ namespace Grawitas {
 			if(included_fields.count("text"))
 				row.push_back("\"" + csv_encode(comment.Text) + "\"");
 
-			write_row_to_csv(ostr, header_row);
+			write_row_to_csv(ostr, row);
 			ostr << std::endl;
 		}
 	}
