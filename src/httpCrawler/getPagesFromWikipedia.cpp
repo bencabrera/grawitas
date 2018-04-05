@@ -8,6 +8,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 namespace {
 	std::string uri_encode(const std::string &str)
@@ -34,8 +35,14 @@ namespace {
 	{
 		std::tuple<std::string,bool, int> t{"", false, 0};
 
-		if(title.substr(0,5) == "Talk:")
+		if(boost::to_lower_copy(title.substr(0,5)) == "talk:")
 			title = title.substr(5);
+
+		if(boost::to_lower_copy(title.substr(0,10)) == "user talk:")
+			title = title.substr(10);
+
+		if(boost::to_lower_copy(title.substr(0,10)) == "user_talk:")
+			title = title.substr(10);
 
 		auto pos = title.find("/Archive");
 		std::get<1>(t) = (pos != std::string::npos);
