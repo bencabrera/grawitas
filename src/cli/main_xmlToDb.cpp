@@ -4,6 +4,7 @@
 #include "../../libs/cxxopts/include/cxxopts.hpp"
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "../misc/stepTimer.h"
 #include "../misc/readLinesFromFile.h"
@@ -74,9 +75,10 @@ int main(int argc, char** argv)
 	cxxopts::Options options("grawitas_cli_xml", "Parses talk pages in Wikipedia xml dumps to a sqlite file containing the structured comments.");
 	options.add_options()
 		("h,help", "Produces this help message.")
-		("i,input-paths-file", "File of which each line is absolute path to an xml file that is part of a Wikipedia dump.", cxxopts::value<string>())
+		("i,input-paths-file", "File of which each line is an absolute path to an xml file that is part of a Wikipedia dump.", cxxopts::value<string>())
 		("o,output-sqlite-file", "Output sqlite file.", cxxopts::value<string>())
 		("page-counts-file", "The file that contains counts of pages for each .xml file.", cxxopts::value<string>())
+		("u,user-talk-pages", "If this flag is set then also user talk pages in the 'User Talk' namespace are parsed.")
 		("t,show-timings", "Flag to show timings.")
 		;
 	options.positional_help("<input-paths-file> <output-sqlite-file>");
@@ -118,9 +120,18 @@ int main(int argc, char** argv)
 		xercesc::XMLPlatformUtils::Initialize();
 
 		WikiXmlDumpXerces::WikiDumpHandlerProperties parser_properties;
-		parser_properties.TitleFilter = [](const std::string& title) {
-			return title.substr(0,5) == "Talk:";
-		};
+		if(options.count("user-talk-pages"))
+		{
+			parser_properties.TitleFilter = [](const std::string& title) {
+				return boost::to_lower_copy(title.substr(0,5)) == "talk:" || boost::to_lower_copy(title.substr(0,10)) == "user talk:";
+			};
+		}
+		else
+		{
+			parser_properties.TitleFilter = [](const std::string& title) {
+				return boost::to_lower_copy(title.substr(0,5)) == "talk:";
+			};
+		}
 
 		// if page counts file specified then show progress bar
 		std::string last_file_path = "";
