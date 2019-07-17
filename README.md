@@ -48,7 +48,9 @@ The different parser components require different dependencies to be installed o
 
 In the following section we will go through the compilation process assuming you want to compile all programs. 
 
-1. *Install the dependencies through packages*. First we will have to install the mentioned dependencies. On Ubuntu 16.04 this can easily be done by installing some packages:
+1. *Install the dependencies through packages*. First we will have to install the mentioned dependencies. 
+
+On Ubuntu 16.04 this can easily be done by installing some packages:
 
 - `cmake` - CMake build tool used for generating the Makefiles
 - `libboost-all-dev` - Boost packages, including the needed boost.spirit and boost.graph
@@ -65,6 +67,9 @@ In the following section we will go through the compilation process assuming you
 	*Explanation:* 
 	- ```sudo``` runs the next command as a super-user (that's why you have to type in your password)
 	- ```apt-get install``` runs the apt package manager (the standard package manager under ubuntu) to install a package 
+	
+As Ubuntu 18.04 uses `libcurl4` don't install the `libcurl3` package but the `libcurl4` and `libcurl4-openssl-dev` packages.
+
 
 2. *Obtain the source code*. In principle there are different ways of obtaining the source code from the repository. However, note that the program depends on other projects included as submodules. Thus those have to be obtained as well. It is probably easiest to create an github account, set up ssh keys, cloning the repository via ssh and then pulling the submodules.
 	
@@ -79,7 +84,7 @@ In the following section we will go through the compilation process assuming you
 	```
 	mkdir bin
 	cd bin 
-	cmake -DCMAKE_BUILD_TYPE=Release ../src/
+	cmake -DCMAKE_BUILD_TYPE=Release ../
 	```
 	**Note:** It might be needed to specify the library path for the sqlite3 library. Instead of the above run e.g.
 	```
