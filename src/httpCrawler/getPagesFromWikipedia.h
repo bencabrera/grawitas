@@ -5,6 +5,7 @@
 
 struct TalkPageResult {
 	bool missing;
+    bool invalid; 
 	bool is_archive;
 	int i_archive;
 

@@ -131,7 +131,7 @@ namespace Grawitas {
 			// parse every talk page and add it to partially_parsed_articles
 			for(const auto& result : results) 
 			{
-				if(result.missing)
+				if(result.missing || result.invalid)
 					continue; 
 
 				if(options.status_callback)
@@ -145,7 +145,7 @@ namespace Grawitas {
 			// remove pages that returned missing from page_progress
 			for(const auto& result : results) 
 			{
-				if(!result.missing)
+				if(!result.missing && !result.invalid)
 					continue;
 
 				// remove all remaining once from next_pages_to_crawl

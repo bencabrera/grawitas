@@ -119,6 +119,7 @@ std::vector<TalkPageResult> get_pages_from_wikipedia(std::vector<std::string> pa
 		TalkPageResult result;
 		auto t = page.second;			
 		result.missing = t.count("missing");
+        result.invalid = t.count("invalid");
 		result.full_title = t.get<std::string>("title");
 
 		auto tmp = parse_page_title(result.full_title);
@@ -126,8 +127,9 @@ std::vector<TalkPageResult> get_pages_from_wikipedia(std::vector<std::string> pa
 		result.is_archive = std::get<1>(tmp);
 		result.i_archive = std::get<2>(tmp);
 
-		if(!result.missing)
+		if(!(result.missing && result.invalid))
 			result.content = t.get_child("revisions").front().second.get<std::string>("*");
+        
 
 		results.push_back(result);
 	}
