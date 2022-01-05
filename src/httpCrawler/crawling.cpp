@@ -75,6 +75,12 @@ namespace {
 
 			if(boost::to_lower_copy(title.substr(0,5)) == "talk:")
 				title = title.substr(5);
+            
+            // removes any underscores
+            std::string delim = "_";
+            auto end = title.find(delim);
+            if (end != std::string::npos)
+                std::replace(title.begin(), title.end(), '_', ' ');
 		}
 	}	
 }
@@ -98,6 +104,7 @@ namespace Grawitas {
 			for(std::size_t i = 0; i < N_PAGES_PER_REQUEST; i++)
 			{
 				auto& page = page_progress[i % page_progress.size()];
+                //std::cout << "Page:" << page.first << "\n";
 				if(page.second == 0)
 					current_titles.push_back("Talk:" + page.first);
 				else
@@ -131,8 +138,8 @@ namespace Grawitas {
 			// parse every talk page and add it to partially_parsed_articles
 			for(const auto& result : results) 
 			{
-				if(result.missing || result.invalid)
-					continue; 
+				if(result.missing)
+					continue;
 
 				if(options.status_callback)
 					options.status_callback("Parsing '" + result.full_title + "'.");
@@ -145,14 +152,20 @@ namespace Grawitas {
 			// remove pages that returned missing from page_progress
 			for(const auto& result : results) 
 			{
-				if(!result.missing && !result.invalid)
+				if(!result.missing)
 					continue;
-
+                
 				// remove all remaining once from next_pages_to_crawl
-				page_progress.erase(std::remove_if(page_progress.begin(), page_progress.end(), [&result](const std::pair<std::string,int>& page) { 
+				page_progress.erase(std::remove_if(page_progress.begin(), page_progress.end(), [&result](const std::pair<std::string,int>& page) {
 					return page.first == result.title;
 				}), page_progress.end());
+                
+                // additional condition for when there is only one page remaining and it is a missing page 
+                if((page_progress.size() == 1))
+                    page_progress.clear();
+                
 			}
+            
 
 			// export those articles that are finished and remove them
 			for(const auto& result : results) 

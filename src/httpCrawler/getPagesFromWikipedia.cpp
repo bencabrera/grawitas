@@ -3,6 +3,7 @@
 #include <sstream>
 #include <array>
 #include <algorithm>
+#include <iostream>
 #include <curl/curl.h>
 
 #include <boost/property_tree/ptree.hpp>
@@ -119,7 +120,6 @@ std::vector<TalkPageResult> get_pages_from_wikipedia(std::vector<std::string> pa
 		TalkPageResult result;
 		auto t = page.second;			
 		result.missing = t.count("missing");
-        result.invalid = t.count("invalid");
 		result.full_title = t.get<std::string>("title");
 
 		auto tmp = parse_page_title(result.full_title);
@@ -127,11 +127,15 @@ std::vector<TalkPageResult> get_pages_from_wikipedia(std::vector<std::string> pa
 		result.is_archive = std::get<1>(tmp);
 		result.i_archive = std::get<2>(tmp);
 
-		if(!(result.missing && result.invalid))
+		if(!result.missing)
 			result.content = t.get_child("revisions").front().second.get<std::string>("*");
         
-
-		results.push_back(result);
+        if((result.missing) && !(result.is_archive))    //any page that is missing without an archive must not exist
+        {
+            std::cout << "Page '" << result.title <<"' (and its archives) does not exist or has been deleted.\n";
+        }
+        else
+            results.push_back(result);
 	}
 
 	std::stable_sort(results.begin(), results.end(), [](const TalkPageResult& r1, const TalkPageResult& r2) {
