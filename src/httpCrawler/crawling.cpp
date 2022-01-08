@@ -76,7 +76,7 @@ namespace {
 			if(boost::to_lower_copy(title.substr(0,5)) == "talk:")
 				title = title.substr(5);
             
-            // removes any underscores
+            // removes any underscores used as spaces in page titles
             std::string delim = "_";
             auto end = title.find(delim);
             if (end != std::string::npos)
@@ -104,7 +104,6 @@ namespace Grawitas {
 			for(std::size_t i = 0; i < N_PAGES_PER_REQUEST; i++)
 			{
 				auto& page = page_progress[i % page_progress.size()];
-                //std::cout << "Page:" << page.first << "\n";
 				if(page.second == 0)
 					current_titles.push_back("Talk:" + page.first);
 				else

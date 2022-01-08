@@ -17,10 +17,12 @@ namespace Grawitas {
 	struct AdditionalCrawlerOptions {
 		inline AdditionalCrawlerOptions()
 		:keep_raw_talk_pages(false),
+        split_by_date(false),
 		abort(nullptr)
 		{}
 
 		bool keep_raw_talk_pages;
+        bool split_by_date;
 		bool* abort;
 		std::function<void(const std::string&)> status_callback;
 	};

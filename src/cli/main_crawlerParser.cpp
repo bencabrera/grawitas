@@ -55,6 +55,8 @@ int main(int argc, char** argv)
 		("comment-list-json", "Flag for exporting the list of comments (json).")
 
 		("keep-raw-talk-pages", "Flag for keeping the raw crawled talk pages.")
+    
+        ("split-by-date", "Flag for splitting talk pages into two seperate files by some date")
 		// misc
 		("show-timings", "Show the timings for the different steps.")
 		;
@@ -85,6 +87,7 @@ int main(int argc, char** argv)
 
 		AdditionalCrawlerOptions crawler_options;
 		crawler_options.keep_raw_talk_pages = options.count("keep-raw-talk-pages");
+        crawler_options.split_by_date = options.count("split-by-date"); 
 		crawler_options.status_callback = [](const std::string& msg) { std::cout << msg << std::endl; };
 		crawling(titles, output_folder, formats, crawler_options);
 	}
