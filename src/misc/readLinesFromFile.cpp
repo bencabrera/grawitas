@@ -42,7 +42,8 @@ std::map<std::string, std::string> read_lines_dates_from_file(std:: istream& inp
         if (titleNDate.empty() || titleNDate.size() == 1){
             if (previousDate == "NULL"){
                 throw std::invalid_argument("Input talk page file does not contain any dates seperated for their titles seperated by a comma. Aborting.");
-            } else {
+            }
+            else{
                 titleNDate[1] = previousDate;
                 lines.insert(std::pair<std::string, std::string>(titleNDate[0], titleNDate[1]));
                 continue;

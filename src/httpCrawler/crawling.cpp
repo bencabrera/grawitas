@@ -12,6 +12,7 @@
 
 #include "getPagesFromWikipedia.h"
 #include "../talkPageParser/parsing.h"
+#include "../misc/splitByDate.h"
 
 namespace {
 
@@ -82,12 +83,17 @@ namespace {
             if (end != std::string::npos)
                 std::replace(title.begin(), title.end(), '_', ' ');
 		}
-	}	
+	}
+
+
+
 }
 
 namespace Grawitas {
-	void crawling(std::vector<std::string> article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options) 
+	void crawling(std::vector<std::string> article_titles, std::map<std::string, std::string> titleNDates, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options)
 	{
+        
+        
 		::sanitize_titles(article_titles);
 
 		// initialization of data structures
@@ -174,12 +180,29 @@ namespace Grawitas {
 						options.status_callback("Finished all archives of '" + result.title + "'. Exporting results.");
 
 					auto& parsed_talk_page = partially_parsed_articles_map[result.title];
-
-					std::size_t cur_id = 1;
-					calculate_ids(parsed_talk_page, cur_id);
-
-					export_finished_talk_page(output_folder, formats, result.title, parsed_talk_page);
-					partially_parsed_articles_map.erase(result.title);
+                    
+                    std::size_t cur_id = 1;
+                    calculate_ids(parsed_talk_page, cur_id);
+                    
+                    // split by date if requested
+                    if(options.split_by_date) {
+                        // get date for title
+                        std::string dateToSplit;
+                        try {
+                            dateToSplit = titleNDates.at(result.title);
+                        }
+                        catch (const std::out_of_range&) {
+                            dateToSplit = "01/01/2000";
+                        }
+                        
+                        Grawitas::export_finished_pages(output_folder, formats, result.title, parsed_talk_page, dateToSplit);
+                    }
+                    else {
+                        
+                        export_finished_talk_page(output_folder, formats, result.title, parsed_talk_page);
+                    }
+                    
+                    partially_parsed_articles_map.erase(result.title);
 				}
 			}
 		}
