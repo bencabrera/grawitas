@@ -60,6 +60,7 @@ namespace {
 		std::map<Grawitas::Format, std::string> formats_with_paths;
 		for (const auto& format : formats)
 			formats_with_paths.insert({ format, output_folder + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
+        
 
 		Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page, {"id", "parent_id", "user", "date", "section", "text"});
 	}
@@ -92,8 +93,7 @@ namespace {
 namespace Grawitas {
 	void crawling(std::vector<std::string> article_titles, std::map<std::string, std::string> titleNDates, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options)
 	{
-        
-        
+                
 		::sanitize_titles(article_titles);
 
 		// initialization of data structures
@@ -185,17 +185,17 @@ namespace Grawitas {
                     calculate_ids(parsed_talk_page, cur_id);
                     
                     // split by date if requested
-                    if(options.split_by_date) {
+                    if(options.split_by_date){
                         // get date for title
                         std::string dateToSplit;
                         try {
-                            dateToSplit = titleNDates.at(result.title);
+                            dateToSplit = titleNDates[result.title];
                         }
                         catch (const std::out_of_range&) {
                             dateToSplit = "01/01/2000";
                         }
                         
-                        Grawitas::export_finished_pages(output_folder, formats, result.title, parsed_talk_page, dateToSplit);
+                        export_finished_pages(output_folder, formats, result.title, parsed_talk_page, dateToSplit);
                     }
                     else {
                         

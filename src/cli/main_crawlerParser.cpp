@@ -11,6 +11,7 @@
 
 #include "../output/outputHelpers.h"
 #include "../misc/readLinesFromFile.h"
+#include "../misc/splitByDate.h"
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/foreach.hpp>
 
@@ -94,9 +95,9 @@ int main(int argc, char** argv)
             titleNDates = read_lines_dates_from_file(input_file);
             
             // then just get the titles from the titles and dates map
-            std::pair<std::string,std:string> titleWithDate;
+            std::pair<std::string,std::string> titleWithDate;
             BOOST_FOREACH(titleWithDate, titleNDates) {
-                titles.push_back(me.first);
+                titles.push_back(titleWithDate.first);
         }
             
 		AdditionalCrawlerOptions crawler_options;
@@ -104,15 +105,14 @@ int main(int argc, char** argv)
         crawler_options.split_by_date = options.count("split-by-date"); 
 		crawler_options.status_callback = [](const std::string& msg) { std::cout << msg << std::endl; };
             
-        if
 		crawling(titles, titleNDates, output_folder, formats, crawler_options);
-	}
-	catch(const std::invalid_argument& e) {
+        }
+    } catch (const std::invalid_argument& e) {
 		std::cerr << "ABORTING. An argument error appeared: " << e.what() << std::endl << std::endl;
 		std::cerr << "Try -h or --help for more information" << std::endl;
 		return 1;
 	}
-	catch(const std::exception& e) {
+	catch (const std::exception& e) {
 		std::cerr << "ABORTING. The application terminated with an exception: " << std::endl << e.what() << std::endl << std::endl;
 		return 1;
 	}
