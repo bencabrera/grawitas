@@ -23,41 +23,43 @@ std::map<std::string, std::string> read_lines_dates_from_file(std:: istream& inp
     std::string line;
     std::string previousDate = "NULL";
     
-    while(std::getline(input,line))
+    while(std::getline(input,line, '\n'))
     {
         // remove leading whitespaces and split string by comma
         boost::trim(line);
         
-        std::vector<std::string> titleNDate;
-        std::string segment;
+        std::pair<std::string, std::string> titleNDate;
         
         // convert line back to stringstream for getline
-        std::istringstream lineS(line);
-        while(std::getline(lineS, segment, ','))
-        {
-           // not sure if this will store Date in titleNDate
-           titleNDate.push_back(segment); // splits string at ',' character
+        int i = 0;
+        size_t pos = 0;
+        std::string delimiter = ",";
+        std::string title;
+        while((pos = line.find(delimiter)) != std::string::npos) {
+            title = line.substr(0, pos);
+            line.erase(0, pos + delimiter.length());
         }
-        
-        if (titleNDate.empty() || titleNDate.size() == 1){
+        titleNDate = std::make_pair(title, line);
+        if (titleNDate.first.empty()){
             if (previousDate == "NULL"){
                 throw std::invalid_argument("Input talk page file does not contain any dates seperated for their titles seperated by a comma. Aborting.");
             }
-            else{
-                titleNDate[1] = previousDate;
-                lines.insert(std::pair<std::string, std::string>(titleNDate[0], titleNDate[1]));
+            else {
+                // due to way string splitting works the title is stored in the date position
+                // if there is no date
+                titleNDate.first = titleNDate.second;
+                titleNDate.second = previousDate;
+                lines.insert(titleNDate);
                 continue;
             }
         }
         
-        if ((titleNDate[1].find('/') == std::string::npos) || (titleNDate[0].find('/') != std::string::npos)) {
-            // checks correct format
-            throw std::invalid_argument("Input talk page format should be 'title,dd/mm/yyyy'. Aborting.");
-        } else {
-            lines.insert(std::pair<std::string, std::string>(titleNDate[0], titleNDate[1]));
+        if (titleNDate.second.find('/') == std::string::npos || titleNDate.first.find('/') != std::string::npos) {
+             throw std::invalid_argument("Input talk page format should be 'title,dd/mm/yyyy'. Aborting.");
         }
-        
-        return lines;
+        lines.insert(titleNDate);
+        previousDate = titleNDate.second;
     }
+    return lines;
 }
 

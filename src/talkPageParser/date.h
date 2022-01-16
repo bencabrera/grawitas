@@ -45,4 +45,4 @@ namespace Grawitas {
 }
 
 bool operator==(const Grawitas::Date& d1, const Grawitas::Date& d2);
-bool operator>=(const Grawitas::Date& d1, const Grawitas::Date& d2); 
+bool operator>=(const Grawitas::Date& d1, const Grawitas::Date& d2);

@@ -85,6 +85,33 @@ namespace {
                 std::replace(title.begin(), title.end(), '_', ' ');
 		}
 	}
+    void sanitize_titles(std::map<std::string, std::string>& titlesNDates)
+    {
+        std::map<std::string, std::string> newTitlesNDates;
+        for (auto& titleNDate : titlesNDates ) {
+            auto title = titleNDate.first;
+            auto date = titleNDate.second;
+            if(title.substr(0,7) == "http://")
+                throw std::invalid_argument("It seems like the provided articles are URLs. In newer versions of Grawitas you should simply provide the titles of the articles in the input file.");
+
+            if(boost::to_lower_copy(title) == "talk:")
+                title = title.substr(5);
+            
+            
+            // removes any underscores used as spaces in page titles
+            std::string delim = "_";
+            auto end = title.find(delim);
+            if (end != std::string::npos)
+                std::replace(title.begin(), title.end(), '_', ' ');
+            
+            std::pair<std::string, std::string> newTitleNDate = std::make_pair(title, date);
+            newTitlesNDates.insert(newTitleNDate);
+            
+        }
+        // replaces titlesNDates with sanitised map of newTitlesNDates
+        newTitlesNDates.swap(titlesNDates);
+    }
+
 
 
 
@@ -95,7 +122,7 @@ namespace Grawitas {
 	{
                 
 		::sanitize_titles(article_titles);
-
+        ::sanitize_titles(titleNDates);
 		// initialization of data structures
 		std::map<std::string, std::vector<Grawitas::Comment>> partially_parsed_articles_map;
 		std::deque<std::pair<std::string, int>> page_progress;
@@ -194,10 +221,10 @@ namespace Grawitas {
                         catch (const std::out_of_range&) {
                             dateToSplit = "01/01/2000";
                         }
+                        options.status_callback("Finished all archives of '" + result.title + " after" + dateToSplit + "'. Exporting results.");
                         export_finished_pages(output_folder, formats, result.title, parsed_talk_page, dateToSplit);
                     }
                     else {
-                        
                         export_finished_talk_page(output_folder, formats, result.title, parsed_talk_page);
                     }
                     
