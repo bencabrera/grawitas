@@ -1,5 +1,6 @@
 #include "splitByDate.h"
 
+#include "../talkPageParser/date.h"
 #include <string>
 #include <map>
 #include <vector>
@@ -7,6 +8,8 @@
 #include <iostream>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/erase.hpp>
+
 
 
 
@@ -14,35 +17,33 @@
 
 void export_finished_pages(const std::string& output_folder, const std::set<Grawitas::Format> formats, const std::string& title, const std::vector<Grawitas::Comment>& parsed_talk_page, const std::string& dateToSplit)
 {
+        
         std::string title_filename = Grawitas::safeEncodeTitleToFilename(title);
-        std::string title_filename_after_date = Grawitas::safeEncodeTitleToFilename(title + "_after_" + dateToSplit);
+        //change dateToSplit so date appears correctly in output file title
+        std::string fileNameDate = dateToSplit;
+        boost::erase_all(fileNameDate, "/");
+        std::string title_filename_after_date = Grawitas::safeEncodeTitleToFilename(title + "_after_" + fileNameDate);
         
         std::map<Grawitas::Format, std::string> formats_with_paths;
         
-        std::vector<Grawitas::Comment> before_date_comments = parsed_talk_page;
+        std::vector<Grawitas::Comment> before_date_comments;
         std::vector<Grawitas::Comment> after_date_comments;
         
-        for(auto& comment : before_date_comments) {
-            std::tm dateToCompare = boost::trim(comment.Date);
-            std::tm splitDate = 
+        for(auto& comment : parsed_talk_page) {
+            Grawitas::Date dateToCompare = comment.Date;
+            Grawitas::Date dateToSplitD = Grawitas::make_date(0,0,0, std::stoi(dateToSplit.substr(1,2)), std::stoi(dateToSplit.substr(4,2)), std::stoi(dateToSplit.substr(7,4)));
             
-            if((dateToCompare.substr(0,2) <= dateToSplit.substr(0,2)) && (dateToCompare.substr(3,5) <= dateToSplit.substr(3,5)) && (dateToCompare.substr(6,10) <= dateToCompare.substr(6,10))){
-                
-                continue;
+            if(!(dateToSplitD >= dateToCompare)){
+                after_date_comments.push_back(comment);
             }
             else {
-                // add to data structure of talk page after the date
-                after_date_comments.push_back(comment);
+                // add to data structure of talk page before the date
+                before_date_comments.push_back(comment);
                 
-                // delete this comment from 'before date' file
-                before_date_comments.erase(std::remove_if(before_date_comments.begin(), before_date_comments.end(), [&comment](const Grawitas::Comment& pageComment) {
-                    return comment.Id == pageComment.Id;
-                }), before_date_comments.end());
             }
+        }
             
-            }
-            
-        if(after_date_comments.size() == 0){
+        if(after_date_comments.size() == 0 || after_date_comments.empty()){
             std::cout << "There are no comments made for " << title << " after this date: " << dateToSplit << ".\n";
         }
         else {
@@ -51,6 +52,7 @@ void export_finished_pages(const std::string& output_folder, const std::set<Graw
                 formats_with_paths.insert({ format, output_folder + "/" + title_filename_after_date + Grawitas::FormatFileExtensions.at(format) });
                 Grawitas::output_in_formats_to_files(formats_with_paths, after_date_comments, {"id", "parent_id", "user", "date", "section", "text"});
             }
+            formats_with_paths.clear();
         }
         for (const auto& format : formats){
             formats_with_paths.insert({ format, output_folder + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });

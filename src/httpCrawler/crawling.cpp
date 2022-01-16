@@ -194,7 +194,6 @@ namespace Grawitas {
                         catch (const std::out_of_range&) {
                             dateToSplit = "01/01/2000";
                         }
-                        
                         export_finished_pages(output_folder, formats, result.title, parsed_talk_page, dateToSplit);
                     }
                     else {

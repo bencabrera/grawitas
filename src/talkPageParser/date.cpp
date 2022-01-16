@@ -30,3 +30,28 @@ bool operator==(const Grawitas::Date& d1, const Grawitas::Date& d2) {
 	);
 }
 
+bool operator>=(const Grawitas::Date& d1, const Grawitas::Date& d2) {
+    using namespace Grawitas;
+    if(get<YEAR>(d1) >= get<YEAR>(d2)) {
+        return true;
+    } else if(get<YEAR>(d1) == get<YEAR>(d2)) {
+        if(get<MONTH>(d1) >= get<MONTH>(d2)) {
+            return true;
+        } else if(get<MONTH>(d1) == get<MONTH>(d2)) {
+            if(get<DAY>(d1) >= get<DAY>(d2)) {
+                return true; 
+            } else if (get<DAY>(d1) == get<DAY>(d2)) {
+                return (get<HOUR>(d1) >= get<HOUR>(d2));
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+    return true;
+}
+
+
