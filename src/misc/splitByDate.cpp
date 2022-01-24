@@ -23,7 +23,7 @@ void export_finished_pages(const std::string& output_folder, const std::set<Graw
         std::string fileNameDate = dateToSplit;
         boost::erase_all(fileNameDate, "/");
         std::string title_filename_after_date = Grawitas::safeEncodeTitleToFilename(title + "_after_" + fileNameDate);
-        
+            
         std::map<Grawitas::Format, std::string> formats_with_paths;
         
         std::vector<Grawitas::Comment> before_date_comments;

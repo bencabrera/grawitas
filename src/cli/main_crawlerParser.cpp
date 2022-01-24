@@ -89,7 +89,6 @@ int main(int argc, char** argv)
         std::map<std::string, std::string> titleNDates;
         if(!options.count("split-by-date")){
             titles = read_lines_from_file(input_file);
-            
         }
         else{
             titleNDates = read_lines_dates_from_file(input_file);
@@ -98,15 +97,14 @@ int main(int argc, char** argv)
             std::pair<std::string,std::string> titleWithDate;
             BOOST_FOREACH(titleWithDate, titleNDates) {
                 titles.push_back(titleWithDate.first);
+            }
         }
-            
 		AdditionalCrawlerOptions crawler_options;
 		crawler_options.keep_raw_talk_pages = options.count("keep-raw-talk-pages");
         crawler_options.split_by_date = options.count("split-by-date"); 
 		crawler_options.status_callback = [](const std::string& msg) { std::cout << msg << std::endl; };
-            
 		crawling(titles, titleNDates, output_folder, formats, crawler_options);
-        }
+        
     } catch (const std::invalid_argument& e) {
 		std::cerr << "ABORTING. An argument error appeared: " << e.what() << std::endl << std::endl;
 		std::cerr << "Try -h or --help for more information" << std::endl;
