@@ -17,13 +17,15 @@ namespace Grawitas {
 	struct AdditionalCrawlerOptions {
 		inline AdditionalCrawlerOptions()
 		:keep_raw_talk_pages(false),
+        split_by_date(false),
 		abort(nullptr)
 		{}
 
 		bool keep_raw_talk_pages;
+        bool split_by_date;
 		bool* abort;
 		std::function<void(const std::string&)> status_callback;
 	};
 
-	void crawling(std::vector<std::string> article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options = AdditionalCrawlerOptions());
+	void crawling(std::vector<std::string> article_titles, std::map<std::string, std::string> titleNDates, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options = AdditionalCrawlerOptions());
 }
