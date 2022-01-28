@@ -12,6 +12,7 @@
 
 #include "getPagesFromWikipedia.h"
 #include "../talkPageParser/parsing.h"
+#include "../misc/splitByDate.h"
 
 namespace {
 
@@ -59,6 +60,7 @@ namespace {
 		std::map<Grawitas::Format, std::string> formats_with_paths;
 		for (const auto& format : formats)
 			formats_with_paths.insert({ format, output_folder + "/" + title_filename + Grawitas::FormatFileExtensions.at(format) });
+        
 
 		Grawitas::output_in_formats_to_files(formats_with_paths, parsed_talk_page, {"id", "parent_id", "user", "date", "section", "text"});
 	}
@@ -75,15 +77,53 @@ namespace {
 
 			if(boost::to_lower_copy(title.substr(0,5)) == "talk:")
 				title = title.substr(5);
+            
+            // removes any underscores used as spaces in page titles
+            std::string delim = "_";
+            auto end = title.find(delim);
+            if (end != std::string::npos)
+                std::replace(title.begin(), title.end(), '_', ' ');
 		}
-	}	
+	}
+    void sanitize_titles(std::map<std::string, std::string>& titlesNDates)
+    {
+        std::map<std::string, std::string> newTitlesNDates;
+        for (auto& titleNDate : titlesNDates ) {
+            auto title = titleNDate.first;
+            auto date = titleNDate.second;
+            if(title.substr(0,7) == "http://")
+                throw std::invalid_argument("It seems like the provided articles are URLs. In newer versions of Grawitas you should simply provide the titles of the articles in the input file.");
+
+            if(boost::to_lower_copy(title) == "talk:")
+                title = title.substr(5);
+            
+            
+            // removes any underscores used as spaces in page titles
+            std::string delim = "_";
+            auto end = title.find(delim);
+            if (end != std::string::npos)
+                std::replace(title.begin(), title.end(), '_', ' ');
+            
+            std::pair<std::string, std::string> newTitleNDate = std::make_pair(title, date);
+            newTitlesNDates.insert(newTitleNDate);
+            
+        }
+        // replaces titlesNDates with sanitised map of newTitlesNDates
+        newTitlesNDates.swap(titlesNDates);
+    }
+
+
+
+
 }
 
 namespace Grawitas {
-	void crawling(std::vector<std::string> article_titles, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options) 
+	void crawling(std::vector<std::string> article_titles, std::map<std::string, std::string> titleNDates, const std::string& output_folder, const std::set<Grawitas::Format> formats, AdditionalCrawlerOptions options)
 	{
+                
 		::sanitize_titles(article_titles);
-
+        if(options.split_by_date)
+            ::sanitize_titles(titleNDates);
 		// initialization of data structures
 		std::map<std::string, std::vector<Grawitas::Comment>> partially_parsed_articles_map;
 		std::deque<std::pair<std::string, int>> page_progress;
@@ -132,7 +172,7 @@ namespace Grawitas {
 			for(const auto& result : results) 
 			{
 				if(result.missing)
-					continue; 
+					continue;
 
 				if(options.status_callback)
 					options.status_callback("Parsing '" + result.full_title + "'.");
@@ -147,12 +187,18 @@ namespace Grawitas {
 			{
 				if(!result.missing)
 					continue;
-
+                
 				// remove all remaining once from next_pages_to_crawl
-				page_progress.erase(std::remove_if(page_progress.begin(), page_progress.end(), [&result](const std::pair<std::string,int>& page) { 
+				page_progress.erase(std::remove_if(page_progress.begin(), page_progress.end(), [&result](const std::pair<std::string,int>& page) {
 					return page.first == result.title;
 				}), page_progress.end());
+                
+                // additional condition for when there is only one page remaining and it is a missing page 
+                if((page_progress.size() == 1))
+                    page_progress.clear();
+                
 			}
+            
 
 			// export those articles that are finished and remove them
 			for(const auto& result : results) 
@@ -162,12 +208,29 @@ namespace Grawitas {
 						options.status_callback("Finished all archives of '" + result.title + "'. Exporting results.");
 
 					auto& parsed_talk_page = partially_parsed_articles_map[result.title];
-
-					std::size_t cur_id = 1;
-					calculate_ids(parsed_talk_page, cur_id);
-
-					export_finished_talk_page(output_folder, formats, result.title, parsed_talk_page);
-					partially_parsed_articles_map.erase(result.title);
+                    
+                    std::size_t cur_id = 1;
+                    calculate_ids(parsed_talk_page, cur_id);
+                    
+                    // split by date if requested
+                    if(options.split_by_date){
+                        // get date for title
+                        std::string dateToSplit;
+                        try {
+                            dateToSplit = titleNDates[result.title];
+                        }
+                        catch (const std::out_of_range&) {
+                            dateToSplit = "01/01/2000";
+                        }
+                        if(options.status_callback)
+                            options.status_callback("Finished all archives of '" + result.title + " after" + dateToSplit + "'. Exporting results.");
+                        export_finished_pages(output_folder, formats, result.title, parsed_talk_page, dateToSplit);
+                    }
+                    else {
+                        export_finished_talk_page(output_folder, formats, result.title, parsed_talk_page);
+                    }
+                    
+                    partially_parsed_articles_map.erase(result.title);
 				}
 			}
 		}
