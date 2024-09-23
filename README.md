@@ -128,7 +128,7 @@ For the CLI tools there is always a ```--help``` argument that can be passed to 
 
 	*Example:*
 	```
-	./grawitas_cli_xml_to_db -i file_with_absoulte_paths_to_xml_files.txt -o out_sqlite3.db
+	./grawitas_cli_xml_to_db -i file_with_absolute_paths_to_xml_files.txt -o out_sqlite3.db
 	```
 - **grawitas_cli_db_export** takes a sqlite3 database created by *grawitas_cli_xml_to_db* and extracts all comments by certain users and in certain articles to all formats available in *grawitas_cli_core* and *grawitas_cli_crawler*.
 	
